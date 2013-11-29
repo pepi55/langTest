@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="wiskunde.js"></script>
+<!-- <script type="text/javascript" src="delers.js"></script> -->
+
+<script>
+	window.addEventListener("load", windowLoaded, false);
+
+	function windowLoaded() {
+		var feedback = document.getElementById("feedback");
+		var primeNumbs = primeNrArray(maxNum);
+
+		feedback.innerHTML = "olla";
+	}
+</script>
+
+<title>wiskunde</title>
+</head>
+
+<body>
+<input type="text" id="a">
+<input type="text" id="b">
+<input type="button" id="button" value="submit"><br>
+<hr />
+<h1>delers door 100</h1>
+<table id="feedback" border ="1">
+
+
+</body>
+</html>
