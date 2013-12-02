@@ -12,17 +12,23 @@ class Fraction:
 def addFraction(a, b):
 		numerator = a.numerator * b.denominator + b.numerator * a.denominator
 		denominator = a.denominator * b.denominator
-		gcdNum = gcd(numerator, denominator)
-		result = Fraction(numerator / gcdNum, denominator / gcdNum)
+		result = Fraction(numerator, denominator)
 		return result
 
 def multiplyFraction(a, b):
 		numerator = a.numerator * b.numerator
 		denominator = a.denominator * b.denominator
-		gcdNum = gcd(numerator, denominator)
-		result = Fraction(numerator / gcdNum, denominator / gcdNum)
+		result = Fraction(numerator, denominator)
 		return result
 
-def divideFraction(a, b):
+def divideFraction(a,b):
+    numerator =  b.denominator * a.numerator 
+    denominator = a.denominator * b.denominator
+    result = Fraction(numerator,denominator)
+    return result
 
-def subtractFraction(a, b):
+def substractFraction(a, b):
+    numerator = a.numerator * b.denominator - b.numerator * a.denominator
+    denominator = a.denominator * b.denominator
+    result = Fraction(numerator,denominator)
+    return result
