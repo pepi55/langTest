@@ -3,15 +3,40 @@
 
 using namespace std;
 
-float a;
-float f = 12.3;
+float f = 10;
+float g = 5;
 
-float isInteger (float a) {
+int isInteger (float a) {
 	bool result = false;
 
-	cout << a << "\n";
+	//cout << "function input: " << a << "\n";
 
-	if (a % 1 == 0) {
+	if (fmodf(a, 1) == 0) {
+		result = true;
+	}
+
+	return result;
+}
+
+int isNaturalNumber (float a) {
+	bool result = false;
+
+	cout << "\nfunction input: " << a << "\n";
+
+	if (a > 0 && isInteger(a)) {
+		result = true;
+	}
+
+	return result;
+}
+
+int isDivisor (float a, float b) {
+	bool result = false;
+	float temp = a / b;
+
+	cout << "\nfunction input: " << temp << "\n";
+
+	if (isInteger(a / b)) {
 		result = true;
 	}
 
@@ -19,8 +44,9 @@ float isInteger (float a) {
 }
 
 int main () {
-	cout << isInteger(f);
-	//cout << "\n" << f;
+	cout << "is it an integer? " << isInteger(f);
+	cout << "is it an natural number? " << isNaturalNumber(f);
+	cout << "is it an divisor? " << isDivisor(f, g);
 
 	return 0;
 }
