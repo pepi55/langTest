@@ -1,41 +1,40 @@
 #!/usr/bin/python
 
-from math import *
+from maths import *
 from Fraction import *
 from Ratio import *
-from tkinter.ttk import *
 
-import tkinter as tk
+# Divisor = bottom, divident = top
 
-class Calculator(tk.Frame):
-	def __init__(self, master = None):
-		tk.Frame.__init__(self, master)
-		self.pack()
-		self.createWidgets()
+action = int(input("\n1. Scale divisor\n2. Scale divident\n3. Multiply fraction\n4. Divide fraction\n5. Add fraction\n6. Substract fraction\n7. Convert ratio to fraction\n\nChoose an option: "))
 
-	def createWidgets(self):
-		self.EXIT = tk.Button(self, text = "QUIT", fg = "red", command = root.destroy)
-		self.EXIT.pack(side = "bottom")
+if action == 1:
+  ratioDivident = float(input("Desired divident: "))
+  ratioDivisor = float(input("Desired divisor: "))
+  dividentToScale = float(input("Divident to scale with: "))
+  ratio = Ratio(ratioDivident, ratioDivisor)
 
-root = Tk()
-calc = Calculator(master = root)
+  scaleRatio = scaleDivisor(ratio, dividentToScale)
+  print(scaleRatio.divident, scaleRatio.divisor)
 
-mainframe = ttk.Frame(root, padding = "3 3 12 12")
+if action == 2:
+  ratioDivident = float(input("Desired divident: "))
+  ratioDivisor = float(input("Desired divisor: "))
+  divisorToScale = float(input("Divisor to scale with: "))
+  ratio = Ratio(ratioDivident, ratioDivisor)
 
-ratio1 = StringVar()
-ratioAnsw = StringVar()
+  scaleRatio = scaleDivident(ratio, divisorToScale)
+  print(scaleRatio.divident, scaleRatio.divisor)
 
-ratioEntry = ttk.Entry(mainframe, width = 7, textVar = ratio1)
-
-root.title("Ratio convertion")
-
-mainframe.grid(column = 0, row = 0, sticky = (N, W, E, S))
-mainframe.columnconfigure(0, weight = 1)
-mainframe.rowconfigure(0, weight = 1)
-
-ratioEntry.grid(column = 2, row = 1, sticky = (W, E))
-
-ttk.Label(mainframe, textvariable = ratioAnsw).grid(column = 2, row = 2, sticky = (W, E))
-ttk.Button(mainframe, text = "Calculate", command = calculate).grid(column = 3, row = 3, sticky = W)
-
-calc.mainloop()
+#a = Fraction(1024, 768)
+#b = Fraction(1280, 1024)
+#c = multiplyFraction(a, b)
+#d = divideFraction(a, b)
+#e = substractFraction(a, b)
+#f = addFraction(a, b)
+#g = Ratio(16, 10)
+#
+#ratio = Ratio(f.numerator, f.denominator)
+#scaled = scaleDivisor(g, 960)
+#
+#print(scaled.divident, scaled.divisor)

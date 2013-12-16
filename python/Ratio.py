@@ -1,9 +1,8 @@
 #!/usr/bin/python
-
-from math import *
+from maths import *
 
 class Ratio:
-	def __init__(self, divident, divisor):
+	def __init__(self, divident, divisor = 1):
 		self.divident = divident
 		self.divisor = divisor
 
