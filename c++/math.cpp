@@ -1,4 +1,7 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <iterator>
 #include <math.h>
 
 using namespace std;
@@ -9,8 +12,6 @@ float g = 5;
 int isInteger (float a) {
 	bool result = false;
 
-	//cout << "function input: " << a << "\n";
-
 	if (fmodf(a, 1) == 0) {
 		result = true;
 	}
@@ -20,8 +21,6 @@ int isInteger (float a) {
 
 int isNaturalNumber (float a) {
 	bool result = false;
-
-	cout << "\nfunction input: " << a << "\n";
 
 	if (a > 0 && isInteger(a)) {
 		result = true;
@@ -34,19 +33,39 @@ int isDivisor (float a, float b) {
 	bool result = false;
 	float temp = a / b;
 
-	cout << "\nfunction input: " << temp << "\n";
-
-	if (isInteger(a / b)) {
+	if (isInteger(b / a)) {
 		result = true;
 	}
 
 	return result;
 }
 
+vector<int> divisors (float a) {
+	vector<int> result;
+
+	if (isNaturalNumber(a)) {
+		for (int i = 0; i <= a; ++i) {
+			if (isDivisor(i, a)) {
+				result.push_back(i);
+			}
+		}
+	}
+
+	return result;
+}
+
 int main () {
-	cout << "is it an integer? " << isInteger(f);
-	cout << "is it an natural number? " << isNaturalNumber(f);
-	cout << "is it an divisor? " << isDivisor(f, g);
+	unsigned int i;
+
+	cout << "\nis it an integer? " << isInteger(f);
+	cout << "\nis it an natural number? " << isNaturalNumber(f);
+	cout << "\nis it an divisor? " << isDivisor(f, g);
+
+	cout << "\nwhat are its divisors?";
+	for (i = 0; i < divisors(f).size(); ++i)
+		cout << " " << divisors(f).at(i);
+
+	cout << endl;
 
 	return 0;
 }
