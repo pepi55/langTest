@@ -64,7 +64,7 @@ int * division (float a) {
 	FILE *f = fopen("divisionResult", "w");
 	char maxLiLength[20];
 	int i;
-	double content[] = {0};
+	int content[100];
 	int result[i];
 
 	if (f == NULL) {
@@ -80,9 +80,9 @@ int * division (float a) {
 		}
 	}
 
-	while (fgets(maxLiLength, 200, f) != NULL) {
-		content[i] = atoi(maxLiLength);
-		result[i] = (int) content[i];
+	while (fgets(maxLiLength, sizeof maxLiLength, f) != NULL) {
+		result[i] = atoi(maxLiLength);
+		printf("test");
 		i++;
 	}
 
