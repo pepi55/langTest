@@ -6,7 +6,9 @@
 int integer(float a);
 int naturalNumber(float a);
 int divisor(float a, float b);
-int * division(float a);
+int primes(float a);
+
+void division(float a);
 
 int main (void) {
 	float a = 0, b = 0;
@@ -14,14 +16,15 @@ int main (void) {
 	printf("Insert first number to be manipulated: ");
 	scanf("%f", &a);
 
-	printf("Insert second number to be manipulated: ");
-	scanf("%f", &b);
+	/*printf("Insert second number to be manipulated: ");
+	scanf("%f", &b);*/
 
 	fputs(integer(a) ? "The first number is an integer.\n" : "The first number is not an integer.\n", stdout);
 	fputs(naturalNumber(a) ? "The first number is a natural number.\n" : "The first number is not a natural number.\n", stdout);
 	fputs(divisor(a, b) ? "The first number is a divisor.\n" : "The first number is not a divisor.\n", stdout);
 
 	division(a);
+	//primes(a);
 
 	return 0;
 }
@@ -50,17 +53,10 @@ int divisor (float a, float b) {
 	return result;
 }
 
-int * division (float a) {
+void division (float a) {
 	FILE * f = fopen("divisionResult", "wb+");
-	int i, j, k, c;
+	int i, j, k, c, answ = 0;
 	char line[100];
-
-	fseek(f, 0L, SEEK_END);
-
-	int size = ftell(f);
-	int * result = malloc(sizeof (int) * size);
-
-	rewind(f);
 
 	if (f == NULL) {
 		printf("\nError loading file!\n");
@@ -77,13 +73,19 @@ int * division (float a) {
 		rewind(f);
 	}
 
-	while (fgets(line, 100, f) != NULL) {
-		sscanf(line, "%d", &c);
-		//printf("%d\n", c);
+	printf("Do you wish to print the division result? (answer with 1 (Yes) or 2 (No)) ");
+	scanf("%d", &answ);
+
+	if (answ == 1) {
+		while (fgets(line, 100, f) != NULL) {
+			sscanf(line, "%d", &c);
+			printf("%d\n", c);
+		}
 	}
 
 	fclose(f);
-	free(result);
+}
 
-	return result;
+int primes (float a) {
+
 }
