@@ -8,11 +8,8 @@ int naturalNumber(float a);
 int divisor(float a, float b);
 int * division(float a);
 
-int main () {
-	float a = 0;
-	float b = 0;
-	int l = (sizeof(division(a)) / sizeof(division(a)[0]));
-	int i;
+int main (void) {
+	float a = 0, b = 0;
 
 	printf("Insert first number to be manipulated: ");
 	scanf("%f", &a);
@@ -20,14 +17,11 @@ int main () {
 	printf("Insert second number to be manipulated: ");
 	scanf("%f", &b);
 
-	fputs(integer(a) ? "true" : "false", stdout);
-	fputs(naturalNumber(a) ? "\ntrue" : "\nfalse", stdout);
-	fputs(divisor(a, b) ? "\ntrue" : "\nfalse", stdout);
+	fputs(integer(a) ? "The first number is an integer.\n" : "The first number is not an integer.\n", stdout);
+	fputs(naturalNumber(a) ? "The first number is a natural number.\n" : "The first number is not a natural number.\n", stdout);
+	fputs(divisor(a, b) ? "The first number is a divisor.\n" : "The first number is not a divisor.\n", stdout);
 
-	//printf(" %d", l);
-	for (i = 0; i < l; i++) {
-		printf("\n%d", division(a)[i]);
-	}
+	division(a);
 
 	return 0;
 }
@@ -35,9 +29,7 @@ int main () {
 int integer (float a) {
 	bool result = 0;
 
-	if (fmod(a, 1) == 0) {
-		result = 1;
-	}
+	if (fmod(a, 1) == 0) result = 1;
 
 	return result;
 }
@@ -45,9 +37,7 @@ int integer (float a) {
 int naturalNumber (float a) {
 	bool result = 0;
 
-	if (a > 0 && integer(a)) {
-		result = 1;
-	}
+	if (a > 0 && integer(a))	result = 1;
 
 	return result;
 }
@@ -61,11 +51,16 @@ int divisor (float a, float b) {
 }
 
 int * division (float a) {
-	FILE *f = fopen("divisionResult", "w");
-	char maxLiLength[20];
-	int i;
-	int content[100];
-	int result[i];
+	FILE * f = fopen("divisionResult", "wb+");
+	int i, j, k, c;
+	char line[100];
+
+	fseek(f, 0L, SEEK_END);
+
+	int size = ftell(f);
+	int * result = malloc(sizeof (int) * size);
+
+	rewind(f);
 
 	if (f == NULL) {
 		printf("\nError loading file!\n");
@@ -73,20 +68,22 @@ int * division (float a) {
 	}
 
 	if (naturalNumber(a)) {
-		for (i = 0; i < a; i++) {
+		for (i = 0; i < a + 1; i++) {
 			if (divisor(i, a)) {
-				fprintf(f, " %d\n", i);
+				fprintf(f, "%d\n", i);
 			}
 		}
+
+		rewind(f);
 	}
 
-	while (fgets(maxLiLength, sizeof maxLiLength, f) != NULL) {
-		result[i] = atoi(maxLiLength);
-		printf("test");
-		i++;
+	while (fgets(line, 100, f) != NULL) {
+		sscanf(line, "%d", &c);
+		//printf("%d\n", c);
 	}
 
 	fclose(f);
+	free(result);
 
 	return result;
 }
