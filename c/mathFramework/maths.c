@@ -6,12 +6,16 @@
 int integer(float a);
 int naturalNumber(float a);
 int divisor(float a, float b);
-int primes(float a);
+int *division (long a);
+int primes(long a);
 
-void division(float a);
+void divisionToFile (float a);
 
 int main (void) {
 	float a = 0, b = 0;
+
+	int *div;
+	int i;
 
 	printf("Insert first number to be manipulated: ");
 	scanf("%f", &a);
@@ -23,7 +27,11 @@ int main (void) {
 	fputs(naturalNumber(a) ? "The first number is a natural number.\n" : "The first number is not a natural number.\n", stdout);
 	fputs(divisor(a, b) ? "The first number is a divisor.\n" : "The first number is not a divisor.\n", stdout);
 
-	division(a);
+	div = division(a) + 1;
+	for (i = 0; i < a; i++) {
+		if (*(div + i) != 0)
+			printf("*(div + %d) : %d\n", i, *(div + i));
+	}
 	//primes(a);
 
 	return 0;
@@ -53,8 +61,29 @@ int divisor (float a, float b) {
 	return result;
 }
 
-void division (float a) {
-	FILE * f = fopen("divisionResult", "wb+");
+int *division (long a) {
+	int i;
+	int *divResult = malloc(a * sizeof(long));
+
+	if (naturalNumber(a)) {
+		for (i = 0; i < a + 1; i++) {
+			if (divisor(i, a)) {
+				divResult[i] = i;
+			}
+		}
+	}
+
+	free(divResult);
+	printf("Mem: %p\n", (void *)divResult);
+	return divResult;
+}
+
+int primes (long a) {
+
+}
+
+void divisionToFile (float a) {
+	FILE *f = fopen("divisionResult", "wb+");
 	int i, j, k, c, answ = 0;
 	char line[100];
 
@@ -84,8 +113,4 @@ void division (float a) {
 	}
 
 	fclose(f);
-}
-
-int primes (float a) {
-
 }

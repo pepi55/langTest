@@ -8,7 +8,7 @@ from Ratio import *
 
 action = int(input("\n1. Scale divisor\n2. Scale divident\n3. Multiply fraction\n4. Divide fraction\n5. Add fraction\n6. Substract fraction\n7. Convert ratio to fraction\n\nChoose an option: "))
 
-if action == 1:
+if action == 1: # Upper num
   ratioDivident = float(input("Desired divident: "))
   ratioDivisor = float(input("Desired divisor: "))
   dividentToScale = float(input("Divident to scale with: "))
@@ -17,7 +17,7 @@ if action == 1:
   scaleRatio = scaleDivisor(ratio, dividentToScale)
   print(scaleRatio.divident, scaleRatio.divisor)
 
-if action == 2:
+if action == 2: # Lower num
   ratioDivident = float(input("Desired divident: "))
   ratioDivisor = float(input("Desired divisor: "))
   divisorToScale = float(input("Divisor to scale with: "))
