@@ -6,15 +6,10 @@
 int integer(float a);
 int naturalNumber(float a);
 int divisor(float a, float b);
-int *division (long a);
-int primes(long a);
-
-void divisionToFile (float a);
+long *division(long a);
 
 int main (void) {
 	float a = 0, b = 0;
-
-	int *div;
 	int i;
 
 	printf("Insert first number to be manipulated: ");
@@ -26,13 +21,6 @@ int main (void) {
 	fputs(integer(a) ? "The first number is an integer.\n" : "The first number is not an integer.\n", stdout);
 	fputs(naturalNumber(a) ? "The first number is a natural number.\n" : "The first number is not a natural number.\n", stdout);
 	fputs(divisor(a, b) ? "The first number is a divisor.\n" : "The first number is not a divisor.\n", stdout);
-
-	div = division(a) + 1;
-	for (i = 0; i < a; i++) {
-		if (*(div + i) != 0)
-			printf("*(div + %d) : %d\n", i, *(div + i));
-	}
-	//primes(a);
 
 	return 0;
 }
@@ -61,56 +49,21 @@ int divisor (float a, float b) {
 	return result;
 }
 
-int *division (long a) {
-	int i;
-	int *divResult = malloc(a * sizeof(long));
+long *division(long a){
+	int i, len = 1;//for 1
+	long *result;
 
-	if (naturalNumber(a)) {
-		for (i = 0; i < a + 1; i++) {
-			if (divisor(i, a)) {
-				divResult[i] = i;
-			}
-		}
+	if (a < 1) return NULL;
+
+	result = malloc(a * sizeof(long));
+	if (result) {
+		for (i = 2; i <= a; ++i)//skip 1
+			if (a % i == 0)
+				result[len++] = i;
+
+		result[0] = len;//put a length instead of 1
+		result=realloc(result, len*sizeof(long));
 	}
 
-	free(divResult);
-	printf("Mem: %p\n", (void *)divResult);
-	return divResult;
-}
-
-int primes (long a) {
-
-}
-
-void divisionToFile (float a) {
-	FILE *f = fopen("divisionResult", "wb+");
-	int i, j, k, c, answ = 0;
-	char line[100];
-
-	if (f == NULL) {
-		printf("\nError loading file!\n");
-		exit(EXIT_FAILURE);
-	}
-
-	if (naturalNumber(a)) {
-		for (i = 0; i < a + 1; i++) {
-			if (divisor(i, a)) {
-				fprintf(f, "%d\n", i);
-			}
-		}
-
-		rewind(f);
-	}
-
-	printf("Do you wish to print the division result? (answer with 1 (Yes) or 2 (No)) ");
-	scanf("%d", &answ);
-
-	if (answ == 1) {
-		while (fgets(line, 100, f) != NULL) {
-			sscanf(line, "%d", &c);
-			printf("%d\n", c);
-		}
-	}
-
-	fclose(f);
+	return result;
 }
