@@ -62,6 +62,7 @@ flags = [
 '-isystem',
 '../BoostParts',
 '-isystem',
+<<<<<<< HEAD
 '/usr/lib/gcc/i686-pc-linux-gnu/4.8.2/../../../../include/c++/4.8.2',
 '-isystem',
 '/usr/lib/gcc/i686-pc-linux-gnu/4.8.2/../../../../include/c++/4.8.2/i686-pc-linux-gnu',
@@ -69,6 +70,13 @@ flags = [
 '/usr/lib/gcc/i686-pc-linux-gnu/4.8.2/../../../../include/c++/4.8.2/backward',
 '-isystem',
 '/usr/local/include',
+=======
+'/usr/lib/gcc/x86_64-pc-linux-gnu/4.7.3/include/g++-v4',
+'-isystem',
+'/usr/lib/gcc/x86_64-pc-linux-gnu/4.7.3/include/g++-v4/x86_64-pc-linux-gnu',
+'-isystem',
+'/usr/lib/gcc/x86_64-pc-linux-gnu/4.7.3/include/g++-v4/backward',
+>>>>>>> 78baaa1ed22f9c1ce3d4ef0770c93aa3c69eb066
 '-isystem',
 '/usr/bin/../lib/clang/3.3/include',
 '-isystem',
