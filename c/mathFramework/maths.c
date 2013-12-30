@@ -6,14 +6,22 @@
 int integer(float a);
 int naturalNumber(float a);
 int divisor(float a, float b);
-long *division(long a);
+int *processDivision(int a, int *output_length);
 
 int main (void) {
+	//Vars for array counts
+	int intsToProcess = 0XDEADBEEF;
+
+	int dividersCount = 0;
+	int *dividers = processDivision(intsToProcess, &dividersCount);
+
+	//Vars for main
 	float a = 0, b = 0;
 	int i;
 
 	printf("Insert first number to be manipulated: ");
 	scanf("%f", &a);
+	printf("%d\n", dividersCount);
 
 	/*printf("Insert second number to be manipulated: ");
 	scanf("%f", &b);*/
@@ -49,21 +57,23 @@ int divisor (float a, float b) {
 	return result;
 }
 
-long *division(long a){
-	int i, len = 1;//for 1
-	long *result;
+int *processDivision (int a, int *output_length) {
+	int *dividers = malloc(a * sizeof(int));
+	int foundDividers = 0;
+	int i;
 
-	if (a < 1) return NULL;
-
-	result = malloc(a * sizeof(long));
-	if (result) {
-		for (i = 2; i <= a; ++i)//skip 1
-			if (a % i == 0)
-				result[len++] = i;
-
-		result[0] = len;//put a length instead of 1
-		result=realloc(result, len*sizeof(long));
+	if (naturalNumber(a)) {
+		for (i = 0; i < a + 1; i++) {
+			if (divisor(i, a)) {
+				foundDividers = i;
+			}
+		}
 	}
 
-	return result;
+	int *tmp = realloc(dividers, foundDividers);
+	free(dividers);
+
+	*output_length = foundDividers;
+
+	return tmp;
 }
