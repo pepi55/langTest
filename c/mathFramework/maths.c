@@ -9,7 +9,7 @@ int divisor(float a, float b);
 
 unsigned int *division(long a);
 unsigned int *primes(long a);
-unsigned int *primeFactorization(long a);
+unsigned int *primeFactorization(float a);
 
 int main (void) {
 	//Vars for main
@@ -46,7 +46,7 @@ int main (void) {
 
 	prm = primeFactorization(a);
 	l = prm[0];
-	for (i = 0; i < l; ++i) {
+	for (i = 1; i < l; ++i) {
 		printf("Factorization: %ld\n", prm[i]);
 	}
 	free(prm);
@@ -127,8 +127,8 @@ unsigned int *primes (long a) {
 	return result;
 }
 
-unsigned int *primeFactorization (long a) {
-	int i, ln, l = 1;
+unsigned int *primeFactorization (float a) {
+	int ln, l = 1, i = 1;
 	unsigned int *result, *prime;
 
 	if (a < 1) return NULL;
@@ -139,13 +139,11 @@ unsigned int *primeFactorization (long a) {
 		ln = prime[0];
 
 		while (a != 1) {
-			for (i = 1; i < ln; ++i) {
-				if (naturalNumber(a / prime[i])) {
-					a /= prime[i];
-					result[l++] = i;
-				} else {
-					//i += 1?
-				}
+			if (naturalNumber((float)(a / prime[i]))) {
+				a /= prime[i];
+				result[l++] = prime[i];
+			} else {
+				i += 1;
 			}
 		}
 
