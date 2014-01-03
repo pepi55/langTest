@@ -11,10 +11,12 @@ unsigned int *division(long a);
 unsigned int *primes(long a);
 unsigned int *primeFactorization(float a);
 
+void divisionToFile(float a);
+
 int main (void) {
 	//Vars for main
 	float a = 0, b = 0;
-	int i;
+	int i, answ;
 
 	//Vars for division and factors
 	unsigned int *div, *fct, *prm;
@@ -50,6 +52,13 @@ int main (void) {
 		printf("Factorization: %ld\n", prm[i]);
 	}
 	free(prm);
+
+	printf("Do you wish to save the division result? (answer with 1 (Yes) or 2 (No)) ");
+	scanf("%d", &answ);
+
+	if (answ == 1) {
+		divisionToFile(a);
+	}
 
 	return 0;
 }
@@ -152,4 +161,32 @@ unsigned int *primeFactorization (float a) {
 	}
 
 	return result;
+}
+
+void divisionToFile (float a) {
+	FILE *f = fopen("divisionResult", "wb+");
+	int i, j, k, c;
+	char line[100];
+
+	if (f == NULL) {
+		printf("\nError loading file!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if (naturalNumber(a)) {
+		for (i = 0; i < a + 1; i++) {
+			if (divisor(i, a)) {
+				fprintf(f, "%d\n", i);
+			}
+		}
+
+		rewind(f);
+	}
+
+	while (fgets(line, 100, f) != NULL) {
+		sscanf(line, "%d", &c);
+		printf("%d\n", c);
+	}
+
+	fclose(f);
 }
