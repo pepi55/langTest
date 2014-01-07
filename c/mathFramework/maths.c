@@ -3,65 +3,7 @@
 #include <stdbool.h>
 #include <math.h>
 
-int integer(float a);
-int naturalNumber(float a);
-int divisor(float a, float b);
-
-unsigned int *division(long a);
-unsigned int *primes(long a);
-unsigned int *primeFactorization(float a);
-
-void divisionToFile(float a);
-
-int main (void) {
-	//Vars for main
-	float a = 0, b = 0;
-	int i, answ;
-
-	//Vars for division and factors
-	unsigned int *div, *fct, *prm;
-	int l;
-
-	printf("Insert first number to be manipulated: ");
-	scanf("%f", &a);
-
-	/*printf("Insert second number to be manipulated: ");
-	scanf("%f", &b);*/
-
-	fputs(integer(a) ? "The first number is an integer.\n" : "The first number is not an integer.\n", stdout);
-	fputs(naturalNumber(a) ? "The first number is a natural number.\n" : "The first number is not a natural number.\n", stdout);
-	fputs(divisor(a, b) ? "The first number is a divisor.\n" : "The first number is not a divisor.\n", stdout);
-
-	div = division(a);
-	l = div[0];
-	for (i = 1; i < l; ++i) {
-		printf("Dividers: %ld\n", div[i]);
-	}
-	free(div);
-
-	fct = primes(a);
-	l = fct[0];
-	for (i = 1; i < l; ++i) {
-		printf("Primes: %ld\n", fct[i]);
-	}
-	free(fct);
-
-	prm = primeFactorization(a);
-	l = prm[0];
-	for (i = 1; i < l; ++i) {
-		printf("Factorization: %ld\n", prm[i]);
-	}
-	free(prm);
-
-	printf("Do you wish to save the division result? (answer with 1 (Yes) or 2 (No)) ");
-	scanf("%d", &answ);
-
-	if (answ == 1) {
-		divisionToFile(a);
-	}
-
-	return 0;
-}
+#include "maths.h"
 
 int integer (float a) {
 	bool result = 0;
@@ -85,6 +27,15 @@ int divisor (float a, float b) {
 	if (integer(b / a)) result = 1;
 
 	return result;
+}
+
+int gcd (int a, int b) {
+	while (b != 0) {
+		int c = a % b;
+		a = b; b = c;
+	}
+
+	return a;
 }
 
 unsigned int *division (long a) {
