@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+    <title>function - How can I create C header files - Stack Overflow</title>
+    <link rel="shortcut icon" href="http://cdn.sstatic.net/stackoverflow/img/favicon.ico">
+    <link rel="apple-touch-icon image_src" href="http://cdn.sstatic.net/stackoverflow/img/apple-touch-icon.png">
+    <link rel="search" type="application/opensearchdescription+xml" title="Stack Overflow" href="http://stackoverflow.com/opensearch.xml">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:domain" content="stackoverflow.com">
+    <meta name="og:type" content="website">
+    <meta name="og:image" content="http://cdn.sstatic.net/stackoverflow/img/apple-touch-icon@2.png?v=fde65a5a78c6">
+    <meta name="og:title" content="How can I create C header files">
+    <meta name="og:description" content="I want to be able to create a collection of functions in a header file that I could #include in one of my C Programs.
+">
+    <meta name="og:url" content="http://stackoverflow.com/questions/2831361/how-can-i-create-c-header-files">
+    <link rel="canonical" href="http://stackoverflow.com/questions/2831361/how-can-i-create-c-header-files">
+
+    
+    
+    <script src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/beacon.js" async=""></script><script src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/ga.js" async="" type="text/javascript"></script><script src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/quant.js" async="" type="text/javascript"></script><script src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/ados.js" async="" type="text/javascript"></script><script type="text/javascript" src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/jquery.js"></script>
+    <script src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/stub.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/all.css">
+    
+    <script type="text/javascript">
+        
+        StackExchange.ready(function () {
+            StackExchange.using("postValidation", function () {
+                StackExchange.postValidation.initOnBlurAndSubmit($('#post-form'), 2, 'answer');
+            });
+
+            
+            StackExchange.question.init({votesCast:[],autoShowCommentHelp:true,showAnswerHelp:true,totalCommentCount:3,shownCommentCount:3,highlightColor:'#F4A83D',backgroundColor:'#FFF',questionId:2831361});
+
+            styleCode();
+
+                StackExchange.realtime.subscribeToQuestion('1', '2831361');
+            
+                    });
+    </script>
+
+
+    <script type="text/javascript">
+        StackExchange.init({"locale":"en","stackAuthUrl":"https://stackauth.com","serverTime":1389188719,"styleCode":true,"enableUserHovercards":true,"site":{"name":"Stack Overflow","description":"Q&A for professional and enthusiast programmers","isNoticesTabEnabled":true,"recaptchaPublicKey":"6LdchgIAAAAAAJwGpIzRQSOFaO0pU6s44Xt8aTwc","recaptchaAudioLang":"en","nonAsciiTags":true,"enableSocialMediaInSharePopup":true},"user":{"fkey":"a3ba9876581b43baf35d344bb797a1f8","isRegistered":true,"userType":3,"userId":3111796,"accountId":3742251,"gravatar":"<div class=\"gravatar-wrapper-32\"><img src=\"http://graph.facebook.com/100001278713917/picture?type=large\" alt=\"\"></div>","profileUrl":"http://stackoverflow.com/users/3111796/pepi55","notificationsUnviewedCount":0,"inboxUnviewedCount":0,"ab":{"welcome_email":{"v":"c","g":1},"anonymoushero":{"v":"bias","g":1}}}});
+        StackExchange.using.setCacheBreakers({"js/prettify-full.en.js":"e0bbd4760e83","js/moderator.en.js":"f24049d774be","js/full-anon.en.js":"9bf9b6f2f031","js/full.en.js":"09da0746004a","js/wmd.en.js":"849f408083f3","js/third-party/jquery.autocomplete.min.js":"e5f01e97f7c3","js/third-party/jquery.autocomplete.min.en.js":"","js/mobile.en.js":"d1d834ef85d2","js/help.en.js":"d3cc74d8a93a","js/tageditor.en.js":"6d51a5f8d7f3","js/tageditornew.en.js":"111b781cf314","js/inline-tag-editing.en.js":"f951bd09dc69","js/revisions.en.js":"33fd38144303","js/review.en.js":"038b38e68e1a","js/tagsuggestions.en.js":"e4e7b952fcc7","js/post-validation.en.js":"c275fe37d674","js/explore-qlist.en.js":"73825bd006fc","js/events.en.js":"6f8a95d5c039"});
+        StackExchange.using("gps", function() {
+             StackExchange.gps.init(true);
+        });
+        
+    </script>
+    
+<script src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/full.js" type="text/javascript" async=""></script><script src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/post-validation.js" type="text/javascript" async=""></script><script src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/prettify-full.js" type="text/javascript" async=""></script><link rel="stylesheet" type="text/css" href="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/sidebar.css"></head>
+<body class="question-page new-topbar">
+    <noscript><div id="noscript-padding"></div></noscript>
+    <div id="notify-container"></div>
+    <div id="overlay-header"></div>
+    <div id="custom-header"></div>
+<div class="topbar">
+    <div class="topbar-wrapper">
+        
+        <div class="js-topbar-dialog-corral">
+
+<div class="topbar-dialog siteSwitcher-dialog dno">
+    <div class="header">
+        <h3><a href="http://stackexchange.com/sites">Explore our sites</a></h3>
+    </div>
+    <div class="modal-content">
+        <ul class="current-site">
+                <li>
+                        <a href="http://stackoverflow.com/" class="current-site-link site-link js-site-link js-gps-track" data-gps-track="site_switcher.click({ item_type:3 })">
+        <div class="site-icon favicon favicon-stackoverflow" title="Stack Overflow"></div>
+        Stack Overflow
+    </a>
+    <div class="related-links js-related-links">
+            <a href="http://chat.stackoverflow.com/" data-gps-track="site_switcher.click({ item_type:6 })">chat</a>
+                    <a href="http://blog.stackexchange.com/" data-gps-track="site_switcher.click({ item_type:7 })">blog</a>
+                    <a href="http://stackoverflow.com/users/logout" data-gps-track="site_switcher.click({ item_type:8 })">log out</a>
+    </div>
+
+                </li>
+                <li class="related-site">
+                        <a href="http://meta.stackoverflow.com/" class="site-link js-site-link js-gps-track" data-gps-track="site.switch({ target_site:4, item_type:3 });site_switcher.click({ item_type:4 })">
+        <div class="site-icon favicon favicon-stackoverflowmeta" title="Meta Stack Overflow"></div>
+        Meta Stack Overflow
+    </a>
+
+                    
+                </li>
+                            <li class="related-site">
+                    <a class="site-link js-site-link" href="http://careers.stackoverflow.com/" data-gps-track="site_switcher.click({ item_type:9 })">
+                        <div class="site-icon favicon favicon-careers" title="Stack Overflow Careers"></div>
+                        Careers 2.0
+                    </a>
+                </li>
+        </ul>
+        
+
+
+        
+            <div class="child-content"></div>
+
+    </div>
+</div>        </div>
+
+        <div class="network-items">
+            
+            <a href="http://stackexchange.com/" class="topbar-icon icon-site-switcher js-site-switcher-button js-gps-track" data-gps-track="site_switcher.show" title="A list of all 114 Stack Exchange sites">
+                <span class="hidden-text">Stack Exchange</span>
+            </a>
+            
+                <a href="#" class="topbar-icon icon-inbox js-inbox-button" title="Recent inbox messages">
+                    <span class="hidden-text">Inbox</span>
+                    <span class="unread-count" style="display:none"></span>
+                </a>
+                <a href="#" class="topbar-icon icon-achievements js-achievements-button " data-unread-class="" title="Recent achievements: reputation, badges, and privileges earned">
+                    <span class="hidden-text">Reputation and Badges</span>
+                    <span class="unread-count" style="display:none">
+                        
+                    </span>
+                </a>
+        </div>
+
+        <div class="topbar-links">
+            
+                <a href="http://stackoverflow.com/users/3111796/pepi55" class="profile-me">
+			        <div class="gravatar-wrapper-24" title="pepi55"><img src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/picture_002" alt="" class="avatar-me js-avatar-me"></div>
+                    <div class="links-container topbar-flair">
+
+                        <span class="reputation" title="your reputation: 3">
+                            3
+                        </span>
+<span title="1 bronze badge"><span class="badge3"></span><span class="badgecount">1</span></span>                    </div>
+			    </a>
+                <div class="links-container">
+                    <span class="topbar-menu-links">
+                        
+
+                        
+                        
+
+                            <a href="#" class="icon-help js-help-button" title="Help Center and other resources">
+                                help
+                                <span class="triangle"></span>
+                            </a>
+                            <div class="topbar-dialog help-dialog js-help-dialog dno">
+                                <div class="modal-content">
+                                    <ul>
+                                        <li>
+                                            <a href="http://stackoverflow.com/tour" class="js-gps-track" data-gps-track="help_popup.click({ item_type:1 })">
+                                                Tour
+                                                <span class="item-summary">
+                                                    Start here for a quick overview of the site
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="http://stackoverflow.com/help" class="js-gps-track" data-gps-track="help_popup.click({ item_type:4 })">
+                                                Help Center
+                                                <span class="item-summary">
+                                                    Detailed answers to any questions you might have
+                                                </span>
+                                            </a>
+                                        </li>
+                                            <li>
+                                                <a href="http://meta.stackoverflow.com/" class="js-gps-track" data-gps-track="help_popup.click({ item_type:2 })">
+                                                    Meta
+                                                    <span class="item-summary">
+                                                        Discuss the workings and policies of this site
+                                                    </span>
+                                                </a>
+                                            </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        
+                    </span>
+                </div>
+
+			<div class="search-container">
+                <form id="search" action="/search" method="get" autocomplete="off">
+                    <input name="q" placeholder="search" tabindex="1" autocomplete="off" maxlength="240" type="text">
+                </form>
+			</div>
+            	
+        </div>      
+    </div> 
+</div>
+<script>
+    StackExchange.ready(function () {
+        //topbar.init();
+        StackExchange.topbar.init();
+    });
+</script>    <div class="container">
+        <div id="header">
+            <br class="cbt">
+            <div id="hlogo">
+                <a href="http://stackoverflow.com/">
+                    Stack Overflow
+                </a>
+            </div>
+            <div id="hmenus">
+                <div class="nav mainnavs ">
+                    <ul>
+                            <li class="youarehere"><a id="nav-questions" href="http://stackoverflow.com/questions">Questions</a></li>
+                            <li><a id="nav-tags" href="http://stackoverflow.com/tags">Tags</a></li>
+                            <li><a id="nav-users" href="http://stackoverflow.com/users">Users</a></li>
+                            <li><a id="nav-badges" href="http://stackoverflow.com/help/badges">Badges</a></li>
+                            <li><a id="nav-unanswered" href="http://stackoverflow.com/unanswered">Unanswered</a></li>
+                    </ul>
+                </div>
+                <div class="nav askquestion">
+                    <ul>
+                        <li>
+                            <a id="nav-askquestion" href="http://stackoverflow.com/questions/ask">Ask Question</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+
+
+
+        <div id="content">
+            
+
+<div itemscope="" itemtype="http://schema.org/Article">
+	<link itemprop="image" href="http://cdn.sstatic.net/stackoverflow/img/apple-touch-icon.png">
+			<div id="question-header">
+			<h1 itemprop="name"><a href="http://stackoverflow.com/questions/2831361/how-can-i-create-c-header-files" class="question-hyperlink">How can I create C header files [closed]</a></h1>
+		</div>
+			<div id="mainbar">
+
+			
+
+<div class="question" data-questionid="2831361" id="question">
+    
+    <script type="text/javascript">
+                var ados = ados || {};ados.run = ados.run || [];
+                ados.run.push(function() { ados_add_placement(22,8277,"adzerk141645287",4).setZone(43) ; });                    
+            </script>
+            <div class="everyonelovesstackoverflow" id="adzerk141645287">
+            </div>    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+    <input name="_id_" value="2831361" type="hidden">
+    <a class="vote-up-off" title="This question shows research effort; it is useful and clear">up vote</a>
+    <span class="vote-count-post ">32</span>
+    <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful">down vote</a>
+    
+    <a class="star-off" href="#" title="This is a favorite question (click again to undo)">favorite</a>
+    <div class="favoritecount"><b>26</b></div>   
+
+</div>
+
+            </td>
+            
+<td class="postcell">
+<div>
+    <div class="post-text" itemprop="description">
+
+        <p>I want to be able to create a collection of functions in a header file that I could #include in one of my C Programs.</p>
+
+    </div>
+    <div class="post-taglist">
+        <a href="http://stackoverflow.com/questions/tagged/c" class="post-tag js-gps-track" title="show questions tagged 'c'" rel="tag">c</a> <a href="http://stackoverflow.com/questions/tagged/function" class="post-tag js-gps-track" title="show questions tagged 'function'" rel="tag">function</a> <a href="http://stackoverflow.com/questions/tagged/header-files" class="post-tag js-gps-track" title="show questions tagged 'header-files'" rel="tag">header-files</a> <a href="http://stackoverflow.com/questions/tagged/modular" class="post-tag js-gps-track" title="show questions tagged 'modular'" rel="tag">modular</a> 
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/q/2831361/3111796" title="short permalink to this question" class="short-link" id="link-post-2831361">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/2831361/edit" class="suggest-edit-post" title="revise and improve this post">edit</a></div>        
+    </td>
+    <td class="post-signature owner">
+        <div class="user-info ">
+    <div class="user-action-time">
+        asked <span title="2010-05-14 01:41:38Z" class="relativetime">May 14 '10 at 1:41</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/340838/user340838"><div><img src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/5eebedea9e9936c363ad67178bdc396c.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/340838/user340838">user340838</a><br>
+        <span class="reputation-score" title="reputation score " dir="ltr">176</span><span title="1 gold badge"><span class="badge1"></span><span class="badgecount">1</span></span><span title="3 silver badges"><span class="badge2"></span><span class="badgecount">3</span></span><span title="3 bronze badges"><span class="badge3"></span><span class="badgecount">3</span></span>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</div>
+</td>
+        </tr>
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-2831361" class="comments" data-localized="true">
+		    <table>
+			    <tbody data-remaining-comments-count="0" data-addlink-html="add comment" data-addlink-disabled="true">
+
+    <tr id="comment-2872721" class="comment">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                                <span title="number of 'useful comment' votes received" class="hot">26</span>   
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">with a text editor?</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/45654/stefanb" title="24503 reputation" class="comment-user">stefanB</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment2872721_2831361"><span title="2010-05-14 01:45:53Z" class="relativetime-clean">May 14 '10 at 1:45</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-2872781" class="comment">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                                <span title="number of 'useful comment' votes received" class="warm">9</span>   
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">If I follow properly, what you want is to 
+create a library, similar to the standard C libraries so you include a 
+header file with function definitions, then link against that library 
+when building your final executable.  Is that right?</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/106769/conspicuous-compiler" title="4465 reputation" class="comment-user">Conspicuous Compiler</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment2872781_2831361"><span title="2010-05-14 02:06:04Z" class="relativetime-clean">May 14 '10 at 2:06</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-2872787" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">Yes, you are right.</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/340838/user340838" title="176 reputation" class="comment-user owner">user340838</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment2872787_2831361"><span title="2010-05-14 02:07:36Z" class="relativetime-clean">May 14 '10 at 2:07</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+			    </tbody>
+		    </table>
+	    </div>
+			<a id="comments-link-2831361" data-rep="50" data-reg="true" class="comments-link disabled-link" title="Use comments to ask for more information or suggest improvements. Avoid answering questions in comments.">add comment</a>
+    </td>
+</tr>            </tbody></table>    
+</div>
+<div class="question-status">
+        <h2>                    <b>closed</b> as too broad by <a href="http://stackoverflow.com/users/529758/h2co3">H2CO3</a>, <a href="http://stackoverflow.com/users/221061/chris-laplante">Chris Laplante</a>, <a href="http://stackoverflow.com/users/1560062/zero323">zero323</a>, <a href="http://stackoverflow.com/users/13860/flimzy">Flimzy</a>, <a href="http://stackoverflow.com/users/64217/coverosgene">CoverosGene</a> <span title="2013-11-12 01:42:38Z" class="relativetime">Nov 12 '13 at 1:42</span>
+</h2>
+        <p>There are either too many possible answers, or good answers would be too long for this format. 
+Please add details to narrow the answer set or to isolate an issue that can be answered in a few paragraphs.<span class="close-status-suffix">If this question can be reworded to fit the rules in the <a href="http://stackoverflow.com/help/closed-questions">help center</a>, please <a href="http://stackoverflow.com/posts/2831361/edit">edit the question</a>.</span></p>
+    </div>
+
+			<div id="answers">
+
+				<a name="tab-top"></a>
+				<div id="answers-header">
+					<div class="subheader answers-subheader">
+						<h2>
+								3 Answers
+						</h2>
+						<div>
+							<div id="tabs">
+        <a href="http://stackoverflow.com/questions/2831361/how-can-i-create-c-header-files?answertab=active#tab-top" title="Answers with the latest activity first">active</a>
+        <a href="http://stackoverflow.com/questions/2831361/how-can-i-create-c-header-files?answertab=oldest#tab-top" title="Answers in the order they were provided">oldest</a>
+        <a class="youarehere" href="http://stackoverflow.com/questions/2831361/how-can-i-create-c-header-files?answertab=votes#tab-top" title="Answers with the highest score first">votes</a>
+</div>
+						</div>
+					</div>    
+				</div>    
+
+
+
+
+  
+<a name="2831379"></a>
+<div id="answer-2831379" class="answer" data-answerid="2831379">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+    <input name="_id_" value="2831379" type="hidden">
+    <a class="vote-up-off" title="This answer is useful">up vote</a>
+    <span class="vote-count-post ">82</span>
+    <a class="vote-down-off" title="This answer is not useful">down vote</a>
+    
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text">
+            <ol>
+<li>Open your favorite text editor</li>
+<li>Create a new file named whatever.h</li>
+<li>Put your function prototypes in it</li>
+</ol>
+
+<p>DONE.</p>
+
+<p>Example whatever.h</p>
+
+<pre style="" class="lang-c prettyprint prettyprinted"><code><span class="com">#ifndef</span><span class="pln"> WHATEVER_H_INCLUDED
+</span><span class="com">#define</span><span class="pln"> WHATEVER_H_INCLUDED
+</span><span class="typ">int</span><span class="pln"> f</span><span class="pun">(</span><span class="typ">int</span><span class="pln"> a</span><span class="pun">);</span><span class="pln">
+</span><span class="com">#endif</span></code></pre>
+
+<p>Note: include guards (preprocessor commands) added thanks to luke. 
+They avoid including the same header file twice in the same compilation.
+ Another possibility (also mentioned on the comments) is to add <code>#pragma once</code> but it is not guaranteed to be supported on every compiler.</p>
+
+<p>Example whatever.c</p>
+
+<pre style="" class="lang-c prettyprint prettyprinted"><code><span class="com">#include</span><span class="pln"> </span><span class="str">"whatever.h"</span><span class="pln">
+
+</span><span class="typ">int</span><span class="pln"> f</span><span class="pun">(</span><span class="typ">int</span><span class="pln"> a</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> a </span><span class="pun">+</span><span class="pln"> </span><span class="lit">1</span><span class="pun">;</span><span class="pln"> </span><span class="pun">}</span></code></pre>
+
+<p>And then you can include "whatever.h" into any other .c file, and link it with whatever.c's object file.</p>
+
+<p>Like this:</p>
+
+<p>sample.c</p>
+
+<pre style="" class="lang-c prettyprint prettyprinted"><code><span class="com">#include</span><span class="pln"> </span><span class="str">"whatever.h"</span><span class="pln">
+
+</span><span class="typ">int</span><span class="pln"> main</span><span class="pun">(</span><span class="typ">int</span><span class="pln"> argc</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">char</span><span class="pln"> </span><span class="pun">**</span><span class="pln">argv</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    printf</span><span class="pun">(</span><span class="str">"%d\n"</span><span class="pun">,</span><span class="pln"> f</span><span class="pun">(</span><span class="lit">2</span><span class="pun">));</span><span class="pln"> </span><span class="com">/* prints 3 */</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+
+<p>To compile it (if you use GCC):</p>
+
+<pre style="" class="lang-c prettyprint prettyprinted"><code><span class="pln">$ gcc </span><span class="pun">-</span><span class="pln">c whatever</span><span class="pun">.</span><span class="pln">c </span><span class="pun">-</span><span class="pln">o whatever</span><span class="pun">.</span><span class="pln">o
+$ gcc </span><span class="pun">-</span><span class="pln">c sample</span><span class="pun">.</span><span class="pln">c </span><span class="pun">-</span><span class="pln">o sample</span><span class="pun">.</span><span class="pln">o</span></code></pre>
+
+<p>To link the files to create an executable file:</p>
+
+<pre style="" class="lang-c prettyprint prettyprinted"><code><span class="pln">$ gcc sample</span><span class="pun">.</span><span class="pln">o whatever</span><span class="pun">.</span><span class="pln">o </span><span class="pun">-</span><span class="pln">o sample</span></code></pre>
+
+<p>You can test sample:</p>
+
+<pre style="" class="lang-c prettyprint prettyprinted"><code><span class="pln">$ </span><span class="pun">./</span><span class="pln">sample
+</span><span class="lit">3</span><span class="pln">
+$</span></code></pre>
+
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/a/2831379/3111796" title="short permalink to this answer" class="short-link" id="link-post-2831379">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/2831379/edit" class="suggest-edit-post" title="revise and improve this post">edit</a></div>                    </td>
+    <td class="post-signature" align="right">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="http://stackoverflow.com/posts/2831379/revisions" title="show all edits to this post">edited <span title="2012-12-01 13:06:55Z" class="relativetime">Dec 1 '12 at 13:06</span></a>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/1692942/elias"><div><img src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/ecb57ecc9ac86e6362f7049dfb67215f.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/1692942/elias">elias</a><br>
+        <span class="reputation-score" title="reputation score " dir="ltr">124</span><span title="7 bronze badges"><span class="badge3"></span><span class="badgecount">7</span></span>
+    </div>
+</div>    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2010-05-14 01:45:35Z" class="relativetime">May 14 '10 at 1:45</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/67606/pablo-santa-cruz"><div class="gravatar-wrapper-32"><img src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/picture" alt=""></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/67606/pablo-santa-cruz">Pablo Santa Cruz</a><br>
+        <span class="reputation-score" title="reputation score 66347" dir="ltr">66.3k</span><span title="4 gold badges"><span class="badge1"></span><span class="badgecount">4</span></span><span title="104 silver badges"><span class="badge2"></span><span class="badgecount">104</span></span><span title="161 bronze badges"><span class="badge3"></span><span class="badgecount">161</span></span>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>
+        </tr>
+
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-2831379" class="comments" data-localized="true">
+		    <table>
+			    <tbody data-remaining-comments-count="11" data-addlink-html="add comment" data-addlink-disabled="true">
+
+    <tr id="comment-2872732" class="comment">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                                <span title="number of 'useful comment' votes received" class="cool">3</span>   
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">you might want to mention header guards</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/25920/luke" title="6110 reputation" class="comment-user">luke</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment2872732_2831379"><span title="2010-05-14 01:48:56Z" class="relativetime-clean">May 14 '10 at 1:48</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-2872736" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">@luke: Thanks a lot. Have no idea what header guards are. Going to google it now. Thanks again.</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/67606/pablo-santa-cruz" title="66347 reputation" class="comment-user">Pablo Santa Cruz</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment2872736_2831379"><span title="2010-05-14 01:50:06Z" class="relativetime-clean">May 14 '10 at 1:50</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-2872737" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">@luke: oh! I see. Good point. Going to add them.</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/67606/pablo-santa-cruz" title="66347 reputation" class="comment-user">Pablo Santa Cruz</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment2872737_2831379"><span title="2010-05-14 01:50:49Z" class="relativetime-clean">May 14 '10 at 1:50</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-2872756" class="comment">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                                <span title="number of 'useful comment' votes received" class="cool">2</span>   
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">@luke They're officially called include guards, but your term is pretty common. There's also <code>#pragma once</code>, which is non-standard but widely supported and (in my opinion) much simpler</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/309308/michael-mrozek" title="36063 reputation" class="comment-user">Michael Mrozek</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment2872756_2831379"><span title="2010-05-14 01:57:23Z" class="relativetime-clean">May 14 '10 at 1:57</span></a></span>
+		<span class="edited-yes" title="this comment was edited 1 time"></span>
+				</div>
+
+        </td>
+    </tr>
+    <tr id="comment-2872775" class="comment">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                                <span title="number of 'useful comment' votes received" class="cool">1</span>   
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">That is nice, but can't I say what a function does in the header file to? Is there any other form of modular programming?</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/340838/user340838" title="176 reputation" class="comment-user owner">user340838</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment2872775_2831379"><span title="2010-05-14 02:03:30Z" class="relativetime-clean">May 14 '10 at 2:03</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+			    </tbody>
+		    </table>
+	    </div>
+			<a id="comments-link-2831379" data-rep="50" data-reg="true" class="comments-link " title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">show <b>11</b> more comments</a>
+    </td>
+</tr>
+    </tbody></table>
+</div>
+<script type="text/javascript">
+                var ados = ados || {};ados.run = ados.run || [];
+                ados.run.push(function() { ados_add_placement(22,8277,"adzerk2145874061",4).setZone(44) ; });                    
+            </script>
+            <div class="everyonelovesstackoverflow" id="adzerk2145874061">
+            </div>
+  
+<a name="18492690"></a>
+<div id="answer-18492690" class="answer" data-answerid="18492690">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+    <input name="_id_" value="18492690" type="hidden">
+    <a class="vote-up-off" title="This answer is useful">up vote</a>
+    <span class="vote-count-post ">1</span>
+    <a class="vote-down-off" title="This answer is not useful">down vote</a>
+    
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text">
+            <p>Header files can contain any valid C code, since they are
+ injected into the compilation unit by the pre-processor prior to 
+compilation.</p>
+
+<p>If a header file contains a function, and is included by multiple <code>.c</code> files, each <code>.c</code> file will get a copy of that function and create a symbol for it.  The linker will complain about the duplicate symbols.</p>
+
+<p>It is technically possible to create <code>static</code> functions in a header file for inclusion in multiple <code>.c</code> files. Though this is generally not done because it breaks from the convention that code is found in <code>.c</code> files and declarations are found in <code>.h</code> files.</p>
+
+<p>See the discussions in <a href="http://stackoverflow.com/questions/780730/c-c-static-function-in-header-file-what-does-it-mean">C/C++: Static function in header file, what does it mean?</a> for more explanation.</p>
+
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/a/18492690/3111796" title="short permalink to this answer" class="short-link" id="link-post-18492690">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/18492690/edit" class="suggest-edit-post" title="revise and improve this post">edit</a></div>                    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2013-08-28 15:52:15Z" class="relativetime">Aug 28 '13 at 15:52</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/104219/bryan-ash"><div><img src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/24d3df508ced34482056f6a939588152.jpe" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/104219/bryan-ash">Bryan Ash</a><br>
+        <span class="reputation-score" title="reputation score " dir="ltr">2,020</span><span title="13 silver badges"><span class="badge2"></span><span class="badgecount">13</span></span><span title="30 bronze badges"><span class="badge3"></span><span class="badgecount">30</span></span>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>
+        </tr>
+
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-18492690" class="comments dno" data-localized="true">
+		    <table>
+			    <tbody data-remaining-comments-count="0" data-addlink-html="add comment" data-addlink-disabled="true">
+					    <tr><td></td><td></td></tr>
+			    </tbody>
+		    </table>
+	    </div>
+			<a id="comments-link-18492690" data-rep="50" data-reg="true" class="comments-link disabled-link" title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add comment</a>
+    </td>
+</tr>
+    </tbody></table>
+</div>
+
+  
+<a name="2831624"></a>
+<div id="answer-2831624" class="answer" data-answerid="2831624">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+    <input name="_id_" value="2831624" type="hidden">
+    <a class="vote-up-off" title="This answer is useful">up vote</a>
+    <span class="vote-count-post ">-1</span>
+    <a class="vote-down-off" title="This answer is not useful">down vote</a>
+    
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text">
+            <p>Keep in mind that you can also place the header file in 
+another director so long as you give the path in the include statement. 
+Just make sure you keep the path relative instead of absolute. That way 
+your code remains portable.</p>
+
+<p>For example:</p>
+
+<pre style="" class="lang-c prettyprint prettyprinted"><code><span class="com">#include</span><span class="pln"> </span><span class="str">"../my_headers_directory/whatever.h"</span></code></pre>
+
+<p>tells the program to include whatever.h that in the parent directory's my_headers_director.</p>
+
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/a/2831624/3111796" title="short permalink to this answer" class="short-link" id="link-post-2831624">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/2831624/edit" class="suggest-edit-post" title="revise and improve this post">edit</a></div>                    </td>
+    <td class="post-signature" align="right">
+<div class="user-info user-hover">
+    <div class="user-action-time">
+        <a href="http://stackoverflow.com/posts/2831624/revisions" title="show all edits to this post">edited <span title="2011-11-20 20:49:01Z" class="relativetime">Nov 20 '11 at 20:49</span></a>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/211160/hostilefork"><div><img src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/4718212e95d7adea8c412379e7f542e9.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/211160/hostilefork">HostileFork</a><br>
+        <span class="reputation-score" title="reputation score 12468" dir="ltr">12.5k</span><span title="1 gold badge"><span class="badge1"></span><span class="badgecount">1</span></span><span title="30 silver badges"><span class="badge2"></span><span class="badgecount">30</span></span><span title="58 bronze badges"><span class="badge3"></span><span class="badgecount">58</span></span>
+    </div>
+</div>    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2010-05-14 03:09:22Z" class="relativetime">May 14 '10 at 3:09</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/340878/stratz"><div><img src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/3477cfe7a2321cd06cfb068413b74315.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/340878/stratz">stratz</a><br>
+        <span class="reputation-score" title="reputation score " dir="ltr">27</span><span title="1 bronze badge"><span class="badge3"></span><span class="badgecount">1</span></span>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>
+        </tr>
+
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-2831624" class="comments" data-localized="true">
+		    <table>
+			    <tbody data-remaining-comments-count="0" data-addlink-html="add comment" data-addlink-disabled="true">
+
+    <tr id="comment-8723012" class="comment">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="comment-score">
+                            
+                                <span title="number of 'useful comment' votes received" class="warm">6</span>   
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>   
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+	<span class="comment-copy">This is not an answer, it should be a comment.</span>
+	–&nbsp;
+		<a href="http://stackoverflow.com/users/74497/ocharles" title="1337 reputation" class="comment-user">ocharles</a>
+	<span class="comment-date" dir="ltr"><a class="comment-link" href="#comment8723012_2831624"><span title="2011-08-30 23:40:16Z" class="relativetime-clean">Aug 30 '11 at 23:40</span></a></span>
+				</div>
+
+        </td>
+    </tr>
+			    </tbody>
+		    </table>
+	    </div>
+			<a id="comments-link-2831624" data-rep="50" data-reg="true" class="comments-link disabled-link" title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add comment</a>
+    </td>
+</tr>
+    </tbody></table>
+</div>
+				
+
+
+						<h2 class="bottom-notice">
+Not the answer you're looking for?							Browse other questions tagged <a href="http://stackoverflow.com/questions/tagged/c" class="post-tag" title="show questions tagged 'c'" rel="tag">c</a> <a href="http://stackoverflow.com/questions/tagged/function" class="post-tag" title="show questions tagged 'function'" rel="tag">function</a> <a href="http://stackoverflow.com/questions/tagged/header-files" class="post-tag" title="show questions tagged 'header-files'" rel="tag">header-files</a> <a href="http://stackoverflow.com/questions/tagged/modular" class="post-tag" title="show questions tagged 'modular'" rel="tag">modular</a>  or <a href="http://stackoverflow.com/questions/ask">ask your own question</a>.						</h2>
+			</div>
+		</div>
+				<div id="sidebar" class="show-votes">
+
+
+
+<script type="text/javascript">
+    window.showNewUser = false;
+
+</script>
+
+<div class="module newuser newuser-greeting" id="newuser-box" style="display:none;">
+    <h4>Hello World!</h4>
+    <div>
+        <p>This is a collaboratively edited question and answer site for <b>professional and enthusiast programmers</b>. It's 100% free, no registration required.</p>
+        <p class="ar">
+                <a href="http://stackoverflow.com/about?mnu=1">about »</a>&nbsp;&nbsp;&nbsp;
+            <a href="http://stackoverflow.com/help?mnu=1">help »</a>
+        </p>
+    </div>
+</div>
+    <script type="text/javascript">
+    if (showNewUser) {
+        document.getElementById('newuser-box').style.display = '';
+    }
+    </script>							<div class="module question-stats">
+					<p class="label-key">tagged</p>
+					<div class="tagged"><a href="http://stackoverflow.com/questions/tagged/c" class="post-tag js-gps-track" title="show questions tagged 'c'" rel="tag">c</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">×</span>&nbsp;<span class="item-multiplier-count">122619</span></span><br>
+<a href="http://stackoverflow.com/questions/tagged/function" class="post-tag js-gps-track" title="show questions tagged 'function'" rel="tag">function</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">×</span>&nbsp;<span class="item-multiplier-count">24873</span></span><br>
+<a href="http://stackoverflow.com/questions/tagged/header-files" class="post-tag js-gps-track" title="show questions tagged 'header-files'" rel="tag">header-files</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">×</span>&nbsp;<span class="item-multiplier-count">1160</span></span><br>
+<a href="http://stackoverflow.com/questions/tagged/modular" class="post-tag js-gps-track" title="show questions tagged 'modular'" rel="tag">modular</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">×</span>&nbsp;<span class="item-multiplier-count">117</span></span><br>
+</div>
+					<table id="qinfo">
+						<tbody><tr>
+							<td>
+								<p class="label-key">asked</p>
+							</td>
+							<td style="padding-left: 10px">
+								<p class="label-key" title="2010-05-14 01:41:38Z"><b>3 years ago</b></p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p class="label-key">viewed</p>
+							</td>
+
+							<td style="padding-left: 10px">
+								<p class="label-key">
+									<b>62297 times</b>
+								</p>
+							</td>
+						</tr>
+							<tr>
+								<td>
+									<p class="label-key">active</p>
+								</td>
+								<td style="padding-left: 10px">
+									<p class="label-key"><b><a href="http://stackoverflow.com/questions/2831361/how-can-i-create-c-header-files?lastactivity" class="lastactivity-link" title="2013-08-28 15:52:15Z">4 months ago</a></b></p>
+								</td>
+							</tr>
+					</tbody></table>
+				</div>
+						
+			<script type="text/javascript">
+                var ados = ados || {};ados.run = ados.run || [];
+                ados.run.push(function() { ados_add_placement(22,8277,"adzerk2136338941",17).setZone(45) ; });                    
+            </script>
+            <div class="everyonelovesstackoverflow" id="adzerk2136338941">
+            </div>  
+    <div id="hireme"> <a href="http://careers.stackoverflow.com/jobs?a=144" class="top" target="_blank"></a> <ul class="jobs"> <li> <a href="http://careers.stackoverflow.com/jobs/46479/crm-dynamics-ontwikkelaars-sitecore-qhuba?a=UGxGh7e8" target="_blank" title="CRM Dynamics ontwikkelaars, Sitecore ontwikkelaars &amp; Toolspecialisten gezocht! at Qhuba. Click to learn more."> CRM Dynamics ontwikkelaars, Sitecore ontwikkelaars &amp;…<br> <span class="company">Qhuba</span> <span class="location">Tilburg, Netherlands</span> </a> </li> <li> <a href="http://careers.stackoverflow.com/jobs/46159/development-engineer-webbased-environments-ing?a=Uils9Hgs" target="_blank" title="Development Engineer - Webbased Environments - JAVA at ING. Click to learn more."> Development Engineer - Webbased Environments - JAVA<br> <span class="company">ING</span> <span class="location">Amsterdam, Netherlands /…</span> </a> </li> <li> <a href="http://careers.stackoverflow.com/jobs/45155/microsoft-dynamics-ax-consultant-based-in-the-microsoft-b-v?a=T4qyfDTG" target="_blank" title="Microsoft Dynamics AX Consultant based in The Netherlands at Microsoft B.V. Click to learn more."> Microsoft Dynamics AX Consultant based in The Netherlands<br> <span class="company">Microsoft B.V</span> <span class="location">Schiphol Zuidoost, Netherlands</span> </a> </li> <li class="city"><a href="http://careers.stackoverflow.com/jobs/location/amsterdam%2c%20netherlands?a=x0VW">More jobs near Amsterdam...</a></li> </ul> <img alt="" class="impression fnklteaiapmdybhjhbfe" src="function%20-%20How%20can%20I%20create%20C%20header%20files%20-%20Stack%20Overflow_files/UGxGh7e8-Uils9Hgs-T4qyfDTG-144-x0VW" style="display:none"></div>
+			  
+    
+            <div class="module sidebar-linked">
+	<h4 id="h-linked">Linked</h4>
+	<div class="linked" data-tracker="lq=1">
+<div class="spacer">
+	<a href="http://stackoverflow.com/q/780730?lq=1" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes answered-accepted default">19</div>
+	</a>
+	<a href="http://stackoverflow.com/questions/780730/c-c-static-function-in-header-file-what-does-it-mean?lq=1" class="question-hyperlink">C/C++: Static function in header file, what does it mean?</a>
+</div><div class="spacer">
+	<a href="http://stackoverflow.com/q/20015656?lq=1" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes answered-accepted default">-1</div>
+	</a>
+	<a href="http://stackoverflow.com/questions/20015656/how-to-create-my-own-header-file-in-c?lq=1" class="question-hyperlink">How to create my own header file in c++?</a>
+</div><div class="spacer">
+	<a href="http://stackoverflow.com/q/19900738?lq=1" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes answered-accepted default">0</div>
+	</a>
+	<a href="http://stackoverflow.com/questions/19900738/c-typedef-pointer-to-struct?lq=1" class="question-hyperlink">C typedef: pointer to struct</a>
+</div><div class="spacer">
+	<a href="http://stackoverflow.com/q/20419042?lq=1" title="Vote score (upvotes - downvotes)">
+		<div class="answer-votes answered-accepted default">3</div>
+	</a>
+	<a href="http://stackoverflow.com/questions/20419042/pure-c-function-calling-objective-c-method?lq=1" class="question-hyperlink">Pure C function calling Objective-C method?</a>
+</div>			</div>
+</div>
+
+				<div class="module sidebar-related">
+					<h4 id="h-related">Related</h4>
+                    <div class="related js-gps-related-questions" data-tracker="rq=1">
+                        <div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/3896710?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">0
+    </div>
+</a><a href="http://stackoverflow.com/questions/3896710/what-is-the-usefulness-of-creating-our-own-header-file?rq=1" class="question-hyperlink">what is the usefulness of creating our own header file</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/4813881?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">1
+    </div>
+</a><a href="http://stackoverflow.com/questions/4813881/where-is-the-body-of-function-in-header-files-of-c?rq=1" class="question-hyperlink">Where is the body of function in header files of C</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/5926025?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">14
+    </div>
+</a><a href="http://stackoverflow.com/questions/5926025/c-functions-without-header-files?rq=1" class="question-hyperlink">C functions without header files</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/5953639?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">3
+    </div>
+</a><a href="http://stackoverflow.com/questions/5953639/how-to-list-all-files-that-include-a-header-file?rq=1" class="question-hyperlink">How to list all files that include a header file</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/5974300?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">2
+    </div>
+</a><a href="http://stackoverflow.com/questions/5974300/why-am-i-able-to-compile-and-run-c-programs-without-including-header-files?rq=1" class="question-hyperlink">Why am I able to compile and run C programs without including header files?</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/7085760?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">5
+    </div>
+</a><a href="http://stackoverflow.com/questions/7085760/using-a-function-in-different-c-files-c-programming-101?rq=1" class="question-hyperlink">using a function in different .c files (c programming 101)</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/11157082?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">2
+    </div>
+</a><a href="http://stackoverflow.com/questions/11157082/why-should-i-include-an-header-file-and-how-include-actually-works?rq=1" class="question-hyperlink">Why should I include an header file? And how #include actually works?</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/13152969?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">0
+    </div>
+</a><a href="http://stackoverflow.com/questions/13152969/how-to-add-a-header-file-to-the-c-project?rq=1" class="question-hyperlink">How to add a header file to the c project?</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/18703070?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">1
+    </div>
+</a><a href="http://stackoverflow.com/questions/18703070/header-files-in-c?rq=1" class="question-hyperlink">Header Files in C</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://stackoverflow.com/q/18753390?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">1
+    </div>
+</a><a href="http://stackoverflow.com/questions/18753390/how-to-use-a-function-from-a-header-file-without-including-the-header-in-c?rq=1" class="question-hyperlink">How to use a function from a header file without including the header in C?</a>
+</div>
+
+                    </div>
+				</div>
+            
+<div id="hot-network-questions" class="module">
+    <h4>
+        <a href="http://stackexchange.com/questions?tab=hot" class="js-gps-track" data-gps-track="posts_hot_network.click({ item_type:1, location:11 })">
+            Hot Network Questions
+        </a>
+    </h4>
+    <ul>
+            <li>
+                <div class="favicon favicon-superuser" title="Super User"></div><a href="http://superuser.com/questions/698312/if-32-bit-machines-can-only-handle-numbers-up-to-232-why-can-i-write-100000000" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:3 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    If 32-bit machines can only handle numbers up to 
+2^32, why can I write 1000000000000 (trillion) without my machine 
+crashing?
+                </a>
+
+            </li>
+            <li>
+                <div class="favicon favicon-math" title="Mathematics Stack Exchange"></div><a href="http://math.stackexchange.com/questions/630339/pedagogy-how-to-cure-students-of-the-law-of-universal-linearity" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:69 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Pedagogy: How to cure students of the "law of universal linearity"?
+                </a>
+
+            </li>
+            <li>
+                <div class="favicon favicon-math" title="Mathematics Stack Exchange"></div><a href="http://math.stackexchange.com/questions/630881/there-exists-a-power-of-2-such-that-the-last-five-digits-are-all-3s-or-6s-fin" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:69 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    There exists a power of 2 such that the last five 
+digits are all 3's or 6's. Find the last 5 digits of this number
+                </a>
+
+            </li>
+            <li>
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="http://codegolf.stackexchange.com/questions/17005/produce-the-number-2014-without-any-numbers-in-your-source-code" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Produce the number 2014 without any numbers in your source code
+                </a>
+
+            </li>
+            <li>
+                <div class="favicon favicon-math" title="Mathematics Stack Exchange"></div><a href="http://math.stackexchange.com/questions/629740/how-would-you-explain-to-a-9th-grader-the-negative-exponent-rule" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:69 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How would you explain to a 9th grader the negative exponent rule?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-serverfault" title="Server Fault"></div><a href="http://serverfault.com/questions/565743/how-can-i-block-hacking-attempts-targeting-phpmyadmin" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:2 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How can I block hacking attempts targeting phpMyAdmin?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-stackoverflow" title="Stack Overflow"></div><a href="http://stackoverflow.com/questions/20945049/is-a-java-string-really-immutable" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:1 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Is a Java String really immutable?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-sharepoint" title="SharePoint Stack Exchange"></div><a href="http://sharepoint.stackexchange.com/questions/86979/adding-jquery-to-master-page" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:232 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Adding jQuery to master page
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-superuser" title="Super User"></div><a href="http://superuser.com/questions/698244/ip-address-that-is-the-equivalent-of-dev-null" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:3 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    IP address that is the equivalent of /dev/null
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-photo" title="Photography Stack Exchange"></div><a href="http://photo.stackexchange.com/questions/46671/is-there-any-practical-difference-between-saving-at-300ppi-or-72ppi" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:61 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Is there any practical difference between saving at 300ppi or 72ppi?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-unix" title="Unix &amp; Linux Stack Exchange"></div><a href="http://unix.stackexchange.com/questions/108376/number-of-files-not-containing-given-string" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:106 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Number of files not containing given string
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-english" title="English Language &amp; Usage Stack Exchange"></div><a href="http://english.stackexchange.com/questions/144888/an-idiom-meaning-sticking-fingers-in-your-ears-does-not-change-the-fact" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:97 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    An idiom meaning "sticking fingers in your ears does not change the fact"
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-academia" title="Academia Stack Exchange"></div><a href="http://academia.stackexchange.com/questions/15457/how-should-i-deal-with-discouragement-looking-at-others-success" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:415 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How should I deal with discouragement looking at others success?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-askubuntu" title="Ask Ubuntu"></div><a href="http://askubuntu.com/questions/401920/what-does-or-double-angle-brackets-mean" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:89 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What does &gt;&gt; or double Angle brackets mean?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-stackoverflow" title="Stack Overflow"></div><a href="http://stackoverflow.com/questions/20994321/clean-ways-to-write-multiple-for-loops" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:1 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Clean ways to write multiple for loops
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-codereview" title="Code Review Stack Exchange"></div><a href="http://codereview.stackexchange.com/questions/38746/conways-game-of-life-in-javascript" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:196 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Conway's Game of Life in JavaScript
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-physics" title="Physics Stack Exchange"></div><a href="http://physics.stackexchange.com/questions/92825/why-do-we-order-the-variables-in-certain-physics-questions-the-way-we-do" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:151 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Why do we order the variables in certain physics questions the way we do?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-math" title="Mathematics Stack Exchange"></div><a href="http://math.stackexchange.com/questions/631230/confusion-with-the-definition-of-mean-value" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:69 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Confusion with the definition of mean value
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-rpg" title="Role-playing Games Stack Exchange"></div><a href="http://rpg.stackexchange.com/questions/31305/is-there-a-shapeshifter-that-needs-to-keep-its-quarry-alive" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:122 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Is there a shapeshifter that needs to keep its quarry alive?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-programmers" title="Programmers Stack Exchange"></div><a href="http://programmers.stackexchange.com/questions/223471/why-do-c-and-java-both-use-the-notion-of-reference-but-not-in-the-same-sense" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:131 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Why do C++ and Java both use the notion of "reference" but not in the same sense?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-gamedev" title="Game Development Stack Exchange"></div><a href="http://gamedev.stackexchange.com/questions/68522/what-does-a-matrix-represent" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:53 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What does a matrix represent?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-tex" title="TeX - LaTeX Stack Exchange"></div><a href="http://tex.stackexchange.com/questions/152962/how-to-create-the-name-space-for-a-kids-math-worksheet-and-other-issues" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:85 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How to create the name space for a kid's math worksheet? and other issues?
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-mathematica" title="Mathematica Stack Exchange"></div><a href="http://mathematica.stackexchange.com/questions/39996/how-to-set-magnification-of-image-to-75" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:387 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How to set magnification of image to 75%
+                </a>
+
+            </li>
+            <li class="dno js-hidden">
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="http://codegolf.stackexchange.com/questions/16226/i-need-a-program-where-the-user-inputs-an-array-of-doubles-and-the-program-outpu" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    I need a program where the user inputs an array of doubles and the program outputs the array sorted
+                </a>
+
+            </li>
+    </ul>
+
+        <a href="#" class="show-more js-show-more js-gps-track" data-gps-track="posts_hot_network.click({ item_type:3, location:11 })">
+            more hot questions
+        </a>
+        <script>
+            StackExchange.ready(function () {
+                var $div = $('#hot-network-questions'),
+                    $more = $div.find('.js-show-more'),
+                    $hidden = $div.find('.js-hidden');
+
+                $more.click(function () {
+                    $hidden.show();
+                    $more.remove();
+                    return false;
+                });
+
+            
+                var mHeight = $('#mainbar').height(),
+                    sHeight = $('#sidebar').height() + 550;
+
+                if (mHeight > sHeight) {
+                    $hidden.each(function() {
+                        sHeight += $(this).show().height();
+                        return mHeight > sHeight;
+                    });
+
+                    if ($hidden.filter(':hidden').length == 0) {
+                        $more.remove();
+                    }
+                }
+            
+            
+            });
+        </script>
+</div>
+		</div>
+		<script type="text/javascript">
+StackExchange.ready(function(){$.get('/posts/2831361/ivc/7c99');});
+</script>
+<noscript>
+    <div><img src="/posts/2831361/ivc/7c99" class="dno" alt="" width="0" height="0"></div>
+</noscript><div style="display:none" id="prettify-lang">lang-c</div></div>
+
+
+        </div>
+    </div>
+    <div id="footer" class="categories">
+        <div class="footerwrap">
+            <div id="footer-menu">
+                <div class="top-footer-links">
+                        <a href="http://stackoverflow.com/about">about</a>
+                    <a href="http://stackoverflow.com/help">help</a>
+                    <a href="http://blog.stackexchange.com/?blb=1">blog</a>
+                        <a href="http://chat.stackoverflow.com/">chat</a>
+                    <a href="http://data.stackexchange.com/">data</a>
+                    <a href="http://stackexchange.com/legal">legal</a>
+                    <a href="http://stackexchange.com/legal/privacy-policy">privacy policy</a>
+                    <a href="http://stackexchange.com/about/hiring">jobs</a>
+                    <a href="http://engine.adzerk.net/r?e=eyJhdiI6NDE0LCJhdCI6MjAsImNtIjo5NTQsImNoIjoxMTc4LCJjciI6Mjc3NiwiZG0iOjQsImZjIjoyODYyLCJmbCI6Mjc1MSwibnciOjIyLCJydiI6MCwicHIiOjExNSwic3QiOjAsInVyIjoiaHR0cDovL3N0YWNrb3ZlcmZsb3cuY29tL2Fib3V0L2NvbnRhY3QiLCJyZSI6MX0&amp;s=hRods5B22XvRBwWIwtIMekcyNF8">advertising info</a>
+
+                    <a onclick='StackExchange.switchMobile("on")'>mobile</a>
+                    <b><a href="http://stackoverflow.com/contact">contact us</a></b>
+                        <b><a href="http://meta.stackoverflow.com/">feedback</a></b>
+                    
+                </div>
+                <div id="footer-sites">
+                    <table>
+    <tbody><tr>
+            <th colspan="3">
+                Technology
+            </th>
+            <th>
+                Life / Arts
+            </th>
+            <th>
+                Culture / Recreation
+            </th>
+            <th>
+                Science
+            </th>
+            <th>
+                Other
+            </th>
+    </tr>
+    <tr>
+            <td>
+                <ol>
+                        <li><a href="http://stackoverflow.com/" title="professional and enthusiast programmers">Stack Overflow</a></li>
+                        <li><a href="http://serverfault.com/" title="professional system and network administrators">Server Fault</a></li>
+                        <li><a href="http://superuser.com/" title="computer enthusiasts and power users">Super User</a></li>
+                        <li><a href="http://webapps.stackexchange.com/" title="power users of web applications">Web Applications</a></li>
+                        <li><a href="http://askubuntu.com/" title="Ubuntu users and developers">Ask Ubuntu</a></li>
+                        <li><a href="http://webmasters.stackexchange.com/" title="pro webmasters">Webmasters</a></li>
+                        <li><a href="http://gamedev.stackexchange.com/" title="professional and independent game developers">Game Development</a></li>
+                        <li><a href="http://tex.stackexchange.com/" title="users of TeX, LaTeX, ConTeXt, and related typesetting systems">TeX - LaTeX</a></li>
+                            </ol></td><td><ol>
+                        <li><a href="http://programmers.stackexchange.com/" title="professional programmers interested in conceptual questions about software development">Programmers</a></li>
+                        <li><a href="http://unix.stackexchange.com/" title="users of Linux, FreeBSD and other Un*x-like operating systems.">Unix &amp; Linux</a></li>
+                        <li><a href="http://apple.stackexchange.com/" title="power users of Apple hardware and software">Ask Different (Apple)</a></li>
+                        <li><a href="http://wordpress.stackexchange.com/" title="WordPress developers and administrators">WordPress Answers</a></li>
+                        <li><a href="http://gis.stackexchange.com/" title="cartographers, geographers and GIS professionals">Geographic Information Systems</a></li>
+                        <li><a href="http://electronics.stackexchange.com/" title="electronics and electrical engineering professionals, students, and enthusiasts">Electrical Engineering</a></li>
+                        <li><a href="http://android.stackexchange.com/" title="enthusiasts and power users of the Android operating system">Android Enthusiasts</a></li>
+                        <li><a href="http://security.stackexchange.com/" title="Information security professionals">Information Security</a></li>
+                            </ol></td><td><ol>
+                        <li><a href="http://dba.stackexchange.com/" title="database professionals who wish to improve their database skills and learn from others in the community">Database Administrators</a></li>
+                        <li><a href="http://drupal.stackexchange.com/" title="Drupal developers and administrators">Drupal Answers</a></li>
+                        <li><a href="http://sharepoint.stackexchange.com/" title="SharePoint enthusiasts">SharePoint</a></li>
+                        <li><a href="http://ux.stackexchange.com/" title="user experience researchers and experts">User Experience</a></li>
+                        <li><a href="http://mathematica.stackexchange.com/" title="users of Mathematica">Mathematica</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#technology" class="more">
+                                more (14)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://photo.stackexchange.com/" title="professional, enthusiast and amateur photographers">Photography</a></li>
+                        <li><a href="http://scifi.stackexchange.com/" title="science fiction and fantasy enthusiasts">Science Fiction &amp; Fantasy</a></li>
+                        <li><a href="http://cooking.stackexchange.com/" title="professional and amateur chefs">Seasoned Advice (cooking)</a></li>
+                        <li><a href="http://diy.stackexchange.com/" title="contractors and serious DIYers">Home Improvement</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#lifearts" class="more">
+                                more (13)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://english.stackexchange.com/" title="linguists, etymologists, and serious English language enthusiasts">English Language &amp; Usage</a></li>
+                        <li><a href="http://skeptics.stackexchange.com/" title="scientific skepticism">Skeptics</a></li>
+                        <li><a href="http://judaism.stackexchange.com/" title="those who base their lives on Jewish law and tradition and anyone interested in learning more">Mi Yodeya (Judaism)</a></li>
+                        <li><a href="http://travel.stackexchange.com/" title="road warriors and seasoned travelers">Travel</a></li>
+                        <li><a href="http://christianity.stackexchange.com/" title="committed Christians, experts in Christianity and those interested in learning more">Christianity</a></li>
+                        <li><a href="http://gaming.stackexchange.com/" title="passionate videogamers on all platforms">Arqade (gaming)</a></li>
+                        <li><a href="http://bicycles.stackexchange.com/" title="people who build and repair bicycles, people who train cycling, or commute on bicycles">Bicycles</a></li>
+                        <li><a href="http://rpg.stackexchange.com/" title="gamemasters and players of tabletop, paper-and-pencil role-playing games">Role-playing Games</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#culturerecreation" class="more">
+                                more (21)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://math.stackexchange.com/" title="people studying math at any level and professionals in related fields">Mathematics</a></li>
+                        <li><a href="http://stats.stackexchange.com/" title="people interested in statistics, machine learning, data analysis, data mining, and data visualization">Cross Validated (stats)</a></li>
+                        <li><a href="http://cstheory.stackexchange.com/" title="theoretical computer scientists and researchers in related fields">Theoretical Computer Science</a></li>
+                        <li><a href="http://physics.stackexchange.com/" title="active researchers, academics and students of physics">Physics</a></li>
+                        <li><a href="http://mathoverflow.net/" title="professional mathematicians">MathOverflow</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#science" class="more">
+                                more (7)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://stackapps.com/" title="apps, scripts, and development with the Stack Exchange API">Stack Apps</a></li>
+                        <li><a href="http://meta.stackoverflow.com/" title="meta-discussion of the Stack Exchange family of Q&amp;A websites">Meta Stack Overflow</a></li>
+                        <li><a href="http://area51.stackexchange.com/" title="proposing new sites in the Stack Exchange network">Area 51</a></li>
+                        <li><a href="http://careers.stackoverflow.com/">Stack Overflow Careers</a></li>
+                    
+                </ol>
+            </td>
+    </tr>
+</tbody></table>
+                </div>
+            </div>
+
+            <div id="copyright">
+                site design / logo © 2014 stack exchange inc; user contributions licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license">cc-wiki</a> 
+ with <a href="http://blog.stackoverflow.com/2009/06/attribution-required/" rel="license">attribution required</a>
+            </div>
+            <div id="footer-flair">
+                <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-wiki-link"></a>
+            </div>
+            <div id="svnrev">
+                rev 2014.1.8.1284
+            </div>
+            
+        </div>
+    </div>
+    <noscript>
+        <div id="noscript-warning">Stack Overflow works best with JavaScript enabled<img src="http://pixel.quantserve.com/pixel/p-c1rF4kxgLUzNc.gif" alt="" class="dno"></div>
+    </noscript>
+<script type="text/javascript">var p = "http", d = "static"; if (document.location.protocol == "https:") { p += "s"; d = "engine"; } var z = document.createElement("script"); z.type = "text/javascript"; z.async = true; z.src = p + "://" + d + ".adzerk.net/ados.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(z, s);</script>
+<script type="text/javascript">
+    var ados = ados || {};
+    ados.run = ados.run || [];
+    ados.run.push(function () { ados_setKeywords('c,function,header-files,modular,x-user-registered');; ados_load(); });         
+</script>
+
+    <script type="text/javascript">var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-5620270-1']);
+        _gaq.push(['_setCustomVar', 1, 'tags', '|c|function|header-files|modular|']); 
+        _gaq.push(['_setCustomVar', 2, 'accountid', '3742251',2]); 
+_gaq.push(['_trackPageview']);
+    var _qevents = _qevents || [];
+    var _comscore = _comscore || [];
+    (function () {
+        var ssl='https:'==document.location.protocol,
+            s=document.getElementsByTagName('script')[0],
+            ga=document.createElement('script');
+        ga.type='text/javascript';
+        ga.async=true;
+        ga.src=(ssl?'https://ssl':'http://www')+'.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(ga,s);
+        var sc=document.createElement('script');
+        sc.type='text/javascript';
+        sc.async=true;
+        sc.src=(ssl?'https://secure':'http://edge')+'.quantserve.com/quant.js';
+        s.parentNode.insertBefore(sc, s);
+        
+        var s = document.createElement("script"), el = document.getElementsByTagName("script")[0]; s.async = true;
+        s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
+        el.parentNode.insertBefore(s, el);
+        
+    })();
+    _comscore.push({ c1: "2", c2: "17440561" });
+    _qevents.push({ qacct: "p-c1rF4kxgLUzNc" });
+    </script>
+            
+
+</body></html>
