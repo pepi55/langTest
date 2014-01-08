@@ -1,0 +1,886 @@
+<!--?xml version="1.0" encoding="utf-8" standalone="yes"?-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="no" lang="no"><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <meta name="description" content="Classes in C">
+  <meta name="keywords" content="Classes, Object Oriented, programming, C">
+  <title>Classes in C</title>
+<!-- Begin cmn_head.t -->
+
+<link rel="stylesheet" type="text/css" href="Classes%20in%20C_files/general.css">
+<script language="javascript" type="text/javascript" src="Classes%20in%20C_files/general.js"></script>
+
+<link rel="shortcut icon" href="http://www.pvv.org/%7Ehakonhal/favicon.ico" type="image/x-icon">
+<link rel="icon" href="http://www.pvv.org/%7Ehakonhal/favicon.ico" type="image/x-icon">
+
+<!-- End cmn_head.t -->
+
+
+<style type="text/css">
+h4 a { color: black; }
+dt { font-weight: bold; }
+</style>
+
+</head>
+<body>
+
+<!-- Begin cmn_body_top.t -->
+
+<div class="separator"></div>
+
+<table class="top" cellspacing="0">
+<tbody><tr>
+  <td class="top"><a class="top" href="http://www.pvv.org/%7Ehakonhal/main.cgi">Home</a></td>
+  <td class="top"><a class="top" href="http://www.pvv.org/%7Ehakonhal/main.cgi/bridge">Hand Evaluation in Bridge</a></td>
+  <td class="top"><a class="top" href="http://www.pvv.org/%7Ehakonhal/main.cgi/c">C Programming</a></td>
+  <td class="top"><a class="top" href="http://www.pvv.org/%7Ehakonhal/main.cgi/keyboard">Keyboard Layout</a></td>
+</tr>
+</tbody></table>
+
+<div class="separator"></div>
+
+<table width="100%"><tbody><tr class="leftside"><td></td><td width="80%">
+
+<!-- End cmn_body_top.t -->
+
+
+<center><h1>Classes in C</h1></center>
+
+<p>
+
+This document describes the simplest possible coding style for making
+classes in C. It will describe <a class="ref" href="#constructors">constructors</a>, <a class="ref" href="#instance_variables">instance variables</a>, <a class="ref" href="#instance_methods">instance methods</a>, <a class="ref" href="#class_variables">class variables</a>, <a class="ref" href="#class_methods">class methods</a>, <a class="ref" href="#inheritance">inheritance</a>, <a class="ref" href="#polymorphism">polymorphism</a>, <a class="ref" href="#namespace">namespaces</a> with <a class="ref" href="#alias">aliasing</a> and put it all together in an <a class="ref" href="#Example">example project</a>. 
+
+</p>
+
+<ol>
+
+  <li><a href="#C_Classes">C Classes</a></li>
+
+  <li><a href="#Constructors">Constructors</a></li>
+
+  <li><a href="#Methods">Methods</a></li>
+
+  <li><a href="#inheritance">Inheritance</a></li>
+
+  <li><a href="#Controlling_Access">Controlling Access to
+      Members</a></li>
+
+  <li><a href="#Abstract">Abstract Classes, Abstract Methods and
+      Interfaces</a></li>
+
+  <li><a href="#namespace">Namespaces</a></li>
+
+  <li><a href="#Example">An Example Project</a></li>
+
+</ol>
+
+<h2 id="C_Classes">1. C Classes</h2>
+
+<p>
+
+A <em id="class" class="def">class</em> consists of an instance type
+and a class object:
+
+</p><p>
+
+An <em id="instance_type" class="def">instance type</em> is a
+<code>struct</code> containing variable members called <em id="instance_variables" class="def">instance variables</em> and
+function members called <a class="ref" href="#instance_methods">instance methods</a>. A variable of the
+instance type is called an <em id="instance" class="def">instance</em>.
+
+</p><p>
+
+A <em id="class_object" class="def">class object</em> is a global
+<code>const struct</code> variable containing <em id="class_variables" class="def">class variables</em> and <a class="ref" href="#class_methods">class methods</a>. These members belong the
+whole class without any references to any instances.
+
+</p><p>
+
+A class named "Complex" should name the instance type <code>struct
+Complex</code> and the class object <code>Complex</code>, and put the
+interface definitions in "Complex.h" and the implementation in
+"Complex.c".
+
+</p>
+
+<pre class="code">	Complex.h:
+		struct Complex {
+			...
+		};
+		extern const struct ComplexClass {
+			...
+		} Complex;
+	
+	Complex.c:
+		#include "Complex.h"
+		const struct ComplexClass Complex={...};
+</pre>
+
+<div class="rationale">
+
+<h4><a href="javascript:%20toggle('class_rationale')">+Rationale</a></h4>
+
+<div id="class_rationale" style="display: none;">
+
+<dl>
+  
+  <dt>On the Class Object</dt>
+      
+  <dd>The members of the class object could also have implemented as
+global variables and functions, and this would even allow for
+implementing the constructor as a macro function. However, for
+simplicity in design, and for simplicity in defining and using
+namespaces, the chosen design is preferred.</dd>
+      
+</dl>
+
+</div>
+
+</div>
+
+<h2 id="Constructors">2. Constructors</h2>
+
+<p>
+
+<a class="ref" href="#instance">Instances</a> must be initialized by
+<em id="constructors" class="def">constructors</em> when declared, and
+the constructors must be class methods. The constructor should
+preferably return an <a class="ref" href="#instance_type">instance
+type</a>, but may also return a pointer to an <a class="ref" href="#instance_type">instance type</a>.
+
+</p><p>
+
+The Complex class gets two <a class="ref" href="#instance_variables">instance variables</a> <code>re</code> and
+<code>im</code>, and a constructor named <code>new</code>:
+
+</p>
+
+<pre class="code">	Complex.h:
+		struct Complex {
+			double re, im;
+		};
+		extern const struct ComplexClass {
+			struct Complex (*new)(double real, double imag);
+		} Complex;
+	
+	Complex.c:
+		#include "Complex.h"
+		static struct Complex new(double real, double imag) {
+			return (struct Complex){.re=real, .im=imag};
+		}
+		const struct ComplexClass Complex={.new=&amp;new};
+	
+	Complex_test.c:
+		...
+		struct Complex c=Complex.new(3., -4.);
+</pre>
+
+<h2 id="Methods">3. Methods</h2>
+
+<p>
+
+<em id="instance_methods" class="def">Instance methods</em> must be
+declared as <a class="ref" href="#instance_type">instance type</a>
+members <em>pointing to</em> the wanted function prototype, and that
+pointer must be set by the <a class="ref" href="#constructors">constructor</a>. Typically, the method pointer is
+set to a <code>static</code> function defined in the implementation
+file.
+
+</p><p>
+
+To be able to access the <a class="ref" href="#instance">instance</a>'s data, instance methods must receive a
+pointer to the <a class="ref" href="#instance">instance</a> as its
+first argument. This argument is typically named <code>this</code>.
+
+</p><p>
+
+When we add an instance method <code>abs()</code> for calculating the
+absolute value of a complex number we get:
+
+</p>
+
+<pre class="code">	Complex.h:
+		struct Complex {
+			double re, im;
+			double (*abs)(struct Complex *this);
+		};
+		extern const struct ComplexClass {
+			struct Complex (*new)(double real, double imag);
+		} Complex;
+	
+	Complex.c:
+		#include "Complex.h"
+		static double abs(struct Complex *this) {
+			return sqrt(this-&gt;re*this-&gt;re+this-&gt;im*this-&gt;im);
+		}
+		static struct Complex new(double real, double imag) {
+			return (struct Complex){.re=real, .im=imag, .abs=&amp;abs};
+		}
+		const struct ComplexClass Complex={.new=&amp;new};
+	
+	Complex_test.c:
+		...
+		struct Complex c=Complex.new(3., -4.);
+		printf("%g\n", c.abs(&amp;c)); // Prints 5
+</pre>
+
+<p>
+
+<em id="class_methods" class="def">Class methods</em> must be
+initialized in the same way as instance methods, but have no
+restriction on the prototype.
+
+</p>
+
+<h2 id="inheritance">4. Inheritance</h2>
+
+<p>
+
+A <em id="base_class" class="def">base class</em> must be represented
+as a member variable with the same name and type as the base class
+itself.
+
+</p><p>
+
+A subclass may <em id="override" class="def">override</em> the base
+class instance method pointers to provide <em id="polymorphism" class="def">polymorphism</em>. The subclass must override with an
+identically prototyped function and set the base class' method pointer
+in the constructor <em>after</em> the baseclass' constructor has been
+called.
+
+</p><p>
+
+Whenever an overriden instance method is called, we are
+<em>guaranteed</em> that it was called by an <a class="ref" href="#instance">instance</a> of the <em>baseclass</em>. Since the
+instance method receives a pointer to the base class as its first
+argument, we may get the subclass using the <code>offsetof()</code>
+macro from <code>stddef.h</code>.
+
+</p><p>
+
+The following files shows a simple example of inheritance and
+polymorphism:
+
+</p><p>
+
+<a href="javascript:%20toggle('Employee.h')">+Employee.h</a>
+
+</p>
+
+<div id="Employee.h" class="code">
+
+<pre class="code">	struct Employee {
+		const char *first_name;
+		const char *family_name;
+		const char *(*print)(struct Employee *this,
+				     size_t bufsize,char buf[bufsize]);
+	};
+	
+	extern const struct EmployeeClass {
+		struct Employee (*new)(const char *first_name,
+				       const char *family_name);
+	} Employee;
+</pre>
+
+</div>
+
+<p>
+
+<a href="javascript:%20toggle('Employee.c')">+Employee.c</a>
+
+</p>
+
+<div id="Employee.c" class="code" style="display: none">
+
+<pre class="code">	#include "Employee.h"
+	
+	static const char *print(struct Employee *this,
+				 size_t bufsize, char buf[bufsize])
+	{
+		snprintf(buf, bufsize, "Name: %s %s",
+			 this-&gt;first_name, this-&gt;family_name);
+		return buf;
+	}
+	
+	static struct Employee new(const char *first_name,
+				   const char *family_name)
+	{
+		return (struct Employee){
+			.first_name=strdup(first_name),
+			.family_name=strdup(family_name),
+			.print=&amp;print
+		};
+	}
+	
+	const struct EmployeeClass Employee={.new=&amp;new};
+</pre>
+
+</div>
+
+<p>
+
+<a href="javascript:%20toggle('Manager.h')">+Manager.h</a>
+
+</p>
+
+<div id="Manager.h" class="code">
+
+<pre class="code">	#include "Employee.h"
+	
+	struct Manager {
+		struct Employee Employee;
+		int level;
+	};
+	
+	extern const struct ManagerClass {
+		struct Manager (*new)(const char *first_name,
+				      const char *family_name, int level);
+	} Manager;
+</pre>
+
+</div>
+
+<p>
+
+<a href="javascript:%20toggle('Manager.c')">+Manager.c</a>
+
+</p>
+
+<div id="Manager.c" class="code" style="display: none;">
+
+<pre class="code">	#include "Manager.h"
+	
+	static const char *print(struct Employee *base,
+				 size_t bufsize, char buf[bufsize]) 
+	{
+		struct Manager *this=
+		  (void *)base-offsetof(struct Manager, Employee);
+		snprintf(buf, bufsize, "Name: %s %s, level %d",
+			 this-&gt;Employee.first_name,
+			 this-&gt;Employee.family_name,
+			 this-&gt;level);
+		return buf;
+	}
+	
+	static struct Manager new(const char *first_name,
+				  const char *family_name, int level)
+	{
+		struct Manager ret={.level=level};
+		ret.Employee=Employee.new(first_name, family_name);
+		ret.Employee.print=&amp;print;
+		return ret;
+	}
+	
+	extern const struct ManagerClass Manager={.new=&amp;new};
+</pre>
+
+</div>
+
+<p>
+
+<a href="javascript:%20toggle('inheritance.c')">+inheritance.c</a>
+
+</p>
+
+<div id="inheritance.c" class="code">
+
+<pre class="code">	#include "Manager.h"
+	
+	int main(void)
+	{
+		struct Manager manager=Manager.new("Håkon", "Hallingstad", 3);
+		struct Employee employee=Employee.new("Håkon", "Hallingstad");
+		struct Employee *polymorph=&amp;manager.Employee;
+		char buf[50];
+		printf("%s\n", employee.print(&amp;employee, sizeof(buf), buf));
+		printf("%s\n", polymorph-&gt;print(polymorph, sizeof(buf), buf));
+		return 0;
+	}
+</pre>
+
+</div>
+
+<p>
+
+The Manager class overrides Employee's print() instance method with
+the line from Manager.c:
+
+</p>
+
+<pre class="code">	ret.Employee.print=&amp;print;
+</pre>
+
+<p>
+
+Which makes inheritance.c print:
+
+</p>
+
+<pre class="code">	Name: Håkon Hallingstad
+	Name: Håkon Hallingstad, level 3
+</pre>
+
+<h2 id="Controlling_Access">5. Controlling Access to Members</h2>
+
+<p>
+
+In object oriented languages each member has an access attribute and
+the compiler will enforce that access attribute.
+
+</p><p>
+
+With Classes in C we should use comments to specify the access
+attributes. For instance we use the following notation:
+
+</p>
+
+<pre class="code">	struct Complex {
+		...
+		// protected:
+		...
+		// private:
+		...
+	};
+</pre>
+
+<h2 id="Abstract">6. Abstract Classes, Abstract Methods and Interfaces</h2>
+
+<p>
+
+In object oriented languages we can specify an abstract class to
+guarantee that the class cannot be instanciated. Abstract methods and
+interfaces can be used to guarantee that subclasses <a class="ref" href="#override">override</a> methods.
+
+</p><p>
+
+With Classes in C just have to make sure any user of the class
+understands such intensions, for instance:
+
+</p>
+
+<pre class="code">	
+	struct ElementInterface {
+		...
+	};
+
+	/*interface*/ struct Element {
+		...
+	};
+
+	/*abstract*/ struct Complex {
+		...
+	};
+
+	struct Stack {
+		/*abstract*/ double (*foo)(struct Stack *this);
+	};
+</pre>		
+
+<p>
+
+Abstract instance method pointers should be initialized to
+<code>NULL</code>.
+
+</p>
+
+<h2>7. Namespaces</h2>
+
+<p>
+
+A <em id="namespace" class="def">namespace</em> defines a common
+prefix of all identifiers exported by a class and the path of its
+header- and implementation- files. 
+
+</p><p>
+
+For instance a <code>Complex</code> class with a namespace
+<code>org_pvv_hakonhal_utils_Complex</code> should have its
+implementation file in <code>org/pvv/hakonhal/utils/Complex.c</code>,
+and its header file in <code>org/pvv/hakonhal/utils/Complex.h</code>
+containing:
+
+</p>
+
+<pre class="code">	#ifndef ORG_PVV_HAKONHAL_UTILS_COMPLEX_H
+	#define ORG_PVV_HAKONHAL_UTILS_COMPLEX_H
+	
+	struct org_pvv_hakonhal_utils_Complex {
+		...
+	};
+	
+	extern struct org_pvv_hakonhal_utils_ComplexClass {
+		...
+	} org_pvv_hakonhal_utils_Complex;
+	
+	#endif
+</pre>
+
+<p>
+
+When we are going to use the class we may <em id="alias" class="def">alias</em> the identifiers to make them more managable, by
+using the <code>#define</code> directive:
+
+</p>
+
+<pre class="code">	#include "org/pvv/hakonhal/utils/Complex.h"
+	#define Complex org_pvv_hakonhal_utils_Complex
+	...
+	struct Complex c=Complex.new();
+</pre>
+
+<h2 id="Example">8. An Example Project</h2>
+
+<p>
+
+In this example project we will create and test a bounds-checking
+stack implementation by extending a simpler stack implementation. The
+project will illustrate everything about C Classes including <a class="ref" href="#constructors">constructors</a>, <a class="ref" href="#Methods">methods</a>, <a class="ref" href="#inheritance">inheritance</a>, <a class="ref" href="#namespace">namespaces</a> and <a class="ref" href="#alias">aliases</a>.
+
+</p><p>
+
+For compiling this project you should read <a href="http://www.pvv.org/%7Ehakonhal/main.cgi/c/building/">C Project Building</a>.
+
+</p>
+
+<h4>The Libray Project</h4>
+
+<p>
+
+We imagine the simple stack project has been downloaded from the net
+and the header file may be referenced as
+<code>org/somewhere/someone/Stack.h</code>. The stack header contains:
+
+</p><p>
+
+<a href="javascript:%20toggle('Stack.h')">+Stack.h</a>
+
+</p>
+
+<div id="Stack.h" class="code">
+
+<pre class="code">	#ifndef ORG_SOMEWHERE_SOMEONE_STACK_H
+	#define ORG_SOMEWHERE_SOMEONE_STACK_H
+	
+	struct org_somewhere_someone_Stack_ElementI {
+	};
+	
+	#define ORG_SOMEWHERE_SOMEONE_STACK_SIZE 100
+	
+	struct org_somewhere_someone_Stack {
+	
+		void (*push)
+		(struct org_somewhere_someone_Stack *this,
+		 struct org_somewhere_someone_Stack_ElementI *element);
+	
+		struct org_somewhere_someone_Stack_ElementI *(*pop)
+		(struct org_somewhere_someone_Stack *this);
+	
+		// protected:
+	
+		int count;
+	
+		struct org_somewhere_someone_Stack_ElementI *
+		data[ORG_SOMEWHERE_SOMEONE_STACK_SIZE];
+	};
+	
+	extern struct org_somewhere_someone_StackClass {
+		struct org_somewhere_someone_Stack (*new)(void);
+	} org_somewhere_someone_Stack;
+	
+	#endif
+</pre>
+
+</div>
+
+<p>
+
+<code>org_somewhere_someone_Stack_ElementI</code> is an interface for
+the elements that is stored in the stack, and impose no restrictions
+on the elements stored since the <code>struct</code> has an empty
+body.
+
+</p><p>
+
+We choose a unique org_pvv_hakonhal_utils <a class="ref" href="#namespace">namespace</a> and creates the
+<code>org/pvv/hakonhal/utils</code> directory where we will put our
+<code>BStack.c</code> and <code>BStack.h</code> files.
+
+</p><p>
+
+The only thing our class will do in addition to
+<code>org_somewhere_someone_Stack</code>, is to check the bounds when
+<code>push()</code>'ing and <code>pop()</code>'ing, so our <a class="ref" href="#instance_type">instance type</a> only holds the
+reference to the base class:
+
+</p><p>
+
+<a href="javascript:%20toggle('BStack.h')">+BStack.h</a>
+
+</p>
+
+<div id="BStack.h" class="code">
+
+<pre class="code">	#ifndef ORG_PVV_HAKONHAL_UTILS_BSTACK_H
+	#define ORG_PVV_HAKONHAL_UTILS_BSTACK_H
+	
+	#include "org/somewhere/someone/Stack.h"
+	
+	struct org_pvv_hakonhal_utils_BStack {
+	
+		struct org_somewhere_someone_Stack org_somewhere_someone_Stack;
+	
+	};
+	
+	extern const struct org_pvv_hakonhal_utils_BStackClass {
+		struct org_pvv_hakonhal_utils_BStack (*new)(void);
+	} org_pvv_hakonhal_utils_BStack;
+	
+	#endif
+</pre>
+
+</div>
+
+<p>
+
+The implementation file is somewhat more complex.
+
+</p><p>
+
+<a href="javascript:%20toggle('BStack.c')">+BStack.c</a>
+
+</p>
+
+<div id="BStack.c" class="code">
+
+<pre class="code">1	#include "org/pvv/hakonhal/utils/BStack.h"
+2	#define BStack      org_pvv_hakonhal_utils_BStack
+3	#define BStackClass org_pvv_hakonhal_utils_BStackClass
+	
+4	#include "org/somewhere/someone/Stack.h"
+5	#define ElementI    org_somewhere_someone_Stack_ElementI
+6	#define Stack       org_somewhere_someone_Stack
+7	#define STACK_SIZE  ORG_SOMEWHERE_SOMEONE_STACK_SIZE
+	
+8	#include &lt;stdio.h&gt;
+9	#include &lt;stdlib.h&gt;
+	
+10	static void (*base_push)(struct Stack *this, struct ElementI *element);
+	
+11	static void push(struct Stack *base, struct ElementI *element)
+12	{
+13		if (base-&gt;count&gt;=STACK_SIZE) {
+14			fprintf(stderr, "%s", "Stack overflow!\n");
+15			exit(1);
+16		}
+17	
+18		base_push(base, element);
+19	}
+	
+20	static struct ElementI *(*base_pop)(struct Stack *this);
+	
+21	static struct ElementI *pop(struct Stack *base)
+22	{
+23		if (base-&gt;count&lt;=0) {
+24			fprintf(stderr, "%s", "Stack underflow!\n");
+25			exit(1);
+26		}
+27		return base_pop(base);
+28	}
+	
+29	static struct BStack new(void)
+30	{
+31		struct BStack ret;
+32		ret.Stack=Stack.new();
+	
+33		base_push=ret.Stack.push;
+34		ret.Stack.push=&amp;push;
+	
+35		base_pop=ret.Stack.pop;
+36		ret.Stack.pop=&amp;pop;
+	
+37		return ret;
+38	}
+			
+39	const struct BStackClass BStack={.new=&amp;new};
+</pre>
+
+</div>
+
+<p>
+
+Let us look at the implementation of the <code>push()</code> <a class="ref" href="#instance_methods">instance method</a>, the
+<code>pop()</code> is similar. Since it is using the <a class="ref" href="#base_class">base class</a>' <code>push()</code> <a class="ref" href="#instance_methods">instance method</a>, we must keep a pointer
+to the <a class="ref" href="#base_class">base class</a>' <a class="ref" href="#instance_methods">instance method</a>, see 10, 18
+and 33-34.
+
+</p>
+
+<h4>Testing the Library Project</h4>
+
+<p>
+
+The implementation of the <code>Bstack</code> class is rather long:
+
+</p><p>
+
+<a href="javascript:%20toggle('BStack_test.c')">+BStack_test.c</a>
+
+</p>
+
+<div id="BStack_test.c" class="code">
+
+<pre class="code">1	#include "org/pvv/hakonhal/utils/BStack.h"
+2	#define BStack org_pvv_hakonhal_utils_BStack
+	
+3	#include "org/somewhere/someone/Stack.h"
+4	#define ElementI org_somewhere_someone_Stack_ElementI
+5	#define Stack org_somewhere_someone_Stack
+	
+6	#include &lt;stddef.h&gt;
+7	#include &lt;stdio.h&gt;
+	
+8	struct Integer {
+9		struct ElementI ElementI;
+10		int value;
+11		void (*print)(struct Integer *this, const char *id);
+12	};
+	
+13	static void print(struct Integer *this, const char *id)
+14	{
+15		printf("%s: %d\n", id, this-&gt;value);
+16	}
+	
+17	static struct Integer new(int value)
+18	{
+19		return (struct Integer){
+20			.ElementI={},
+21			.value=value,
+22			.print=&amp;print,
+23		};
+24	}
+	
+25	static const struct {
+26		struct Integer (*new)(int value);
+27	} Integer={.new=&amp;new};
+	
+28	int main(void)
+29	{
+30		struct BStack stack=BStack.new();
+31		struct Integer i=Integer.new(10), j=Integer.new(20);
+32		struct Integer *ptr;
+		
+33		stack.Stack.push(&amp;stack.Stack, &amp;i.ElementI);
+34		stack.Stack.push(&amp;stack.Stack, &amp;j.ElementI);
+	
+35		ptr=(void *)stack.Stack.pop(&amp;stack.Stack)-offsetof(struct Integer, ElementI);
+36		ptr-&gt;print(ptr, "j");
+37		ptr=((void *)stack.Stack.pop(&amp;stack.Stack))-offsetof(struct Integer, ElementI);
+38		ptr-&gt;print(ptr, "i");
+39		printf("%s\n", "Will now try to pop an empty stack");
+40		stack.Stack.pop(&amp;stack.Stack);
+	
+41		return 0;
+42	}
+</pre>
+
+</div>
+
+<p>
+
+We define an <code>Integer</code> class that extends the
+<code>org_somewhere_someone_Stack_ElementI</code> interface so that it
+might be added to our <code>BStack</code>, see lines 8-27. The class
+also contains an int and an <a class="ref" href="#instance_methods">instance method</a> to print it. Note that
+since we are constructing an executable, the <code>Integer</code>
+class does not need to have a <a class="ref" href="#namespace">namespace</a>.
+
+</p><p>
+
+Since we are using <a class="ref" href="#alias">aliasing</a>,
+statements such as that on line 30 actually reads:
+
+</p>
+
+<pre class="code">	struct org_pvv_hakonhal_utils_BStack stack=org_pvv_hakonhal_utils_BStack.new();
+</pre>
+
+<p>
+
+Since the <code>push()</code> and <code>pop()</code> <a class="ref" href="#instance_methods">instance methods</a> where defined by
+<code>Stack</code>, we need to "go through" the <code>Stack</code>
+subclass to call them, as seen on e.g. line 33-34. 
+
+</p><p>
+
+When we retreive the elements on the stack, we need the slightly
+awkward syntax in 35 and 37. Conceptually, we receive a pointer to the
+<code>ElementI</code> base class of a <code>struct BStack</code>
+variable, so we just need to shift it.
+
+</p><p>
+
+The <code>BStack_test</code> executable will output:
+
+</p>
+
+<pre class="code">	j: 20
+	i: 10
+	Will now try to pop an empty stack
+	Stack underflow detected!
+</pre>
+
+<!-- Begin cmn_body_bottom.t -->
+
+</td><td class="rightside"></td></tr></tbody></table>
+
+<!-- Begin cmn_body_top.t -->
+
+<div class="separator"></div>
+
+<table class="top" cellspacing="0">
+<tbody><tr>
+  <td class="top"><a class="top" href="http://www.pvv.org/%7Ehakonhal/main.cgi">Home</a></td>
+  <td class="top"><a class="top" href="http://www.pvv.org/%7Ehakonhal/main.cgi/bridge">Hand Evaluation in Bridge</a></td>
+  <td class="top"><a class="top" href="http://www.pvv.org/%7Ehakonhal/main.cgi/c">C Programming</a></td>
+  <td class="top"><a class="top" href="http://www.pvv.org/%7Ehakonhal/main.cgi/keyboard">Keyboard Layout</a></td>
+</tr>
+</tbody></table>
+
+<div class="separator"></div>
+
+<table width="100%"><tbody><tr class="leftside"><td></td><td width="80%">
+
+<!-- End cmn_body_top.t -->
+
+
+</td><td></td></tr></tbody></table>
+
+<table class="bottom" cellpadding="0" cellspacing="0">
+<tbody><tr>
+  <td>
+    Håkon Hallingstad
+  </td>
+  <td>
+    <img src="Classes%20in%20C_files/emailaddress.png" alt="MyEmailAddress">
+  </td>
+  <td>
+    <a href="http://validator.w3.org/check/referer"><img src="Classes%20in%20C_files/valid-xhtml10.png" alt="Valid XHTML 1.0!" height="31" border="0" width="88"></a>
+  </td>
+  <td>
+    <a href="http://jigsaw.w3.org/css-validator/check/referer">
+    <img style="border:0;width:88px;height:31px" src="Classes%20in%20C_files/vcss.gif" alt="Valid CSS!"></a>
+  </td>
+</tr>
+</tbody></table>
+
+<!-- End cmn_body_bottom.t -->
+
+
+<!-- hhmts start -->
+Last modified: Mon Jun 21 09:00:46 CEST 2004
+<!-- hhmts end -->
+
+
+
+</body></html>

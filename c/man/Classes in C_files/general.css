@@ -1,0 +1,64 @@
+a { 
+	color: blue;
+}
+
+a.top {
+	color: #2222dd;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+a.top:hover {
+	color: blue;
+}
+
+table.top { 
+	background: silver;
+	padding: 0px;
+	margin: 0px;
+	width: 100%;
+}
+
+td.top {
+	padding: 0px;
+	text-align: center;
+	width: 25%;
+}
+
+table.bottom { 
+	margin: 5px;
+}
+
+body { 
+	margin: 0;
+	background: white;
+	color: black;
+}
+
+.separator { 
+	padding: 1px;
+	margin: 0;
+	background: gray;
+}
+
+div.rationale, a.rationale {
+ 	background-color: #ffffdd;
+ 	border-color: #ffffdd;
+	border-style: outset;
+	font-size: 85%;
+}
+pre.code {
+	background-color: #eeeeff;
+	font-size: 85%;
+	border-style: outset;
+	border-color: #eeeeff;
+}
+em.def {
+	font-weight: bold;
+}
+a.ref {
+	color: black;
+}
+dt {
+	font-weight: bold;
+}
