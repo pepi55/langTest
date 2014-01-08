@@ -14,8 +14,7 @@ int main (void) {
 	int l;
 
 	//Fractions
-	fract fraction1, fraction2, fractionSum, reducedFraction;
-	int gcdOfFract;
+	struct Fraction fract_1;
 
 	printf("Insert first number to be manipulated: ");
 	scanf("%f", &a);
@@ -29,20 +28,12 @@ int main (void) {
 
 	printf("greatest common divider of %i and %i: %i\n", (int) a, (int) b, gcd(a, b));
 
-	fraction1.numerator = a;
-	fraction1.denominator = b;
-	fraction2.numerator = a * 2;
-	fraction2.denominator = b * 2;
+	fract_1 = Fraction.new(a, b);
 
-	fractionSum = addFraction(fraction1, fraction2);
-	reducedFraction.numerator = fractReducedNumerator(fractionSum);
-	reducedFraction.denominator = fractReducedDenominator(fractionSum);
-	gcdOfFract = fractGcd(fraction1);
-
-	printf("numerator: %i, denominator: %i\n", fraction1.numerator, fraction1.denominator);
-	printf("add fraction: numerator is %i, denominator is %i\n", fractionSum.numerator, fractionSum.denominator);
-	printf("greatest common divider: %i\n", gcdOfFract);
-	printf("reduced fraction: numerator %i, denominator %i\n", reducedFraction.numerator, reducedFraction.denominator);
+	printf("numerator: %i, denominator: %i\n", fract_1.numerator, fract_1.denominator);
+	printf("greatest common divider: %i\n", fract_1.fractGcd(&fract_1));
+	printf("reduced numerator: %i\n", fract_1.reduced_numerator(&fract_1));
+	printf("reduced denominator: %i\n", fract_1.reduced_denominator(&fract_1));
 
 	div = division(a);
 	l = div[0];
@@ -65,8 +56,8 @@ int main (void) {
 	}
 	free(prm);
 
-	printf("Do you wish to save the division result? (answer with 1 (Yes) or 2 (No)) ");
-	scanf("%i", &answ);
+	//printf("Do you wish to save the division result? (answer with 1 (Yes) or 2 (No)) ");
+	//scanf("%i", &answ);
 
 	if (answ == 1) {
 		divisionToFile(a);

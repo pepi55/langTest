@@ -1,15 +1,16 @@
 #ifndef FRACTION_H
 #define FRACTION_H
 
-typedef struct Fraction {
-	int numerator;
-	int denominator;
-} fract;
+struct Fraction {
+	int numerator, denominator;
 
-int fractGcd(fract a);
-int fractReducedNumerator(fract a);
-int fractReducedDenominator(fract a);
+	int (*fractGcd)(struct Fraction *this);
+	int (*reduced_numerator)(struct Fraction *this);
+	int (*reduced_denominator)(struct Fraction *this);
+};
 
-fract addFraction(fract a, fract b);
+extern const struct FractionClass {
+	struct Fraction (*new)(int numerator, int denominator);
+} Fraction;
 
 #endif

@@ -3,6 +3,7 @@
 
 struct Sample {
 	int i, j;
+	int (*abs)(struct Sample *this);
 };
 
 extern const struct SampleClass {
