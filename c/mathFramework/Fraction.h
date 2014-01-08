@@ -6,12 +6,10 @@ typedef struct Fraction {
 	int denominator;
 } fract;
 
-/*typedef struct Fraction {
-	int numerator;
-	int denominator;
-} fract;
-
 int fractGcd(fract a);
-fract addFraction(fract a, fract b);*/
+int fractReducedNumerator(fract a);
+int fractReducedDenominator(fract a);
+
+fract addFraction(fract a, fract b);
 
 #endif

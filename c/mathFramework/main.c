@@ -14,8 +14,8 @@ int main (void) {
 	int l;
 
 	//Fractions
-	//fract fraction1, fraction2, fractionSum;
-	//int gcdOfFract;
+	fract fraction1, fraction2, fractionSum, reducedFraction;
+	int gcdOfFract;
 
 	printf("Insert first number to be manipulated: ");
 	scanf("%f", &a);
@@ -29,17 +29,20 @@ int main (void) {
 
 	printf("greatest common divider of %i and %i: %i\n", (int) a, (int) b, gcd(a, b));
 
-	/*fraction1.numerator = a;
+	fraction1.numerator = a;
 	fraction1.denominator = b;
 	fraction2.numerator = a * 2;
 	fraction2.denominator = b * 2;
 
 	fractionSum = addFraction(fraction1, fraction2);
+	reducedFraction.numerator = fractReducedNumerator(fractionSum);
+	reducedFraction.denominator = fractReducedDenominator(fractionSum);
 	gcdOfFract = fractGcd(fraction1);
 
 	printf("numerator: %i, denominator: %i\n", fraction1.numerator, fraction1.denominator);
 	printf("add fraction: numerator is %i, denominator is %i\n", fractionSum.numerator, fractionSum.denominator);
-	printf("greatest common divider: %i\n", gcdOfFract);*/
+	printf("greatest common divider: %i\n", gcdOfFract);
+	printf("reduced fraction: numerator %i, denominator %i\n", reducedFraction.numerator, reducedFraction.denominator);
 
 	div = division(a);
 	l = div[0];
