@@ -4,34 +4,24 @@
 #include "maths.h"
 #include "Fraction.h"
 
-FRACTION Fraction;
+/*int fractGcd (fract a) {
+	int result;
 
-int FractionNum (int numerator) {
-	Fraction.numerator = numerator;
+	result = gcd(a.numerator, a.denominator);
 
-	return numerator;
+	return result;
 }
 
-int FractionDen (int denominator) {
-	Fraction.denominator = denominator;
+fract addFraction (fract a, fract b) {
+	int denominator;
+	int numerator;
+	fract result;
 
-	return denominator;
-}
+	numerator = a.numerator * b.denominator + b.numerator * a.denominator ;
+	denominator = a.denominator * b.denominator;
 
-int FractionGcd (void) {
-	Fraction.fractGcd = gcd(Fraction.numerator, Fraction.denominator);
+	result.numerator = numerator;
+	result.denominator = denominator;
 
-	return 0;
-}
-
-int FractionRen (void) {
-	Fraction.reduced_numerator = Fraction.numerator / Fraction.fractGcd;
-
-	return 0;
-}
-
-int FractionRed (void) {
-	Fraction.reduced_denominator = Fraction.denominator / Fraction.fractGcd;
-
-	return 0;
-}
+	return result;
+}*/

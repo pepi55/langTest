@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "maths.h"
-#include "Fraction.c"
+#include "Fraction.h"
 
 int main (void) {
 	//Vars for main
@@ -13,11 +13,15 @@ int main (void) {
 	unsigned int *div, *fct, *prm;
 	int l;
 
+	//Fractions
+	//fract fraction1, fraction2, fractionSum;
+	//int gcdOfFract;
+
 	printf("Insert first number to be manipulated: ");
 	scanf("%f", &a);
 
-	/*printf("Insert second number to be manipulated: ");
-	scanf("%f", &b);*/
+	printf("Insert second number to be manipulated: ");
+	scanf("%f", &b);
 
 	fputs(integer(a) ? "The first number is an integer.\n" : "The first number is not an integer.\n", stdout);
 	fputs(naturalNumber(a) ? "The first number is a natural number.\n" : "The first number is not a natural number.\n", stdout);
@@ -25,13 +29,17 @@ int main (void) {
 
 	printf("greatest common divider of %i and %i: %i\n", (int) a, (int) b, gcd(a, b));
 
-	FractionNum(a);
-	FractionDen(b);
-	FractionGcd();
-	FractionRen();
-	FractionRed();
+	/*fraction1.numerator = a;
+	fraction1.denominator = b;
+	fraction2.numerator = a * 2;
+	fraction2.denominator = b * 2;
 
-	printf("reduced numerator: %i, reduced denominator: %i\n", Fraction.reduced_numerator, Fraction.reduced_denominator);
+	fractionSum = addFraction(fraction1, fraction2);
+	gcdOfFract = fractGcd(fraction1);
+
+	printf("numerator: %i, denominator: %i\n", fraction1.numerator, fraction1.denominator);
+	printf("add fraction: numerator is %i, denominator is %i\n", fractionSum.numerator, fractionSum.denominator);
+	printf("greatest common divider: %i\n", gcdOfFract);*/
 
 	div = division(a);
 	l = div[0];

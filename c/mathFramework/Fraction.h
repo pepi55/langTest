@@ -4,18 +4,14 @@
 typedef struct Fraction {
 	int numerator;
 	int denominator;
+} fract;
 
-	int fractGcd;
-	int reduced_numerator;
-	int reduced_denominator;
-} FRACTION;
+/*typedef struct Fraction {
+	int numerator;
+	int denominator;
+} fract;
 
-int FractionNum (int numerator);
-int FractionDen (int denominator);
-
-int FractionGcd (void);
-
-int FractionRen (void);
-int FractionRed (void);
+int fractGcd(fract a);
+fract addFraction(fract a, fract b);*/
 
 #endif
