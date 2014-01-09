@@ -25,3 +25,25 @@ static struct Fraction new (int numerator, int denominator) {
 const struct FractionClass Fraction = {
 	.new = &new
 };
+
+fract addFraction (struct Fraction a, struct Fraction b) {
+	int numerator, denominator;
+	fract result;
+
+	numerator = a.numerator * b.denominator + b.numerator * a.denominator;
+	denominator = a.denominator * b.denominator;
+	result = Fraction.new(numerator, denominator);
+
+	return result;
+}
+
+fract subtractFraction (struct Fraction a, struct Fraction b) {
+	int numerator, denominator;
+	fract result;
+
+	numerator = a.numerator * b.denominator - b.numerator * a.denominator;
+	denominator = a.denominator * b.denominator;
+	result = Fraction.new(numerator, denominator);
+
+	return result;
+}

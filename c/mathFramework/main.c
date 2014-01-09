@@ -6,7 +6,7 @@
 
 int main (void) {
 	//Vars for main
-	float a = 0, b = 400;
+	float a = 0, b = 0;
 	int i, answ = 0;
 
 	//Vars for division and factors
@@ -14,7 +14,8 @@ int main (void) {
 	int l;
 
 	//Fractions
-	struct Fraction fract_1;
+	struct Fraction fract_1, fract_2;
+	fract fractSum, fractSub;
 
 	printf("Insert first number to be manipulated: ");
 	scanf("%f", &a);
@@ -29,11 +30,19 @@ int main (void) {
 	printf("greatest common divider of %i and %i: %i\n", (int) a, (int) b, gcd(a, b));
 
 	fract_1 = Fraction.new(a, b);
+	fract_2 = Fraction.new(a + 2, b + 2);
+
+	fractSum = addFraction(fract_1, fract_2);
+	fractSub = subtractFraction(fract_2, fract_1);
 
 	printf("numerator: %i, denominator: %i\n", fract_1.numerator, fract_1.denominator);
 	printf("greatest common divider: %i\n", fract_1.fractGcd(&fract_1));
 	printf("reduced numerator: %i\n", fract_1.reduced_numerator(&fract_1));
 	printf("reduced denominator: %i\n", fract_1.reduced_denominator(&fract_1));
+
+	printf("adding fractions: %i, %i\n", fractSum.numerator, fractSum.denominator);
+	printf("reduced sum of fractions: %i, %i\n", fractSum.reduced_numerator(&fractSum), fractSum.reduced_denominator(&fractSum));
+	printf("subtracting fractions: %i, %i\n", fractSub.reduced_numerator(&fractSub), fractSub.reduced_denominator(&fractSub));
 
 	div = division(a);
 	l = div[0];
