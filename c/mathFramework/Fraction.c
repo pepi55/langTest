@@ -27,23 +27,17 @@ const struct FractionClass Fraction = {
 };
 
 fract addFraction (struct Fraction a, struct Fraction b) {
-	int numerator, denominator;
-	fract result;
-
-	numerator = a.numerator * b.denominator + b.numerator * a.denominator;
-	denominator = a.denominator * b.denominator;
-	result = Fraction.new(numerator, denominator);
-
-	return result;
+	return Fraction.new(a.numerator * b.denominator + b.numerator * a.denominator, a.denominator * b.denominator);
 }
 
 fract subtractFraction (struct Fraction a, struct Fraction b) {
-	int numerator, denominator;
-	fract result;
+	return Fraction.new(a.numerator * b.denominator - b.numerator * a.denominator, a.denominator * b.denominator);
+}
 
-	numerator = a.numerator * b.denominator - b.numerator * a.denominator;
-	denominator = a.denominator * b.denominator;
-	result = Fraction.new(numerator, denominator);
+fract multiplyFraction(struct Fraction a, struct Fraction b) {
+	return Fraction.new(a.numerator * b.numerator, a.denominator * b.denominator);
+}
 
-	return result;
+fract divideFraction(struct Fraction a, struct Fraction b) {
+	return Fraction.new(a.numerator * b.denominator, a.denominator * b.denominator);
 }

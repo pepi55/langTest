@@ -15,5 +15,7 @@ extern const struct FractionClass {
 
 fract addFraction(struct Fraction a, struct Fraction b);
 fract subtractFraction(struct Fraction a, struct Fraction b);
+fract multiplyFraction(struct Fraction a, struct Fraction b);
+fract divideFraction(struct Fraction a, struct Fraction b);
 
 #endif
