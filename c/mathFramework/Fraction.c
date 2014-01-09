@@ -4,42 +4,24 @@
 #include "maths.h"
 #include "Fraction.h"
 
-int fractGcd (fract a) {
-	int result;
-
-	result = gcd(a.numerator, a.denominator);
-
-	return result;
+static int reduced_numerator (struct Fraction *this) {
+	return this->numerator / gcd(this->numerator, this->denominator);
 }
 
-int fractReducedNumerator(fract a) {
-	int result, gcdOfFract;
-
-	gcdOfFract = fractGcd(a);
-	result = a.numerator / gcdOfFract;
-
-	return result;
+static int reduced_denominator (struct Fraction *this) {
+	return this->denominator / gcd(this->numerator, this->denominator);
 }
 
-int fractReducedDenominator(fract a) {
-	int result, gcdOfFract;
-
-	gcdOfFract = fractGcd(a);
-	result = a.denominator / gcdOfFract;
-
-	return result;
+static int fractGcd (struct Fraction *this) {
+	return gcd(this->numerator, this->denominator);
 }
 
-fract addFraction (fract a, fract b) {
-	int denominator;
-	int numerator;
-	fract result;
-
-	numerator = (a.numerator * b.denominator) + (b.numerator * a.denominator);
-	denominator = a.denominator * b.denominator;
-
-	result.numerator = numerator;
-	result.denominator = denominator;
-
-	return result;
+static struct Fraction new (int numerator, int denominator) {
+	return (struct Fraction) {
+		.numerator = numerator, .denominator = denominator, .fractGcd = &fractGcd, .reduced_numerator = &reduced_numerator, .reduced_denominator = &reduced_denominator
+	};
 }
+
+const struct FractionClass Fraction = {
+	.new = &new
+};
