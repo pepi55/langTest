@@ -7,9 +7,7 @@
 #define WINDOW_HEIGHT 460
 #define WINDOW_OFFSET_X 200
 #define WINDOW_OFFSET_Y 150
-#define WINDOW_LIFETIME 2000
-
-#define TILE_SIZE 40
+//#define WINDOW_LIFETIME 2000
 
 void logSDLError(char *err);
 void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y);
