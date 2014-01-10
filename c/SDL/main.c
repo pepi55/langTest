@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_keycode.h>
 
 #include "sdlFunc.h"
 
@@ -54,14 +55,13 @@ int main (void) { //int argv, char **argc
 
 	SDL_QueryTexture(fg, NULL, NULL, &fW, &fH);
 
-	x = 40; //-(fW / 2);
-	y = 40; //-(fH / 2);
+	x = 40;
+	y = 40;
 
 	renderTexture(fg, ren, x + 50, y + 50);
 
 	SDL_RenderPresent(ren);
 
-	//SDL_Delay(WINDOW_LIFETIME);
 	while (!quit) {
 		while (SDL_PollEvent(&e)) {
 			if (e.type == SDL_QUIT) quit = 1;
@@ -69,10 +69,31 @@ int main (void) { //int argv, char **argc
 		}
 
 		if (e.type == SDL_KEYDOWN) {
-			x -= 5;
+			switch (e.key.keysym.sym) {
+				case SDLK_UP:
+					y -= 5;
+					break;
+				case SDLK_DOWN:
+					y += 5;
+					break;
+				case SDLK_LEFT:
+					x -= 5;
+					break;
+				case SDLK_RIGHT:
+					x += 5;
+					break;
+				default:
+					break;
+			}
 
 			if (x < -fW) {
 				x = WINDOW_WIDTH + fW;
+			} else if (y < -fH) {
+				y = WINDOW_HEIGHT + fH;
+			} else if (x > WINDOW_WIDTH + fW) {
+				x = 0 - fW;
+			} else if (y > WINDOW_HEIGHT + fH) {
+				y = 0 - fH;
 			}
 		}
 
