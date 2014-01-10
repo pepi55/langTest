@@ -1,55 +1,58 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 
-#define WINDOW_HEIGHT 200
-#define WINDOW_WIDTH 200
-#define WINDOW_OFFSET_X 150
-#define WINDOW_OFFSET_Y 150
+#include "sdlFunc.h"
 
-int main (int argv, char **argc) {
+int main (void) { //int argv, char **argc
+	int i, bW, bH, fW, fH;
+
 	SDL_Window *win;
 	SDL_Renderer *ren;
-	SDL_Surface *bmp;
-	SDL_Texture *tex;
+	SDL_Texture *bg;
+	SDL_Texture *fg;
 
-	SDL_Init(SDL_INIT_VIDEO);
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		fprintf(stderr, "\nSDL_Init Error: %s\n", SDL_GetError());
+		logSDLError("SDL_Init");
 		return 1;
 	}
 
 	win = SDL_CreateWindow("Hello World!", WINDOW_OFFSET_X, WINDOW_OFFSET_Y, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 	if (win == NULL) {
-		fprintf(stderr, "\nSDL_CreateWindow Error: %s\n", SDL_GetError());
-		return 1;
+		logSDLError("SDL_CreateWindow");
+		return 2;
 	}
 
 	ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (ren == NULL) {
-		fprintf(stderr, "\nSDL_CreateRenderer Error: %s\n", SDL_GetError());
-		return 1;
+		logSDLError("SDL_CreateRenderer");
+		return 3;
 	}
 
-	bmp = SDL_LoadBMP("../SDL/bitmap/bmp.bmp");
-	if (bmp == NULL) {
-		fprintf(stderr, "\nSDL_LoadBMP Error: %s\n", SDL_GetError());
-		return 1;
-	}
-
-	tex = SDL_CreateTextureFromSurface(ren, bmp);
-	SDL_FreeSurface(bmp);
-	if (tex == NULL) {
-		fprintf(stderr, "\nSDL_CreateTextureFromSurface Error: %s\n", SDL_GetError());
-		return 1;
+	bg = loadTexture("../SDL/bitmap/bmp.bmp", ren);
+	fg = loadTexture("../SDL/bitmap/bmp2.bmp", ren);
+	if (bg == NULL || fg == NULL) {
+		logSDLError("loadTexture");
+		return 4;
 	}
 
 	SDL_RenderClear(ren);
-	SDL_RenderCopy(ren, tex, NULL, NULL);
+
+	SDL_QueryTexture(bg, NULL, NULL, &bW, &bH);
+	for (i = 0; i < 2; i++) {
+		renderTexture(bg, ren, i * bW, i * bH);
+		renderTexture(bg, ren, (i - 1) * bW + bW, 0);
+		renderTexture(bg, ren, 0, (i - 1) * bH + bH);
+	}
+
+	SDL_QueryTexture(fg, NULL, NULL, &fW, &fH);
+	renderTexture(fg, ren, WINDOW_WIDTH / 2 - fW / 2, WINDOW_HEIGHT / 2 - fH / 2);
+
 	SDL_RenderPresent(ren);
 
-	SDL_Delay(2000);
+	SDL_Delay(WINDOW_LIFETIME);
 
-	SDL_DestroyTexture(tex);
+	SDL_DestroyTexture(bg);
+	SDL_DestroyTexture(fg);
 	SDL_DestroyRenderer(ren);
 	SDL_DestroyWindow(win);
 	SDL_Quit();
