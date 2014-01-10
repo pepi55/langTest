@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <SDL2/SDL_image.h>
 
 #include "sdlFunc.h"
 
@@ -16,7 +17,19 @@ void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y) {
 	SDL_RenderCopy(ren, tex, NULL, &canv);
 }
 
-SDL_Texture *loadTexture(char *loc, SDL_Renderer *ren) {
+void renderTextureS(SDL_Texture *tex, SDL_Renderer *ren, int x, int y, int w, int h) {
+	SDL_Rect canv;
+	SDL_QueryTexture(tex, NULL, NULL, &canv.w, &canv.h);
+
+	canv.x = x;
+	canv.y = y;
+	canv.w = w;
+	canv.h = h;
+
+	SDL_RenderCopy(ren, tex, NULL, &canv);
+}
+
+SDL_Texture *loadBmp(char *loc, SDL_Renderer *ren) {
 	SDL_Texture *tex = NULL;
 	SDL_Surface *loadedImg = SDL_LoadBMP(loc);
 
@@ -28,6 +41,13 @@ SDL_Texture *loadTexture(char *loc, SDL_Renderer *ren) {
 	} else {
 		logSDLError("LoadBMP");
 	}
+
+	return tex;
+}
+
+SDL_Texture *loadTexture(char *loc, SDL_Renderer *ren) {
+	SDL_Texture *tex = IMG_LoadTexture(ren, loc);
+	if (tex == NULL) logSDLError("LoadTexture");
 
 	return tex;
 }

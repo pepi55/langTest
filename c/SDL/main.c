@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "sdlFunc.h"
 
 int main (void) { //int argv, char **argc
-	int i, bW, bH, fW, fH;
+	int i, j, bW, bH, fW, fH;
 
 	SDL_Window *win;
 	SDL_Renderer *ren;
@@ -12,23 +13,23 @@ int main (void) { //int argv, char **argc
 	SDL_Texture *fg;
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		logSDLError("SDL_Init");
+		logSDLError("Init");
 		return 1;
 	}
 
 	win = SDL_CreateWindow("Hello World!", WINDOW_OFFSET_X, WINDOW_OFFSET_Y, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 	if (win == NULL) {
-		logSDLError("SDL_CreateWindow");
+		logSDLError("CreateWindow");
 		return 2;
 	}
 
 	ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (ren == NULL) {
-		logSDLError("SDL_CreateRenderer");
+		logSDLError("CreateRenderer");
 		return 3;
 	}
 
-	bg = loadTexture("../SDL/bitmap/bmp.bmp", ren);
+	bg = loadBmp("../SDL/bitmap/bmp.bmp", ren);
 	fg = loadTexture("../SDL/bitmap/bmp2.bmp", ren);
 	if (bg == NULL || fg == NULL) {
 		logSDLError("loadTexture");
@@ -38,14 +39,14 @@ int main (void) { //int argv, char **argc
 	SDL_RenderClear(ren);
 
 	SDL_QueryTexture(bg, NULL, NULL, &bW, &bH);
-	for (i = 0; i < 2; i++) {
-		renderTexture(bg, ren, i * bW, i * bH);
-		renderTexture(bg, ren, (i - 1) * bW + bW, 0);
-		renderTexture(bg, ren, 0, (i - 1) * bH + bH);
+	for (i = 0; i < WINDOW_WIDTH / bW; i++) {
+		for (j = 0; j <= WINDOW_HEIGHT / bH; j++) {
+			renderTexture(bg, ren, i * bW, j * bH);
+		}
 	}
 
 	SDL_QueryTexture(fg, NULL, NULL, &fW, &fH);
-	renderTexture(fg, ren, WINDOW_WIDTH / 2 - fW / 2, WINDOW_HEIGHT / 2 - fH / 2);
+	renderTextureS(fg, ren, WINDOW_WIDTH / 2 - (fW / 2) / 2, WINDOW_HEIGHT / 2 - (fH / 2) / 2, fW / 2, fH / 2);
 
 	SDL_RenderPresent(ren);
 
