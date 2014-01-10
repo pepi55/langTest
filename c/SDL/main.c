@@ -33,8 +33,8 @@ int main (void) { //int argv, char **argc
 		return 3;
 	}
 
-	bg = loadBmp("../SDL/bitmap/bmp.bmp", ren);
-	fg = loadTexture("../SDL/bitmap/png.png", ren);
+	bg = loadBmp("../SDL/pic/bmp.bmp", ren);
+	fg = loadTexture("../SDL/pic/png.png", ren);
 	if (bg == NULL || fg == NULL) {
 		logSDLError("loadTexture");
 		return 4;

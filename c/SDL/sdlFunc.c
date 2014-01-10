@@ -12,8 +12,8 @@ void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y) {
 
 	canv.x = x;
 	canv.y = y;
-
 	SDL_QueryTexture(tex, NULL, NULL, &canv.w, &canv.h);
+
 	SDL_RenderCopy(ren, tex, NULL, &canv);
 }
 
@@ -27,6 +27,22 @@ void renderTextureS(SDL_Texture *tex, SDL_Renderer *ren, int x, int y, int w, in
 	canv.h = h;
 
 	SDL_RenderCopy(ren, tex, NULL, &canv);
+}
+
+void renderSprite(SDL_Texture *tex, SDL_Renderer *ren, SDL_Rect dst, SDL_Rect *clip, int x, int y) {
+	SDL_Rect dst;
+
+	dst.x = x;
+	dst.y = y;
+
+	if (clip != NULL) {
+		dst.w = clip->w;
+		dst.h = clip->h;
+	} else {
+		SDL_QueryTexture(tex, NULL, NULL, &dst.w, &dst.h);
+	}
+
+	SDL_RenderCopy(
 }
 
 SDL_Texture *loadBmp(char *loc, SDL_Renderer *ren) {
