@@ -7,7 +7,8 @@
 #include "sdlFunc.h"
 
 int main (void) { //int argv, char **argc
-	int x, y, i, j, bW, bH, fW, fH;
+	int x, y, i, j, bW, bH, fW, fH, sW, sH;
+	int curClip = 0;
 	bool quit = 0;
 
 	SDL_Event e;
@@ -15,6 +16,7 @@ int main (void) { //int argv, char **argc
 	SDL_Renderer *ren;
 	SDL_Texture *bg;
 	SDL_Texture *fg;
+	SDL_Rect clips[CLIPS_AMOUNT];
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0 || (IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG) {
 		logSDLError("Init");
@@ -34,7 +36,7 @@ int main (void) { //int argv, char **argc
 	}
 
 	bg = loadBmp("../SDL/pic/bmp.bmp", ren);
-	fg = loadTexture("../SDL/pic/png.png", ren);
+	fg = loadTexture("../SDL/sprites/sprite.png", ren);
 	if (bg == NULL || fg == NULL) {
 		logSDLError("loadTexture");
 		return 4;
@@ -53,47 +55,60 @@ int main (void) { //int argv, char **argc
 		}
 	}
 
-	SDL_QueryTexture(fg, NULL, NULL, &fW, &fH);
+	fW = 95;
+	fH = 95;
+	x = WINDOW_WIDTH / 2 - fW / 2;
+	y = WINDOW_WIDTH / 2 - fH / 2;
 
-	x = 40;
-	y = 40;
+	for (i = 0; i < CLIPS_AMOUNT; i++) {
+		clips[i].x = i / 2 * fW;
+		clips[i].y = i % 2 * fH;
 
-	renderTexture(fg, ren, x + 50, y + 50);
+		clips[i].w = fW;
+		clips[i].h = fH;
+	}
+
+	SDL_QueryTexture(fg, NULL, NULL, &sW, &sH);
+	renderTexture(fg, ren, x, y);
 
 	SDL_RenderPresent(ren);
 
 	while (!quit) {
 		while (SDL_PollEvent(&e)) {
 			if (e.type == SDL_QUIT) quit = 1;
-			if (e.type == SDL_MOUSEBUTTONDOWN) quit = 1;
+			//if (e.type == SDL_MOUSEBUTTONDOWN) quit = 1;
 		}
 
 		if (e.type == SDL_KEYDOWN) {
 			switch (e.key.keysym.sym) {
 				case SDLK_UP:
-					y -= 5;
+					x -= 5;
+					curClip = 3;
 					break;
 				case SDLK_DOWN:
-					y += 5;
+					x += 5;
+					curClip = 1;
 					break;
 				case SDLK_LEFT:
-					x -= 5;
+					y -= 5;
+					curClip = 0;
 					break;
 				case SDLK_RIGHT:
-					x += 5;
+					y += 5;
+					curClip = 2;
 					break;
 				default:
 					break;
 			}
 
-			if (x < -fW) {
-				x = WINDOW_WIDTH + fW;
-			} else if (y < -fH) {
-				y = WINDOW_HEIGHT + fH;
-			} else if (x > WINDOW_WIDTH + fW) {
-				x = 0 - fW;
-			} else if (y > WINDOW_HEIGHT + fH) {
-				y = 0 - fH;
+			if (x < -sW) {
+				x = WINDOW_WIDTH + sW;
+			} else if (y < -sH) {
+				y = WINDOW_HEIGHT + sH;
+			} else if (x > WINDOW_WIDTH + sW) {
+				x = 0 - sW;
+			} else if (y > WINDOW_HEIGHT + sH) {
+				y = 0 - sH;
 			}
 		}
 
@@ -105,7 +120,7 @@ int main (void) { //int argv, char **argc
 			}
 		}
 
-		renderTexture(fg, ren, x, y);
+		renderSprite(fg, ren, x, y, &clips[curClip]);
 		SDL_RenderPresent(ren);
 	}
 

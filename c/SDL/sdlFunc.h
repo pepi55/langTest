@@ -7,11 +7,12 @@
 #define WINDOW_HEIGHT 460
 #define WINDOW_OFFSET_X 200
 #define WINDOW_OFFSET_Y 150
+#define CLIPS_AMOUNT 4
 
 void logSDLError(char *err);
 void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y);
 void renderTextureS(SDL_Texture *tex, SDL_Renderer *ren, int x, int y, int w, int h);
-void renderSprite(SDL_Texture *tex, SDL_Renderer *ren, SDL_Rect dst, SDL_Rect *clip, int x, int y);
+void renderSprite(SDL_Texture *tex, SDL_Renderer *ren, int y, int x, SDL_Rect *clip); //SDL_Rect *clip
 
 SDL_Texture *loadBmp(char *loc, SDL_Renderer *ren);
 SDL_Texture *loadTexture(char *loc, SDL_Renderer *ren);

@@ -29,7 +29,7 @@ void renderTextureS(SDL_Texture *tex, SDL_Renderer *ren, int x, int y, int w, in
 	SDL_RenderCopy(ren, tex, NULL, &canv);
 }
 
-void renderSprite(SDL_Texture *tex, SDL_Renderer *ren, SDL_Rect dst, SDL_Rect *clip, int x, int y) {
+void renderSprite(SDL_Texture *tex, SDL_Renderer *ren, int y, int x, SDL_Rect *clip) {
 	SDL_Rect dst;
 
 	dst.x = x;
@@ -42,7 +42,7 @@ void renderSprite(SDL_Texture *tex, SDL_Renderer *ren, SDL_Rect dst, SDL_Rect *c
 		SDL_QueryTexture(tex, NULL, NULL, &dst.w, &dst.h);
 	}
 
-	SDL_RenderCopy(
+	SDL_RenderCopy(ren, tex, clip, &dst);
 }
 
 SDL_Texture *loadBmp(char *loc, SDL_Renderer *ren) {
