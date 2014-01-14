@@ -10,6 +10,7 @@ int main (void) { //int argv, char **argc
 	int x, y, i, j, bW, bH, fW, fH, sW, sH;
 	int curClip = 0;
 	bool quit = 0;
+	const Uint8 *kbState = SDL_GetKeyboardState(NULL);
 
 	SDL_Event e;
 	SDL_Window *win;
@@ -17,7 +18,6 @@ int main (void) { //int argv, char **argc
 	SDL_Texture *bg;
 	SDL_Texture *fg;
 	SDL_Rect clips[CLIPS_AMOUNT];
-	const Uint8 *kbState = SDL_GetKeyboardState(NULL);
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0 || (IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG) {
 		logSDLError("Init");
@@ -79,41 +79,6 @@ int main (void) { //int argv, char **argc
 			if (e.type == SDL_QUIT) quit = 1;
 			//if (e.type == SDL_MOUSEBUTTONDOWN) quit = 1;
 		}
-
-		/*
-		if (e.type == SDL_KEYDOWN) {
-			switch (e.key.keysym.sym) {
-				case SDLK_UP:
-					x -= 5;
-					curClip = 3;
-					break;
-				case SDLK_DOWN:
-					x += 5;
-					curClip = 1;
-					break;
-				case SDLK_LEFT:
-					y -= 5;
-					curClip = 0;
-					break;
-				case SDLK_RIGHT:
-					y += 5;
-					curClip = 2;
-					break;
-				default:
-					break;
-			}
-
-			if (x < -sW) {
-				x = WINDOW_WIDTH + sW;
-			} else if (y < -sH) {
-				y = WINDOW_HEIGHT + sH;
-			} else if (x > WINDOW_WIDTH + sW) {
-				x = 0 - sW;
-			} else if (y > WINDOW_HEIGHT + sH) {
-				y = 0 - sH;
-			}
-		}
-		*/
 
 		if (kbState[SDL_SCANCODE_W] || kbState[SDL_SCANCODE_UP]) {
 			x -= 5; curClip = 3;
