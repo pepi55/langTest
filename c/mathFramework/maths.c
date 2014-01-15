@@ -77,6 +77,8 @@ unsigned int *primes (long a) {
 				if (ln == 3) {
 					result[l++] = i;
 				}
+
+				free(div);
 			}
 
 			result[0] = l;
@@ -106,6 +108,8 @@ unsigned int *primeFactorization (float a) {
 				i += 1;
 			}
 		}
+
+		free(prime);
 
 		result[0] = l;
 		result = realloc(result, l * sizeof(unsigned int));
