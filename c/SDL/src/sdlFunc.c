@@ -67,3 +67,19 @@ SDL_Texture *loadTexture(char *loc, SDL_Renderer *ren) {
 
 	return tex;
 }
+
+SDL_Texture *loadHeader(char **loc, SDL_Renderer *ren) {
+	SDL_Texture *tex = NULL;
+	SDL_Surface *loadedSource = IMG_ReadXPMFromArray(loc);
+
+	if (loadedSource != NULL) {
+		tex = SDL_CreateTextureFromSurface(ren, loadedSource);
+		SDL_FreeSurface(loadedSource);
+
+		if (tex == NULL) logSDLError("CreateTextureFromSource");
+	} else {
+		logSDLError("LoadSRC");
+	}
+
+	return tex;
+}

@@ -15,5 +15,6 @@ void renderSprite(SDL_Texture *tex, SDL_Renderer *ren, int y, int x, SDL_Rect *c
 
 SDL_Texture *loadBmp(char *loc, SDL_Renderer *ren);
 SDL_Texture *loadTexture(char *loc, SDL_Renderer *ren);
+SDL_Texture *loadHeader(char **loc, SDL_Renderer *ren);
 
 #endif

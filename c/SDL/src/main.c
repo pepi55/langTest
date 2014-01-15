@@ -5,6 +5,8 @@
 #include <SDL2/SDL_keycode.h>
 
 #include "sdlFunc.h"
+#include "sprite.xpm"
+#include "bmp.xpm"
 
 #define CLIPS_AMOUNT 4
 
@@ -13,6 +15,7 @@ int main (void) { //int argv, char **argc
 	int curClip = 0;
 	bool quit = 0;
 	const Uint8 *kbState = SDL_GetKeyboardState(NULL);
+	char **imgFromSrc;
 
 	SDL_Event e;
 	SDL_Window *win;
@@ -38,8 +41,11 @@ int main (void) { //int argv, char **argc
 		return 3;
 	}
 
-	bg = loadBmp("../SDL/pic/bmp.bmp", ren);
-	fg = loadTexture("../SDL/sprites/sprite.png", ren);
+	imgFromSrc = bmp_xpm;
+	bg = loadHeader(imgFromSrc, ren);
+
+	imgFromSrc = sprite_xpm;
+	fg = loadHeader(imgFromSrc, ren);
 	if (bg == NULL || fg == NULL) {
 		logSDLError("loadTexture");
 		return 4;
