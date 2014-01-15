@@ -6,6 +6,8 @@
 
 #include "sdlFunc.h"
 
+#define CLIPS_AMOUNT 4
+
 int main (void) { //int argv, char **argc
 	int x, y, i, j, bW, bH, fW, fH, sW, sH;
 	int curClip = 0;

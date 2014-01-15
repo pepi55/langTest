@@ -7,7 +7,6 @@
 #define WINDOW_HEIGHT 460
 #define WINDOW_OFFSET_X 200
 #define WINDOW_OFFSET_Y 150
-#define CLIPS_AMOUNT 4
 
 void logSDLError(char *err);
 void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y);

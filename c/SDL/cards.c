@@ -5,8 +5,10 @@
 
 #include "sdlFunc.h"
 
+#define CLIPS_AMOUNT 52
+
 int main (void) {
-	int x, y, i, j, cardWidth, cardHeight, bW, bH;
+	int x, y, i, j, cardWidth, cardHeight, bW, bH, sW, sH;
 	int curCard = 0;
 	bool quit = 0;
 
@@ -15,7 +17,7 @@ int main (void) {
 	SDL_Renderer *ren;
 	SDL_Texture *bg;
 	SDL_Texture *fg;
-	SDL_Rect clips[52];
+	SDL_Rect clips[CLIPS_AMOUNT];
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0 || (IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG) {
 		logSDLError("Init");
@@ -43,13 +45,13 @@ int main (void) {
 
 	SDL_RenderClear(ren);
 	SDL_QueryTexture(bg, NULL, NULL, &bW, &bH);
-	SDL_QueryTexture(fg, NULL, NULL, &cardWidth, &cardHeight);
+	SDL_QueryTexture(fg, NULL, NULL, &sW, &sH);
 
 	bW /= 2;
 	bH /= 2;
 
-	cardWidth /= 13;
-	cardHeight /= 4;
+	cardWidth = sW / 13; //61;
+	cardHeight = sH / 4; //82;
 
 	for (i = 0; i < WINDOW_WIDTH / bW; i++) {
 		for (j = 0; j <= WINDOW_HEIGHT / bH; j++) {
@@ -57,7 +59,7 @@ int main (void) {
 		}
 	}
 
-	for (i = 0; i < 52; i++) {
+	for (i = 0; i < CLIPS_AMOUNT; i++) {
 		clips[i].x = i % 13 * cardWidth;
 		clips[i].y = floor(i / 13) * cardHeight;
 
@@ -65,7 +67,7 @@ int main (void) {
 		clips[i].h = cardHeight;
 	}
 
-	x = 0; y = 0;
+	x = 10; y = 20;
 	renderTexture(fg, ren, x, y);
 
 	SDL_RenderPresent(ren);
@@ -76,8 +78,6 @@ int main (void) {
 			if (e.type == SDL_MOUSEBUTTONDOWN) quit = 1;
 		}
 
-		curCard = 15;
-
 		SDL_RenderClear(ren);
 
 		for (i = 0; i < WINDOW_WIDTH / bW; i++) {
@@ -86,7 +86,9 @@ int main (void) {
 			}
 		}
 
-		renderSprite(fg, ren, x, y, &clips[curCard]);
+		for (i = 0; i < CLIPS_AMOUNT; i++) {
+			renderSprite(fg, ren, x, y * i, &clips[i]);
+		}
 		SDL_RenderPresent(ren);
 	}
 
