@@ -5,7 +5,6 @@
 #include <SDL2/SDL_keycode.h>
 
 #include "sdlFunc.h"
-#include "sprite.xpm"
 #include "bmp.xpm"
 
 #define CLIPS_AMOUNT 4
@@ -43,9 +42,7 @@ int main (void) { //int argv, char **argc
 
 	imgFromSrc = bmp_xpm;
 	bg = loadHeader(imgFromSrc, ren);
-
-	imgFromSrc = sprite_xpm;
-	fg = loadHeader(imgFromSrc, ren);
+	fg = loadTexture("../SDL/sprites/sprite.png", ren);
 	if (bg == NULL || fg == NULL) {
 		logSDLError("loadTexture");
 		return 4;
