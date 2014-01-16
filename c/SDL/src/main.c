@@ -21,6 +21,8 @@ int main (void) { //int argv, char **argc
 	SDL_Renderer *ren;
 	SDL_Texture *bg;
 	SDL_Texture *fg;
+
+	SDL_Rect wall;
 	SDL_Rect clips[CLIPS_AMOUNT];
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0 || (IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG) {
@@ -78,6 +80,8 @@ int main (void) { //int argv, char **argc
 	renderTexture(fg, ren, x, y);
 
 	SDL_RenderPresent(ren);
+
+	SDL_Delay(2000);
 
 	while (!quit) {
 		while (SDL_PollEvent(&e)) {
