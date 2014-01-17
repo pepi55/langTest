@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <SDL2/SDL_image.h>
 
 #include "sdlFunc.h"
 #include "Square.h"
@@ -62,13 +63,16 @@ void move (struct Square *this) {
 	}
 }
 
-SDL_Texture texture (struct Square *this) {
+SDL_Texture *render (char *loc, SDL_Renderer *ren) {
+	SDL_Texture *tex = IMG_LoadTexture(ren, loc);
+	if (tex == NULL) logSDLError("LoadTexture");
 
+	return tex;
 }
 
 static struct Square new (SDL_Rect box, int xVel, int yVel) {
 	return (struct Square) {
-		.box = box, .xVel = xVel, .yVel = yVel, .input = &input, .move = &move
+		.box = box, .xVel = xVel, .yVel = yVel, .input = &input, .move = &move, .render = &render
 	};
 }
 

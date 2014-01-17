@@ -9,7 +9,7 @@ typedef struct Square {
 
 	void (*input)(SDL_Event *e, struct Square *this);
 	void (*move)(struct Square *this);
-	SDL_Texture (*texture)(struct Square *this);
+	SDL_Texture (*render)(char *loc, SDL_Renderer *ren);
 } sqr;
 
 extern const struct SquareClass {
