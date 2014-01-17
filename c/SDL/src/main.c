@@ -126,8 +126,7 @@ int main (void) { //int argv, char **argc
 	SDL_DestroyRenderer(ren);
 	SDL_DestroyWindow(win);
 
-	IMG_Quit();
-	SDL_Quit();
+	cleanUp();
 
 	return 0;
 }

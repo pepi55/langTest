@@ -13,6 +13,7 @@ void logSDLError(char *err);
 void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y);
 void renderTextureS(SDL_Texture *tex, SDL_Renderer *ren, int x, int y, int w, int h);
 void renderSprite(SDL_Texture *tex, SDL_Renderer *ren, int y, int x, SDL_Rect *clip);
+void cleanUp(void);
 
 bool checkCollision(SDL_Rect a, SDL_Rect b);
 

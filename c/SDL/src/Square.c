@@ -3,9 +3,9 @@
 #include "sdlFunc.h"
 #include "Square.h"
 
-void input (SDL_Event e, struct Square *this) {
-	if (e.type == SDL_KEYDOWN) {
-		switch (e.key.keysym.sym) {
+void input (SDL_Event *e, struct Square *this) {
+	if (e->type == SDL_KEYDOWN) {
+		switch (e->key.keysym.sym) {
 			case SDLK_UP:
 				this->yVel -= this->box.h / 2;
 				break;
@@ -25,8 +25,8 @@ void input (SDL_Event e, struct Square *this) {
 			default:
 				break;
 		}
-	} else if (e.type == SDL_KEYUP) {
-		switch (e.key.keysym.sym) {
+	} else if (e->type == SDL_KEYUP) {
+		switch (e->key.keysym.sym) {
 			case SDLK_UP:
 				this->yVel += this->box.h / 2;
 				break;
@@ -62,9 +62,13 @@ void move (struct Square *this) {
 	}
 }
 
+SDL_Texture texture (struct Square *this) {
+
+}
+
 static struct Square new (SDL_Rect box, int xVel, int yVel) {
 	return (struct Square) {
-		.box = box, .xVel = xVel, .yVel = yVel, .input = &input
+		.box = box, .xVel = xVel, .yVel = yVel, .input = &input, .move = &move
 	};
 }
 
