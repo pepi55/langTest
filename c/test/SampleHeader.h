@@ -3,7 +3,8 @@
 
 struct Sample {
 	int i, j;
-	int (*abs)(struct Sample *this);
+	int (*absolute)(struct Sample *this);
+	unsigned long (*ran)(void);
 };
 
 extern const struct SampleClass {
