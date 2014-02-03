@@ -10,7 +10,7 @@ int main (void) {
 	int i;
 
 	for (i = 0; i < 16; i++) {
-		state[i] = rand()^(rand()<<16)^(rand()<<31) * (unsigned int)time(NULL);
+		state[i] = /*rand()^(rand()<<16)^(rand()<<31) * */(unsigned int)time(NULL);
 	}
 
 	for (i = 0; i < 16; i++) {
