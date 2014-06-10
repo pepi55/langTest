@@ -42,9 +42,14 @@ void sdlInit (void) {
 	}
 
 	glContext = SDL_GL_CreateContext(screen);
+
+	glClearColor(1.0, 1.0, 1.0, 1.0);
+	//glClearDepth(1.0);
+
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glShadeModel(GL_SMOOTH);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	SDL_GL_SetSwapInterval(1);
 }
