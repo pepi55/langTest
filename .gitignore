@@ -37,3 +37,6 @@ nosetests.xml
 
 # YCM configs
 .ycm_extra_conf.py
+
+# VIM swp files
+*.swp

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <GL/glut.h>
 #include <SDL2/SDL_image.h>
 
 #include "sdlFunc.h"
@@ -41,6 +42,9 @@ void sdlInit (void) {
 	}
 
 	glContext = SDL_GL_CreateContext(screen);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glShadeModel(GL_SMOOTH);
 
 	SDL_GL_SetSwapInterval(1);
 }

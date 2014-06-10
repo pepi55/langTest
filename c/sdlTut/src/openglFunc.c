@@ -11,8 +11,8 @@ void createCube (float size, float rotation_x, float rotation_y) {
 
 	//glScalef(rotate_x, rotate_y, 0.0);
 	
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 	
 	//FRONT
