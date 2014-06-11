@@ -8,7 +8,7 @@ int main (void) {
 
 	mainLoop();
 
-	sdlExit(screen, renderer);
+	sdlExit(screen, /*renderer, */glContext);
 
 	return 0;
 }

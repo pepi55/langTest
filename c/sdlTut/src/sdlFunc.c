@@ -54,8 +54,9 @@ void sdlInit (void) {
 	SDL_GL_SetSwapInterval(1);
 }
 
-void sdlExit (SDL_Window *screen, SDL_Renderer *renderer) {
-	SDL_DestroyRenderer(renderer);
+void sdlExit (SDL_Window *screen, /*SDL_Renderer *renderer, */SDL_GLContext glContext) {
+	SDL_GL_DeleteContext(glContext);
+	//SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(screen);
 
 	IMG_Quit();
