@@ -1,3 +1,3 @@
 #pragma once
 
-void createCube(float size, float rotation_x, float rotation_y);
+void createCube(GLfloat size, GLfloat rotation_x, GLfloat rotation_y);

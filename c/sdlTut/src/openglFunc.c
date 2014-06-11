@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include <GL/glut.h>
 
-void createCube (float size, float rotation_x, float rotation_y) {
+void createCube (GLfloat size, GLfloat rotation_x, GLfloat rotation_y) {
 	//glTranslatef(rotate_y * 0.1, 0.0, 0.0);
 
 	glLoadIdentity();
