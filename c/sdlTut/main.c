@@ -6,7 +6,7 @@
 int main (void) {
 	screen = NULL;
 
-	sdlInit(screen);
+	sdlInit();
 
 	mainLoop();
 

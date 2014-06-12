@@ -12,7 +12,7 @@ Uint16 makeHiColorPixel (SDL_PixelFormat *fmt, Uint8 red, Uint8 green, Uint8 blu
 	return value;
 }
 
-void sdlInit (SDL_Window *screen) {
+void sdlInit (void) {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0 /*|| (IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG*/) {
 		sdlLogError("SDL initialization");
 	}
