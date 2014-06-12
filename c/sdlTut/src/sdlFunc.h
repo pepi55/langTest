@@ -11,10 +11,10 @@
 
 Uint16 makeHiColorPixel(SDL_PixelFormat *fmt, Uint8 red, Uint8 green, Uint8 blue);
 
-void sdlInit(void);
+void sdlInit(SDL_Window *screen);
 void sdlExit(SDL_Window *screen, /*SDL_Renderer *renderer, */SDL_GLContext glContext);
 void sdlLogError(char *error);
 
 SDL_Window *screen;
-SDL_Renderer *renderer;
+//SDL_Renderer *renderer;
 SDL_GLContext glContext;
