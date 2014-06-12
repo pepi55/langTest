@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <GL/glut.h>
-#include <SDL2/SDL_image.h>
+//#include <SDL2/SDL_image.h>
 
 #include "sdlFunc.h"
 
@@ -13,7 +13,7 @@ Uint16 makeHiColorPixel (SDL_PixelFormat *fmt, Uint8 red, Uint8 green, Uint8 blu
 }
 
 void sdlInit (void) {
-	if (SDL_Init(SDL_INIT_VIDEO) != 0 || (IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG) {
+	if (SDL_Init(SDL_INIT_VIDEO) != 0 /*|| (IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG*/) {
 		sdlLogError("SDL initialization");
 	}
 
@@ -59,7 +59,7 @@ void sdlExit (SDL_Window *screen, /*SDL_Renderer *renderer, */SDL_GLContext glCo
 	//SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(screen);
 
-	IMG_Quit();
+	//IMG_Quit();
 	SDL_Quit();
 }
 
