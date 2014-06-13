@@ -6,7 +6,7 @@
 #include "openglFunc.h"
 
 void mainLoop (void) {
-	bool exitProgram;
+	bool exitProgram = 0;
 	const Uint8 *kbState = SDL_GetKeyboardState(NULL);
 	GLfloat rotation_y = 0, rotation_x = 0;
 

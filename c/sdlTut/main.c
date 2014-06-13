@@ -4,8 +4,6 @@
 #include "src/mainLoop.h"
 
 int main (void) {
-	screen = NULL;
-
 	sdlInit();
 
 	mainLoop();
