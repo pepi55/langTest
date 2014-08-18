@@ -37,7 +37,8 @@ void mainLoop (void) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(rotation_x * 0.1, rotation_y * 0.1, rotation_x * 0.2, rotation_y * 0.2);
 
-		createCube(0.5, rotation_x, rotation_y);
+		createSphere(1, rotation_x + 0.5, rotation_y + 0.5, 0, 0);
+		//createCube(0.5, rotation_x, rotation_y);
 
 		SDL_GL_SwapWindow(screen);
 	}

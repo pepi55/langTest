@@ -2,6 +2,46 @@
 #include <stdarg.h>
 #include <GL/glut.h>
 
+void createSphere (GLfloat size, GLfloat rotation_x, GLfloat rotation_y, GLfloat position_x, GLfloat position_y) {
+	GLsizei numVAOs = 1;
+	GLsizei numBuffers = 1;
+
+	GLuint buffers[numBuffers];
+	GLuint VAOs[numVAOs];
+
+	glGenVertexArrays(numVAOs, VAOs);
+	glBindVertexArray(VAOs);
+
+	GLfloat vertices[] = {
+		//Triangle 1
+		{ -0.90, -0.90 },
+		{ 0.85, -0.90 },
+		{ -0.90, 0.85 },
+
+		//Triangle 2
+		{ 0.90, -0.85 },
+		{ 0.90, 0.90 },
+		{ -0.85, 0.90 }
+	};
+
+	glGenBuffers(numBuffers, buffers);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	ShaderInfo shaders[] = {
+		{ GL_VERTEX_SHADER, "src/shr/triangle.vert" },
+		{ GL_FRAGMENT_SHADER, "src/shr/triangle.frag" },
+		{ GL_NONE, NULL }
+	};
+
+	GLuint program = LoadShaders(shaders);
+	glUseProgram(program);
+
+	glDeleteVertexArrays(numVAOs, VAOs);
+	glDeleteBuffers(numBuffers, buffers);
+}
+
 void createCube (GLfloat size, GLfloat rotation_x, GLfloat rotation_y) {
 	//glTranslatef(rotate_y * 0.1, 0.0, 0.0);
 
