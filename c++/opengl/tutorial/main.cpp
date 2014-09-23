@@ -12,11 +12,9 @@
 using namespace glm;
 
 int main (void) {
-	if (!glfwInit()) {
-		fprintf(stderr, "Failed to initialize GLFW!\n");
-		
-		return -1;
-	}
+	int antialiasing = 4;
+
+	GLFWInitialization(antialiasing);
 
 	return 0;
 }
