@@ -48,8 +48,6 @@ int GLFWInitialization (int samples) {
 }
 
 void mainLoop (void) {
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-
 	do {
 		//Draw stuff
 
