@@ -1,12 +1,7 @@
 #include <stdio.h>
 
-//OpenGL includes
-//#include <glm/glm.hpp>
-
 //User includes
 #include "src/openglFunc.hpp"
-
-//using namespace glm;
 
 int main (void) {
 	int antialiasing = 4;
