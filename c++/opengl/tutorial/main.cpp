@@ -15,7 +15,7 @@ int main (void) {
 	success = GLFWInitialization(antialiasing);
 
 	if (success != 0) {
-		fprintf(stderr, "Error at GLFWInit\n");
+		fprintf(stderr, "Error at GLFWInit\a\n");
 		return -1;
 	}
 
