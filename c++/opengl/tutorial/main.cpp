@@ -1,20 +1,25 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 //OpenGL includes
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
+//#include <glm/glm.hpp>
 
 //User includes
 #include "src/openglFunc.hpp"
 
-using namespace glm;
+//using namespace glm;
 
 int main (void) {
 	int antialiasing = 4;
+	int success;
+	
+	success = GLFWInitialization(antialiasing);
 
-	GLFWInitialization(antialiasing);
+	if (success != 0) {
+		fprintf(stderr, "Error at GLFWInit\n");
+		return -1;
+	}
+
+	mainLoop();
 
 	return 0;
 }

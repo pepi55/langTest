@@ -41,5 +41,18 @@ int GLFWInitialization (int samples) {
 		return -1;
 	}
 
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
 	return 0;
+}
+
+void mainLoop (void) {
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+
+	do {
+		//Draw stuff
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);
 }
