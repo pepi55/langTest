@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include <GL/glut.h>
 
-void createSphere (GLfloat size, GLfloat rotation_x, GLfloat rotation_y, GLfloat position_x, GLfloat position_y) {
+/*void createSphere (GLfloat size, GLfloat rotation_x, GLfloat rotation_y, GLfloat position_x, GLfloat position_y) {
 	GLsizei numVAOs = 1;
 	GLsizei numBuffers = 1;
 
@@ -40,7 +40,7 @@ void createSphere (GLfloat size, GLfloat rotation_x, GLfloat rotation_y, GLfloat
 
 	glDeleteVertexArrays(numVAOs, VAOs);
 	glDeleteBuffers(numBuffers, buffers);
-}
+}*/
 
 void createCube (GLfloat size, GLfloat rotation_x, GLfloat rotation_y) {
 	//glTranslatef(rotate_y * 0.1, 0.0, 0.0);
