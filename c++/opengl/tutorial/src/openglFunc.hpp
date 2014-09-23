@@ -1,4 +1,5 @@
-#pragma once
+#ifndef OPENGLFUNC_CPP
+#define OPENGLFUNC_CPP
 
 //Includes
 #include <stdio.h>
@@ -56,3 +57,5 @@ void mainLoop (void) {
 		glfwPollEvents();
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);
 }
+
+#endif
