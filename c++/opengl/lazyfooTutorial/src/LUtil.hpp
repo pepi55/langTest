@@ -24,4 +24,6 @@ void update(void);
 void render(void);
 void handleKeys(unsigned char key, int x, int y);
 
+void drawQuad(GLfloat sizeX, GLfloat sizeY, GLfloat R, GLfloat G, GLfloat B);
+
 #endif

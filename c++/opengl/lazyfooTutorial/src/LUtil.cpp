@@ -42,162 +42,59 @@ void render(void) {
 
 	if (gViewPortMode == VIEWPORT_MODE_FULL) {
 		glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
-	
-		if (gColorMode == COLOR_MODE_MONO) {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 1.0f, 1.0f);
-				glVertex2f(-SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glVertex2f(SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glVertex2f(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-				glVertex2f(-SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-			glEnd();
-		} else {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-				glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-			glEnd();
-		}
+
+		drawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 1.0f, 0.0f, 0.0f);
 	} else if (gViewPortMode == VIEWPORT_MODE_HALF_CENTER) {
 		glViewport(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
 
-		if (gColorMode == COLOR_MODE_MONO) {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 0.0f, 1.0f);
-				glVertex2f(-SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glVertex2f(SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glVertex2f(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-				glVertex2f(-SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-			glEnd();
-		} else {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-				glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-			glEnd();
-		}
+		drawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f, 1.0f, 1.0f);
 	} else if (gViewPortMode == VIEWPORT_MODE_HALF_TOP) {
 		glViewport(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
 
-		if (gColorMode == COLOR_MODE_MONO) {
-			glBegin(GL_QUADS);
-				glColor3f(1.0f, 0.0f, 1.0f);
-				glVertex2f(-SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glVertex2f(SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glVertex2f(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-				glVertex2f(-SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-			glEnd();
-		} else {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 2.0f, -SCREEN_HEIGHT / 2.0f);
-				glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-				glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-			glEnd();
-		}
+		drawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f, 1.0f, 0.0f);
 	} else if (gViewPortMode == VIEWPORT_MODE_QUAD) {
 		//Bottom left
 		glViewport(0.0f, 0.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
 
-		if (gColorMode == COLOR_MODE_MONO) {
-			glBegin(GL_QUADS);
-				glColor3f(1.0f, 0.0f, 0.0f);
-				glVertex2f(-SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glVertex2f(SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glVertex2f(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-				glVertex2f(-SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-			glEnd();
-		} else {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-				glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-			glEnd();
-		}
+		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 1.0f, 0.0f);
 
 		//Bottom right
 		glViewport(SCREEN_WIDTH / 2.0f, 0.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
 
-		if (gColorMode == COLOR_MODE_MONO) {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 1.0f, 0.0f);
-				glVertex2f(-SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glVertex2f(SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glVertex2f(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-				glVertex2f(-SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-			glEnd();
-		} else {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-				glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-			glEnd();
-		}
+		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 1.0f, 1.0f);
 
 		//Top left
 		glViewport(0.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
 
-		if (gColorMode == COLOR_MODE_MONO) {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 0.0f, 1.0f);
-				glVertex2f(-SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glVertex2f(SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glVertex2f(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-				glVertex2f(-SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-			glEnd();
-		} else {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-				glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-			glEnd();
-		}
+		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
 
 		//Top right
 		glViewport(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
 
-		if (gColorMode == COLOR_MODE_MONO) {
-			glBegin(GL_QUADS);
-				glColor3f(1.0f, 0.0f, 1.0f);
-				glVertex2f(-SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glVertex2f(SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glVertex2f(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-				glVertex2f(-SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-			glEnd();
-		} else {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 4.0f, -SCREEN_HEIGHT / 4.0f);
-				glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-				glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-			glEnd();
-		}
+		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 0.0f, 1.0f);
 	} else if (gViewPortMode == VIEWPORT_MODE_RADAR) {
 		//Full size quad
 		glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
 
+		drawQuad(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f, 1.0f, 1.0f, 1.0f);
+		drawQuad(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 0.0f, 1.0f, 1.0f);
+	} else if (gViewPortMode == VIEWPORT_MODE_RADAR) {
+		glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
 		glBegin(GL_QUADS);
-			glColor3f(1.0f, 1.0f, 1.0f);
+			glColor3f(1.0f, 1.0f, 0.0f);
 			glVertex2f(-SCREEN_WIDTH / 8.0f, -SCREEN_HEIGHT / 8.0f);
 			glVertex2f(SCREEN_WIDTH / 8.0f, -SCREEN_HEIGHT / 8.0f);
 			glVertex2f(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f);
 			glVertex2f(-SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f);
 
-			glColor3f(0.0f, 0.0f, 0.0f);
+			glColor3f(0.0f, 0.0f, 1.0f);
 			glVertex2f(-SCREEN_WIDTH / 16.0f, -SCREEN_HEIGHT / 16.0f);
 			glVertex2f(SCREEN_WIDTH / 16.0f, -SCREEN_HEIGHT / 16.0f);
 			glVertex2f(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f);
 			glVertex2f(-SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f);
 		glEnd();
 
-		//Radar quad
 		glViewport(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-
 		glBegin(GL_QUADS);
 			glColor3f(1.0f, 1.0f, 1.0f);
 			glVertex2f(-SCREEN_WIDTH / 8.0f, -SCREEN_HEIGHT / 8.0f);
@@ -225,23 +122,6 @@ void handleKeys(unsigned char key, int x, int y) {
 		}
 	}
 
-	if (key == 'e') {
-		if (gProjectionScale == 1.0f) {
-			gProjectionScale = 2.0f;
-		} else if (gProjectionScale == 2.0f) {
-			gProjectionScale = 0.5f;
-		} else if (gProjectionScale == 0.5f) {
-			gProjectionScale = 1.0f;
-		}
-
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(0.0f,
-				SCREEN_WIDTH * gProjectionScale, SCREEN_HEIGHT * gProjectionScale,
-				0.0f, 1.0f, -1.0f
-				);
-	}
-
 	if (key == 'w') {
 		gViewPortMode++;
 
@@ -249,4 +129,23 @@ void handleKeys(unsigned char key, int x, int y) {
 			gViewPortMode = VIEWPORT_MODE_FULL;
 		}
 	}
+}
+
+void drawQuad(GLfloat sizeX, GLfloat sizeY, GLfloat R, GLfloat G, GLfloat B) {
+		if (gColorMode == COLOR_MODE_MONO) {
+			glBegin(GL_QUADS);
+				glColor3f(R, G, B);
+				glVertex2f(-sizeX, -sizeY);
+				glVertex2f(sizeX, -sizeY);
+				glVertex2f(sizeX, sizeY);
+				glVertex2f(-sizeX, sizeY);
+			glEnd();
+		} else {
+			glBegin(GL_QUADS);
+				glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-sizeX, -sizeY);
+				glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(sizeX, -sizeY);
+				glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(sizeX, sizeY);
+				glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-sizeX, sizeY);
+			glEnd();
+		}
 }
