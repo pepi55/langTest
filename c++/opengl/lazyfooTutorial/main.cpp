@@ -7,7 +7,7 @@ int main(int argc, char *args[]) {
 	glutInitContextVersion(2, 1);
 	glutInitDisplayMode(GLUT_DOUBLE);
 	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-	glutCreateWindow("Generic Title");
+	glutCreateWindow(SCREEN_TITLE);
 
 	if (!initGL()) {
 		fprintf(stderr, "Unable to initialize graphics library!\n");

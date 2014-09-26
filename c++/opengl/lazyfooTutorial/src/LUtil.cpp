@@ -76,38 +76,13 @@ void render(void) {
 		//Full size quad
 		glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-		drawQuad(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f, 1.0f, 1.0f, 1.0f);
+		drawQuad(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f, 1.0f, 0.0f, 1.0f);
 		drawQuad(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 0.0f, 1.0f, 1.0f);
-	} else if (gViewPortMode == VIEWPORT_MODE_RADAR) {
-		glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
-		glBegin(GL_QUADS);
-			glColor3f(1.0f, 1.0f, 0.0f);
-			glVertex2f(-SCREEN_WIDTH / 8.0f, -SCREEN_HEIGHT / 8.0f);
-			glVertex2f(SCREEN_WIDTH / 8.0f, -SCREEN_HEIGHT / 8.0f);
-			glVertex2f(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f);
-			glVertex2f(-SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f);
-
-			glColor3f(0.0f, 0.0f, 1.0f);
-			glVertex2f(-SCREEN_WIDTH / 16.0f, -SCREEN_HEIGHT / 16.0f);
-			glVertex2f(SCREEN_WIDTH / 16.0f, -SCREEN_HEIGHT / 16.0f);
-			glVertex2f(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f);
-			glVertex2f(-SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f);
-		glEnd();
 
 		glViewport(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-		glBegin(GL_QUADS);
-			glColor3f(1.0f, 1.0f, 1.0f);
-			glVertex2f(-SCREEN_WIDTH / 8.0f, -SCREEN_HEIGHT / 8.0f);
-			glVertex2f(SCREEN_WIDTH / 8.0f, -SCREEN_HEIGHT / 8.0f);
-			glVertex2f(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f);
-			glVertex2f(-SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f);
 
-			glColor3f(0.0f, 0.0f, 0.0f);
-			glVertex2f(-SCREEN_WIDTH / 16.0f, -SCREEN_HEIGHT / 16.0f);
-			glVertex2f(SCREEN_WIDTH / 16.0f, -SCREEN_HEIGHT / 16.0f);
-			glVertex2f(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f);
-			glVertex2f(-SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f);
-		glEnd();
+		drawQuad(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f, 1.0f, 0.0f, 1.0f);
+		drawQuad(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 0.0f, 1.0f, 1.0f);
 	}
 
 	glutSwapBuffers();
