@@ -1,0 +1,46 @@
+	glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+
+	if (gViewPortMode == VIEWPORT_MODE_FULL) {
+		glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+		drawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 1.0f, 0.0f, 0.0f);
+	} else if (gViewPortMode == VIEWPORT_MODE_HALF_CENTER) {
+		glViewport(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
+
+		drawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f, 1.0f, 1.0f);
+	} else if (gViewPortMode == VIEWPORT_MODE_HALF_TOP) {
+		glViewport(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
+
+		drawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f, 1.0f, 0.0f);
+	} else if (gViewPortMode == VIEWPORT_MODE_QUAD) {
+		//Bottom left
+		glViewport(0.0f, 0.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
+
+		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 1.0f, 0.0f);
+
+		//Bottom right
+		glViewport(SCREEN_WIDTH / 2.0f, 0.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
+
+		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 1.0f, 1.0f);
+
+		//Top left
+		glViewport(0.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
+
+		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
+
+		//Top right
+		glViewport(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
+
+		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 0.0f, 1.0f);
+	} else if (gViewPortMode == VIEWPORT_MODE_RADAR) {
+		//Full size quad
+		glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+		drawQuad(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f, 1.0f, 0.0f, 1.0f);
+		drawQuad(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 0.0f, 1.0f, 1.0f);
+
+		glViewport(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
+
+		drawQuad(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f, 1.0f, 0.0f, 1.0f);
+		drawQuad(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 0.0f, 1.0f, 1.0f);
+	}

@@ -4,6 +4,7 @@
 int gColorMode = COLOR_MODE_MONO;
 int gViewPortMode = VIEWPORT_MODE_FULL;
 
+GLfloat gCameraX = 0.0f, gCameraY = 0.0f;
 GLfloat gProjectionScale = 1.0f;
 
 bool initGL(void) {
@@ -16,6 +17,8 @@ bool initGL(void) {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	glPushMatrix();
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -35,55 +38,10 @@ void update(void) {
 void render(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	//glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
-
-	if (gViewPortMode == VIEWPORT_MODE_FULL) {
-		glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-		drawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 1.0f, 0.0f, 0.0f);
-	} else if (gViewPortMode == VIEWPORT_MODE_HALF_CENTER) {
-		glViewport(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-
-		drawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f, 1.0f, 1.0f);
-	} else if (gViewPortMode == VIEWPORT_MODE_HALF_TOP) {
-		glViewport(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-
-		drawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f, 1.0f, 0.0f);
-	} else if (gViewPortMode == VIEWPORT_MODE_QUAD) {
-		//Bottom left
-		glViewport(0.0f, 0.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-
-		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 1.0f, 0.0f);
-
-		//Bottom right
-		glViewport(SCREEN_WIDTH / 2.0f, 0.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-
-		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 1.0f, 1.0f);
-
-		//Top left
-		glViewport(0.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-
-		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
-
-		//Top right
-		glViewport(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-
-		drawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 0.0f, 1.0f);
-	} else if (gViewPortMode == VIEWPORT_MODE_RADAR) {
-		//Full size quad
-		glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-		drawQuad(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f, 1.0f, 0.0f, 1.0f);
-		drawQuad(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 0.0f, 1.0f, 1.0f);
-
-		glViewport(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f);
-
-		drawQuad(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f, 1.0f, 0.0f, 1.0f);
-		drawQuad(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 0.0f, 1.0f, 1.0f);
-	}
+	glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
+	glPopMatrix();
+	glPushMatrix();
 
 	glutSwapBuffers();
 }
@@ -97,13 +55,37 @@ void handleKeys(unsigned char key, int x, int y) {
 		}
 	}
 
-	if (key == 'w') {
+	/*if (key == 'e') {
 		gViewPortMode++;
 
 		if (gViewPortMode > VIEWPORT_MODE_RADAR) {
 			gViewPortMode = VIEWPORT_MODE_FULL;
 		}
+	}*/
+
+	if (key == 'w') {
+		gCameraY -= 16.0f;
 	}
+
+	if (key == 'a') {
+		gCameraX -= 16.0f;
+	}
+
+	if (key == 's') {
+		gCameraY += 16.0f;
+	}
+
+	if (key == 'd') {
+		gCameraX += 16.0f;
+	}
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glLoadIdentity();
+
+	glTranslatef(-gCameraX, -gCameraY, 0.0f);
+
+	glPushMatrix();
 }
 
 void drawQuad(GLfloat sizeX, GLfloat sizeY, GLfloat R, GLfloat G, GLfloat B) {
