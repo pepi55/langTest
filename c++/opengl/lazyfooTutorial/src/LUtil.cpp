@@ -1,6 +1,5 @@
 #include "LUtil.hpp"
 #include "LTexture.hpp"
-//#include <stdbool.h>
 
 int gColorMode = COLOR_MODE_MONO;
 
@@ -48,11 +47,11 @@ bool loadMedia(void) {
 			colors[0] = 0xFF;
 			colors[1] = 0xFF;
 			colors[2] = 0xFF;
-			colors[3] = 0xAA;
+			colors[3] = 0xFF;
 		} else {
-			colors[0] = 0xFF;
-			colors[1] = 0x00;
-			colors[2] = 0xFF;
+			colors[0] = 0x00;
+			colors[1] = 0xFF;
+			colors[2] = 0x00;
 			colors[3] = 0xFF;
 		}
 	}
@@ -76,17 +75,17 @@ void render(void) {
 	glPopMatrix();
 	glPushMatrix();
 
-	glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
-	gDrawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 0.0f);
+	gDrawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f,
+			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 0.0f);
 
-	glTranslatef(SCREEN_WIDTH, 0.0f, 0.0f);
-	gDrawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 1.0f, 0.0f);
+	gDrawQuad(SCREEN_WIDTH, 0.0f,
+			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 1.0f, 0.0f);
 
-	glTranslatef(0.0f, SCREEN_HEIGHT, 0.0f);
-	gDrawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 0.0f, 1.0f);
+	gDrawQuad(0.0f, SCREEN_HEIGHT,
+			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 0.0f, 1.0f);
 
-	glTranslatef(-SCREEN_WIDTH, 0.0f, 0.0f);
-	gDrawQuad(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
+	gDrawQuad(-SCREEN_WIDTH, 0.0f,
+			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
 
 	glutSwapBuffers();
 }
@@ -101,13 +100,6 @@ void handleKeys(unsigned char key, int x, int y) {
 			gColorMode = COLOR_MODE_MONO;
 		}
 	}
-
-	/*if (key == 'e') {
-		gViewPortMode++;
-		if (gViewPortMode > VIEWPORT_MODE_RADAR) {
-			gViewPortMode = VIEWPORT_MODE_FULL;
-		}
-	}*/
 
 	if (key == 'w') {
 		gCameraY -= 16.0f;
@@ -134,26 +126,30 @@ void handleKeys(unsigned char key, int x, int y) {
 	glPushMatrix();
 }
 
-void gDrawQuad(GLfloat sizeX, GLfloat sizeY, GLfloat R, GLfloat G, GLfloat B) {
-		if (gColorMode == COLOR_MODE_MONO) {
-			glBegin(GL_QUADS);
-				glColor3f(R, G, B);
-				glVertex2f(-sizeX, -sizeY);
-				glVertex2f(sizeX, -sizeY);
-				glVertex2f(sizeX, sizeY);
-				glVertex2f(-sizeX, sizeY);
-			glEnd();
-		} else if (gColorMode == COLOR_MODE_MULTI) {
-			glBegin(GL_QUADS);
-				glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-sizeX, -sizeY);
-				glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(sizeX, -sizeY);
-				glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(sizeX, sizeY);
-				glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-sizeX, sizeY);
-			glEnd();
-		} else if (gColorMode == COLOR_MODE_TEXTURE) {
-			GLfloat x = (sizeX - gCheckerBoardTexture.textureWidth()) / 2.0f;
-			GLfloat y = (sizeY - gCheckerBoardTexture.textureHeight()) / 2.0f;
+void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GLfloat G, GLfloat B) {
+	if (gColorMode == COLOR_MODE_MONO) {
+		glTranslatef(x, y, 0.0f);
 
-			gCheckerBoardTexture.render(x, y);
-		}
+		glBegin(GL_QUADS);
+			glColor3f(R, G, B);
+			glVertex2f(-sizeX, -sizeY);
+			glVertex2f(sizeX, -sizeY);
+			glVertex2f(sizeX, sizeY);
+			glVertex2f(-sizeX, sizeY);
+		glEnd();
+	} else if (gColorMode == COLOR_MODE_MULTI) {
+		glTranslatef(x, y, 0.0f);
+
+		glBegin(GL_QUADS);
+			glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-sizeX, -sizeY);
+			glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(sizeX, -sizeY);
+			glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(sizeX, sizeY);
+			glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-sizeX, sizeY);
+		glEnd();
+	} else if (gColorMode == COLOR_MODE_TEXTURE) {
+		x -= gCheckerBoardTexture.textureWidth() / 2;
+		y -= gCheckerBoardTexture.textureHeight() / 2;
+
+		gCheckerBoardTexture.render(x, y);
+	}
 }

@@ -14,7 +14,7 @@ int main(int argc, char *args[]) {
 		return 1;
 	}
 
-	if (!loadMedia) {
+	if (!loadMedia()) {
 		fprintf(stderr, "Unable to load media!\n");
 		return 2;
 	}
