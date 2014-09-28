@@ -48,7 +48,6 @@ void LTexture::freeTexture(void) {
 
 void LTexture::render(GLfloat x, GLfloat y) {
 	if (mTextureID != 0) {
-		glLoadIdentity();
 		glTranslatef(x, y, 0.0f);
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 

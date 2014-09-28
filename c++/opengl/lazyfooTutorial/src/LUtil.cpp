@@ -71,7 +71,6 @@ void render(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
 	glPopMatrix();
 	glPushMatrix();
 
@@ -147,8 +146,8 @@ void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GL
 			glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-sizeX, sizeY);
 		glEnd();
 	} else if (gColorMode == COLOR_MODE_TEXTURE) {
-		x -= gCheckerBoardTexture.textureWidth() / 2;
-		y -= gCheckerBoardTexture.textureHeight() / 2;
+		//x = (x - gCheckerBoardTexture.textureWidth()) / 2;
+		//y = (y - gCheckerBoardTexture.textureHeight()) / 2;
 
 		gCheckerBoardTexture.render(x, y);
 	}
