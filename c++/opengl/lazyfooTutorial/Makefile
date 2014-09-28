@@ -1,9 +1,15 @@
-OBJS = main.cpp src/LUtil.cpp
-OBJ_NAME = runWithPrimus
-
 CC = g++
-COMPILER_FLAGS = -std=c++0x -W -Wall -pedantic
-LINKER_FLAGS = -lGL -lGLU -lglut
+CFLAGS = -std=c++0x -W -Wall -pedantic
+LDFLAGS = -lGL -lGLU -lglut
 
-all: $(OBJS)
-	$(CC) $(COMPILER_FLAGS) $(LINKER_FLAGS) $(OBJS) -o $(OBJ_NAME)
+SOURCES = main.cpp src/LUtil.cpp src/LTexture.cpp
+OBJECTS = $(SOURCES: .cpp = .o)
+EXECUTABLE = runWithPrimus
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@

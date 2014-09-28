@@ -11,20 +11,14 @@ const char *const SCREEN_TITLE = "Generic Title";
 
 const int COLOR_MODE_MONO = 0;
 const int COLOR_MODE_MULTI = 1;
-
-enum ViewPortMode {
-	VIEWPORT_MODE_FULL,
-	VIEWPORT_MODE_HALF_CENTER,
-	VIEWPORT_MODE_HALF_TOP,
-	VIEWPORT_MODE_QUAD,
-	VIEWPORT_MODE_RADAR
-};
+const int COLOR_MODE_TEXTURE = 2;
 
 bool initGL(void);
+bool loadMedia(void);
 void update(void);
 void render(void);
 void handleKeys(unsigned char key, int x, int y);
 
-void drawQuad(GLfloat sizeX, GLfloat sizeY, GLfloat R, GLfloat G, GLfloat B);
+void gDrawQuad(GLfloat sizeX, GLfloat sizeY, GLfloat R, GLfloat G, GLfloat B);
 
 #endif
