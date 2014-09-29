@@ -114,6 +114,8 @@ void handleKeys(unsigned char key, int x, int y) {
 }
 
 void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GLfloat G, GLfloat B) {
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
 	if (gColorMode == COLOR_MODE_MONO) {
 		glTranslatef(x, y, 0.0f);
 
@@ -134,8 +136,8 @@ void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GL
 			glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-sizeX, sizeY);
 		glEnd();
 	} else if (gColorMode == COLOR_MODE_TEXTURE) {
-		//x = (x - gCheckerBoardTexture.textureWidth()) / 2;
-		//y = (y - gCheckerBoardTexture.textureHeight()) / 2;
+		//x = x - (gLoadedTexture.textureWidth() / 2);
+		//y = y - (gLoadedTexture.textureHeight() / 2);
 
 		gLoadedTexture.render(x, y);
 	}

@@ -81,6 +81,7 @@ void LTexture::freeTexture(void) {
 void LTexture::render(GLfloat x, GLfloat y) {
 	if (mTextureID != 0) {
 		glTranslatef(x, y, 0.0f);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 
 		glBegin(GL_QUADS);
