@@ -7,6 +7,7 @@ int main(int argc, char *args[]) {
 	glutInitContextVersion(2, 1);
 	glutInitDisplayMode(GLUT_DOUBLE);
 	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	glutInitWindowPosition(SCREEN_POSITION[0], SCREEN_POSITION[1]);
 	glutCreateWindow(SCREEN_TITLE);
 
 	if (!initGL()) {

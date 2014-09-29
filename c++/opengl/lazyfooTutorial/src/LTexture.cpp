@@ -78,17 +78,35 @@ void LTexture::freeTexture(void) {
 	mTextureHeight = 0;
 }
 
-void LTexture::render(GLfloat x, GLfloat y) {
+void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 	if (mTextureID != 0) {
+		GLfloat texTop = 0.0f;
+		GLfloat	texBottom = 1.0f;
+		GLfloat texLeft = 0.0f;
+		GLfloat texRight = 1.0f;
+
+		GLfloat quadWidth = mTextureWidth;
+		GLfloat quadHeight = mTextureHeight;
+
+		if (clip != NULL) {
+			texLeft = clip->x / mTextureWidth;
+			texRight = (clip->x + clip->w) / mTextureWidth;
+			texTop = clip->y / mTextureHeight;
+			texBottom = (clip->y + clip->h) / mTextureHeight;
+
+			quadWidth = clip->w;
+			quadHeight = clip->h;
+		}
+
 		glTranslatef(x, y, 0.0f);
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 
 		glBegin(GL_QUADS);
-			glTexCoord2f(0.0f, 0.0f);	glVertex2f(0.0f, 0.0f);
-			glTexCoord2f(1.0f, 0.0f);	glVertex2f(mTextureWidth, 0.0f);
-			glTexCoord2f(1.0f, 1.0f);	glVertex2f(mTextureWidth, mTextureHeight);
-			glTexCoord2f(0.0f, 1.0f);	glVertex2f(0.0f, mTextureHeight);
+			glTexCoord2f(texLeft, texTop);			glVertex2f(0.0f, 0.0f);
+			glTexCoord2f(texRight, texTop);			glVertex2f(quadWidth, 0.0f);
+			glTexCoord2f(texRight, texBottom);	glVertex2f(quadWidth, quadHeight);
+			glTexCoord2f(texLeft, texBottom);		glVertex2f(0.0f, quadHeight);
 		glEnd();
 	}
 }

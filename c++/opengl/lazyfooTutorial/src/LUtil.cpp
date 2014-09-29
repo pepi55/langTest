@@ -6,8 +6,13 @@
 
 int gColorMode = COLOR_MODE_MONO;
 
-GLfloat gCameraX = 0.0f, gCameraY = 0.0f;
+GLfloat gCameraX = 0.0f,
+				gCameraY = 0.0f;
+
 LTexture gLoadedTexture;
+LTexture gArrowTexture;
+
+LFRect gArrowClips[4];
 
 bool initGL(void) {
 	glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -43,8 +48,33 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
+	gArrowClips[0].x = 0.0f;
+	gArrowClips[0].y = 0.0f;
+	gArrowClips[0].w = 128.0f;
+	gArrowClips[0].h = 128.0f;
+
+	gArrowClips[1].x = 128.0f;
+	gArrowClips[1].y = 0.0f;
+	gArrowClips[1].w = 128.0f;
+	gArrowClips[1].h = 128.0f;
+
+	gArrowClips[2].x = 0.0f;
+	gArrowClips[2].y = 128.0f;
+	gArrowClips[2].w = 128.0f;
+	gArrowClips[2].h = 128.0f;
+
+	gArrowClips[3].x = 128.0f;
+	gArrowClips[3].y = 128.0f;
+	gArrowClips[3].w = 128.0f;
+	gArrowClips[3].h = 128.0f;
+
+	if (!gArrowTexture.loadTextureFromFile("img/arrows.png")) {
+		fprintf(stderr, "Unable to load arrow texture!\n");
+		return false;
+	}
+
 	if (!gLoadedTexture.loadTextureFromFile("img/texture.png")) {
-		fprintf(stderr, "Unable to load texture!\n");
+		fprintf(stderr, "Unable to load opengl texture!\n");
 		return false;
 	}
 
@@ -84,6 +114,8 @@ void handleKeys(unsigned char key, int x, int y) {
 		} else if (gColorMode == COLOR_MODE_MULTI) {
 			gColorMode = COLOR_MODE_TEXTURE;
 		} else if (gColorMode == COLOR_MODE_TEXTURE) {
+			gColorMode = COLOR_MODE_SPRITE;
+		} else if (gColorMode == COLOR_MODE_SPRITE) {
 			gColorMode = COLOR_MODE_MONO;
 		}
 	}
@@ -140,5 +172,11 @@ void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GL
 		//y = y - (gLoadedTexture.textureHeight() / 2);
 
 		gLoadedTexture.render(x, y);
+	} else if (gColorMode == COLOR_MODE_SPRITE) {
+
+		gArrowTexture.render(0.0f, 0.0f, &gArrowClips[0]);
+		gArrowTexture.render(SCREEN_WIDTH - gArrowClips[1].w, 0.0f, &gArrowClips[1]);
+		gArrowTexture.render(0.0f, SCREEN_HEIGHT - gArrowClips[2].h, &gArrowClips[2]);
+		gArrowTexture.render(SCREEN_WIDTH - gArrowClips[3].w, SCREEN_HEIGHT - gArrowClips[3].h, &gArrowClips[3]);
 	}
 }
