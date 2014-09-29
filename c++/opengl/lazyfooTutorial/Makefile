@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -std=c++0x -W -Wall -pedantic
-LDFLAGS = -lGL -lGLU -lglut
+LDFLAGS = -lGL -lGLU -lglut -lIL -lILU
 
 SOURCES = main.cpp src/LUtil.cpp src/LTexture.cpp
 OBJECTS = $(SOURCES: .cpp = .o)
