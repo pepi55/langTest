@@ -3,12 +3,14 @@
 
 #include "LOpenGL.hpp"
 #include <stdio.h>
+#include <string>
 
 class LTexture {
 	public:
 		LTexture();
 		~LTexture();
 
+		bool loadTextureFromFile(std::string path);
 		bool loadTextureFromPixels32(GLuint *pixels, GLuint width, GLuint height);
 		void freeTexture(void);
 		void render(GLfloat x, GLfloat y);

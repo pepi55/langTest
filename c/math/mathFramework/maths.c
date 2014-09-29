@@ -120,7 +120,7 @@ unsigned int *primeFactorization (float a) {
 
 void divisionToFile (float a) {
 	FILE *f = fopen("divisionResult", "wb+");
-	int i, j, k, c;
+	int i, c;
 	char line[100];
 
 	if (f == NULL) {

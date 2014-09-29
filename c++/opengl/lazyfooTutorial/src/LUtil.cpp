@@ -1,10 +1,13 @@
+#include <IL/il.h>
+#include <IL/ilu.h>
+
 #include "LUtil.hpp"
 #include "LTexture.hpp"
 
 int gColorMode = COLOR_MODE_MONO;
 
 GLfloat gCameraX = 0.0f, gCameraY = 0.0f;
-LTexture gCheckerBoardTexture;
+LTexture gLoadedTexture;
 
 bool initGL(void) {
 	glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -16,17 +19,23 @@ bool initGL(void) {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
 	glPushMatrix();
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
 	glEnable(GL_TEXTURE_2D);
 
 	GLenum error = glGetError();
-
 	if (error != GL_NO_ERROR) {
 		fprintf(stderr, "Error initializing OpenGL!\n%s\n", gluErrorString(error));
+		return false;
+	}
+
+	ilInit();
+	ilClearColor(255, 255, 255, 000);
+
+	ILenum ilError = ilGetError();
+	if (ilError != IL_NO_ERROR) {
+		fprintf(stderr, "Unable to initialize DevIL!\n%s\n", iluErrorString(ilError));
 		return false;
 	}
 
@@ -34,30 +43,8 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
-	const int CHECHERBOARD_WIDTH = 128;
-	const int CHECKERBOARD_HEIGHT = 128;
-	const int CHECKERBOARD_PIXEL_COUNT = CHECHERBOARD_WIDTH * CHECKERBOARD_HEIGHT;
-
-	GLuint checkerboard[CHECKERBOARD_PIXEL_COUNT];
-
-	for (int i = 0; i < CHECKERBOARD_PIXEL_COUNT; ++i) {
-		GLubyte *colors = (GLubyte*)&checkerboard[i];
-
-		if (i / 128 & 16 ^ i % 128 & 16) {
-			colors[0] = 0xFF;
-			colors[1] = 0xFF;
-			colors[2] = 0xFF;
-			colors[3] = 0xFF;
-		} else {
-			colors[0] = 0x00;
-			colors[1] = 0xFF;
-			colors[2] = 0x00;
-			colors[3] = 0xFF;
-		}
-	}
-
-	if (!gCheckerBoardTexture.loadTextureFromPixels32(checkerboard, CHECHERBOARD_WIDTH, CHECKERBOARD_HEIGHT)) {
-		fprintf(stderr, "Unable to load checkerboard texture!\n");
+	if (!gLoadedTexture.loadTextureFromFile("img/texture.png")) {
+		fprintf(stderr, "Unable to load texture!\n");
 		return false;
 	}
 
@@ -90,6 +77,7 @@ void render(void) {
 }
 
 void handleKeys(unsigned char key, int x, int y) {
+	x = 0; y = 0; //Just to stop g++ from complaining
 	if (key == 'q') {
 		if (gColorMode == COLOR_MODE_MONO) {
 			gColorMode = COLOR_MODE_MULTI;
@@ -149,6 +137,6 @@ void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GL
 		//x = (x - gCheckerBoardTexture.textureWidth()) / 2;
 		//y = (y - gCheckerBoardTexture.textureHeight()) / 2;
 
-		gCheckerBoardTexture.render(x, y);
+		gLoadedTexture.render(x, y);
 	}
 }
