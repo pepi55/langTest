@@ -80,6 +80,8 @@ void LTexture::freeTexture(void) {
 
 void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 	if (mTextureID != 0) {
+		glLoadIdentity();
+
 		GLfloat texTop = 0.0f;
 		GLfloat	texBottom = 1.0f;
 		GLfloat texLeft = 0.0f;

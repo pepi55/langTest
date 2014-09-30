@@ -103,6 +103,11 @@ void render(void) {
 	gDrawQuad(-SCREEN_WIDTH, 0.0f,
 			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
 
+	gArrowTexture.render(0.0f, 0.0f, &gArrowClips[0]);
+	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[1].w, 0.0f, &gArrowClips[1]);
+	gArrowTexture.render(0.0f, SCREEN_HEIGHT - gArrowClips[2].h, &gArrowClips[2]);
+	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[3].w, SCREEN_HEIGHT - gArrowClips[3].h, &gArrowClips[3]);
+
 	glutSwapBuffers();
 }
 
@@ -112,10 +117,6 @@ void handleKeys(unsigned char key, int x, int y) {
 		if (gColorMode == COLOR_MODE_MONO) {
 			gColorMode = COLOR_MODE_MULTI;
 		} else if (gColorMode == COLOR_MODE_MULTI) {
-			gColorMode = COLOR_MODE_TEXTURE;
-		} else if (gColorMode == COLOR_MODE_TEXTURE) {
-			gColorMode = COLOR_MODE_SPRITE;
-		} else if (gColorMode == COLOR_MODE_SPRITE) {
 			gColorMode = COLOR_MODE_MONO;
 		}
 	}
@@ -167,16 +168,5 @@ void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GL
 			glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(sizeX, sizeY);
 			glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-sizeX, sizeY);
 		glEnd();
-	} else if (gColorMode == COLOR_MODE_TEXTURE) {
-		//x = x - (gLoadedTexture.textureWidth() / 2);
-		//y = y - (gLoadedTexture.textureHeight() / 2);
-
-		gLoadedTexture.render(x, y);
-	} else if (gColorMode == COLOR_MODE_SPRITE) {
-
-		gArrowTexture.render(0.0f, 0.0f, &gArrowClips[0]);
-		gArrowTexture.render(SCREEN_WIDTH - gArrowClips[1].w, 0.0f, &gArrowClips[1]);
-		gArrowTexture.render(0.0f, SCREEN_HEIGHT - gArrowClips[2].h, &gArrowClips[2]);
-		gArrowTexture.render(SCREEN_WIDTH - gArrowClips[3].w, SCREEN_HEIGHT - gArrowClips[3].h, &gArrowClips[3]);
 	}
 }

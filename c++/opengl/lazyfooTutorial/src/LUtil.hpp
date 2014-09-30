@@ -12,8 +12,6 @@ const char *const SCREEN_TITLE = "Generic Title";
 
 const int COLOR_MODE_MONO = 0;
 const int COLOR_MODE_MULTI = 1;
-const int COLOR_MODE_TEXTURE = 2;
-const int COLOR_MODE_SPRITE = 3;
 
 bool initGL(void);
 bool loadMedia(void);
