@@ -103,10 +103,10 @@ void render(void) {
 	gDrawQuad(-SCREEN_WIDTH, 0.0f,
 			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
 
-	gArrowTexture.render(0.0f, 0.0f, &gArrowClips[0]);
-	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[1].w, 0.0f, &gArrowClips[1]);
-	gArrowTexture.render(0.0f, SCREEN_HEIGHT - gArrowClips[2].h, &gArrowClips[2]);
-	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[3].w, SCREEN_HEIGHT - gArrowClips[3].h, &gArrowClips[3]);
+	gArrowTexture.render(0.0f, 0.0f, &gArrowClips[3]);
+	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[2].w, 0.0f, &gArrowClips[2]);
+	gArrowTexture.render(0.0f, SCREEN_HEIGHT - gArrowClips[1].h, &gArrowClips[1]);
+	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[0].w, SCREEN_HEIGHT - gArrowClips[0].h, &gArrowClips[0]);
 
 	glutSwapBuffers();
 }
