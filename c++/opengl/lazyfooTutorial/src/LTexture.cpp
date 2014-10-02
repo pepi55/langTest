@@ -1,11 +1,15 @@
 #include "LTexture.hpp"
 #include <IL/il.h>
+#include <IL/ilu.h>
 
 LTexture::LTexture() {
 	mTextureID = 0;
 
 	mTextureWidth = 0;
 	mTextureHeight = 0;
+
+	mImageWidth = 0;
+	mImageHeight = 0;
 }
 
 LTexture::~LTexture() {
@@ -15,7 +19,7 @@ LTexture::~LTexture() {
 bool LTexture::loadTextureFromFile(std::string path) {
 	bool textureLoaded = false;
 
-	ILuint imgID;
+	ILuint imgID = 0;
 	ILboolean success;
 
 	ilGenImages(1, &imgID);
@@ -27,9 +31,20 @@ bool LTexture::loadTextureFromFile(std::string path) {
 		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
 
 		if (success == IL_TRUE) {
+			GLuint imgWidth = (GLuint)ilGetInteger(IL_IMAGE_WIDTH);
+			GLuint imgHeight = (GLuint)ilGetInteger(IL_IMAGE_HEIGHT);
+
+			GLuint texWidth = powerOfTwo(imgWidth);
+			GLuint texHeight = powerOfTwo(imgHeight);
+
+			if (imgWidth != texWidth || imgHeight != texHeight) {
+				iluImageParameter(ILU_PLACEMENT, ILU_UPPER_LEFT);
+				iluEnlargeCanvas((int)texWidth, (int)texHeight, 1);
+			}
+
 			textureLoaded = loadTextureFromPixels32((GLuint*)ilGetData(),
-					(GLuint)ilGetInteger(IL_IMAGE_WIDTH),
-					(GLuint)ilGetInteger(IL_IMAGE_HEIGHT)
+					imgWidth, imgHeight,
+					texWidth, texHeight
 					);
 		}
 
@@ -43,21 +58,22 @@ bool LTexture::loadTextureFromFile(std::string path) {
 	return textureLoaded;
 }
 
-bool LTexture::loadTextureFromPixels32(GLuint *pixels, GLuint width, GLuint height) {
+bool LTexture::loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH, GLuint texW, GLuint texH) {
 	freeTexture();
 
-	mTextureWidth = width;
-	mTextureHeight = height;
+	mImageWidth = imgW;
+	mImageHeight = imgH;
+	mTextureWidth = texW;
+	mTextureHeight = texH;
 
 	glGenTextures(1, &mTextureID);
 	glBindTexture(GL_TEXTURE_2D, mTextureID);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mTextureWidth, mTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	glBindTexture(GL_TEXTURE_2D, (int)NULL);
+	glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -74,6 +90,8 @@ void LTexture::freeTexture(void) {
 		mTextureID = 0;
 	}
 
+	mImageWidth = 0;
+	mImageHeight = 0;
 	mTextureWidth = 0;
 	mTextureHeight = 0;
 }
@@ -83,9 +101,9 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 		glLoadIdentity();
 
 		GLfloat texTop = 0.0f;
-		GLfloat	texBottom = 1.0f;
+		GLfloat	texBottom = (GLfloat)mImageHeight / (GLfloat)mTextureHeight;
 		GLfloat texLeft = 0.0f;
-		GLfloat texRight = 1.0f;
+		GLfloat texRight = (GLfloat)mImageWidth / (GLfloat)mTextureWidth;
 
 		GLfloat quadWidth = mTextureWidth;
 		GLfloat quadHeight = mTextureHeight;
@@ -113,6 +131,20 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 	}
 }
 
+GLuint LTexture::powerOfTwo(GLuint num) {
+	if (num != 0) {
+		num--;
+		num |= (num >> 1);
+		num |= (num >> 2);
+		num |= (num >> 4);
+		num |= (num >> 8);
+		num |= (num >> 16);
+		num++;
+	}
+
+	return num;
+}
+
 GLuint LTexture::getTextureID(void) {
 	return mTextureID;
 }
@@ -123,4 +155,12 @@ GLuint LTexture::textureWidth(void) {
 
 GLuint LTexture::textureHeight(void) {
 	return mTextureHeight;
+}
+
+GLuint LTexture::imageWidth(void) {
+	return mImageWidth;
+}
+
+GLuint LTexture::imageHeight(void) {
+	return mImageHeight;
 }

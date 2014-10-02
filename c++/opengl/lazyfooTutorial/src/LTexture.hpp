@@ -13,17 +13,22 @@ class LTexture {
 		~LTexture();
 
 		bool loadTextureFromFile(std::string path);
-		bool loadTextureFromPixels32(GLuint *pixels, GLuint width, GLuint height);
+		bool loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH, GLuint texW, GLuint texH);
 		void freeTexture(void);
 		void render(GLfloat x, GLfloat y, LFRect *clip = NULL);
 		GLuint getTextureID(void);
 		GLuint textureWidth(void);
 		GLuint textureHeight(void);
+		GLuint imageWidth(void);
+		GLuint imageHeight(void);
 
 	private:
+		GLuint powerOfTwo(GLuint num);
 		GLuint mTextureID,
 					 mTextureWidth,
-					 mTextureHeight;
+					 mTextureHeight,
+					 mImageWidth,
+					 mImageHeight;
 };
 
 #endif

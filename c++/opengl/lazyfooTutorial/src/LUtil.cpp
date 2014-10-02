@@ -11,6 +11,7 @@ GLfloat gCameraX = 0.0f,
 
 LTexture gLoadedTexture;
 LTexture gArrowTexture;
+LTexture gNon2Texture;
 
 LFRect gArrowClips[4];
 
@@ -36,6 +37,7 @@ bool initGL(void) {
 	}
 
 	ilInit();
+	iluInit();
 	ilClearColor(255, 255, 255, 000);
 
 	ILenum ilError = ilGetError();
@@ -73,6 +75,11 @@ bool loadMedia(void) {
 		return false;
 	}
 
+	if (!gNon2Texture.loadTextureFromFile("img/opengl.png")) {
+		fprintf(stderr, "Unable to load non power of 2 opengl texture!\n");
+		return false;
+	}
+
 	if (!gLoadedTexture.loadTextureFromFile("img/texture.png")) {
 		fprintf(stderr, "Unable to load opengl texture!\n");
 		return false;
@@ -107,6 +114,10 @@ void render(void) {
 	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[2].w, 0.0f, &gArrowClips[2]);
 	gArrowTexture.render(0.0f, SCREEN_HEIGHT - gArrowClips[1].h, &gArrowClips[1]);
 	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[0].w, SCREEN_HEIGHT - gArrowClips[0].h, &gArrowClips[0]);
+
+	gNon2Texture.render((SCREEN_WIDTH - gNon2Texture.imageWidth()) / 2.0f,
+			(SCREEN_HEIGHT - gNon2Texture.imageHeight()) / 2.0f
+			);
 
 	glutSwapBuffers();
 }
