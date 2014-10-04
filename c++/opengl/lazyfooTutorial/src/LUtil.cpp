@@ -11,7 +11,7 @@ GLfloat gCameraX = 0.0f,
 
 LTexture gLoadedTexture;
 LTexture gArrowTexture;
-LTexture gNon2Texture;
+LTexture gCircleTexture;
 
 LFRect gArrowClips[4];
 
@@ -75,10 +75,38 @@ bool loadMedia(void) {
 		return false;
 	}
 
-	if (!gNon2Texture.loadTextureFromFile("img/opengl.png")) {
+	if (!gCircleTexture.loadTextureFromFile("img/circle.png")) {
 		fprintf(stderr, "Unable to load non power of 2 opengl texture!\n");
 		return false;
 	}
+
+	gCircleTexture.lock();
+
+	GLuint targetColor;
+	GLuint pixelCount = gCircleTexture.textureWidth() * gCircleTexture.textureHeight();
+	GLuint *pixels = gCircleTexture.getPixelData32();
+	GLubyte *colors = (GLubyte*)&targetColor;
+
+	colors[0] = 000;
+	colors[1] = 255;
+	colors[2] = 255;
+	colors[3] = 255;
+
+	for (GLuint i = 0; i < pixelCount; ++i) {
+		if (pixels[i] == targetColor) {
+			pixels[i] = 0;
+		}
+	}
+
+	for (GLuint y = 0; y < gCircleTexture.imageHeight(); ++y) {
+		for (GLuint x = 0; x < gCircleTexture.imageWidth(); ++x) {
+			if (y % 10 != x % 10) {
+				gCircleTexture.setPixel32(x, y, 0);
+			}
+		}
+	}
+
+	gCircleTexture.unlock();
 
 	if (!gLoadedTexture.loadTextureFromFile("img/texture.png")) {
 		fprintf(stderr, "Unable to load opengl texture!\n");
@@ -115,8 +143,8 @@ void render(void) {
 	gArrowTexture.render(0.0f, SCREEN_HEIGHT - gArrowClips[1].h, &gArrowClips[1]);
 	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[0].w, SCREEN_HEIGHT - gArrowClips[0].h, &gArrowClips[0]);
 
-	gNon2Texture.render((SCREEN_WIDTH - gNon2Texture.imageWidth()) / 2.0f,
-			(SCREEN_HEIGHT - gNon2Texture.imageHeight()) / 2.0f
+	gCircleTexture.render((SCREEN_WIDTH - gCircleTexture.imageWidth()) / 2.0f,
+			(SCREEN_HEIGHT - gCircleTexture.imageHeight()) / 2.0f
 			);
 
 	glutSwapBuffers();

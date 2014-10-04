@@ -1,9 +1,11 @@
 #include "LTexture.hpp"
+#include <string.h>
 #include <IL/il.h>
 #include <IL/ilu.h>
 
 LTexture::LTexture() {
 	mTextureID = 0;
+	mPixels = NULL;
 
 	mTextureWidth = 0;
 	mTextureHeight = 0;
@@ -14,6 +16,87 @@ LTexture::LTexture() {
 
 LTexture::~LTexture() {
 	freeTexture();
+}
+
+bool LTexture::lock(void) {
+	if (mPixels == NULL && mTextureID != 0) {
+		GLuint size = mTextureWidth * mTextureHeight;
+		mPixels = new GLuint[size];
+
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels);
+		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool LTexture::unlock(void) {
+	if (mPixels != NULL && mTextureID != 0) {
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,mTextureWidth, mTextureHeight,
+				GL_RGBA, GL_UNSIGNED_BYTE, mPixels
+				);
+
+		delete[] mPixels;
+		mPixels = NULL;
+		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool LTexture::loadPixelsFromFile(std::string path) {
+	freeTexture();
+
+	bool pixelsLoaded = false;
+	ILuint imgID = 0;
+	ILboolean success;
+
+	ilGenImages(1, &imgID);
+	ilBindImage(imgID);
+	success = ilLoadImage(path.c_str());
+
+	if (success == IL_TRUE) {
+		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+
+		if (success == IL_TRUE) {
+			GLuint imgWidth = (GLuint)ilGetInteger(IL_IMAGE_WIDTH);
+			GLuint imgHeight = (GLuint)ilGetInteger(IL_IMAGE_HEIGHT);
+
+			GLuint texWidth = powerOfTwo(imgWidth);
+			GLuint texHeight = powerOfTwo(imgHeight);
+
+			if (imgWidth != texWidth || imgHeight != texHeight) {
+				iluImageParameter(ILU_PLACEMENT, ILU_UPPER_LEFT);
+				iluEnlargeCanvas((int)texWidth, (int)texHeight, 1);
+			}
+
+			GLuint size = texWidth * texHeight;
+			mPixels = new GLuint[size];
+
+			mImageWidth = imgWidth;
+			mImageHeight = imgHeight;
+			mTextureWidth = texWidth;
+			mTextureHeight = texHeight;
+
+			memcpy(mPixels, ilGetData(), size * 4);
+			pixelsLoaded = true;
+		}
+
+		ilDeleteImages(1, &imgID);
+	}
+
+	if (!pixelsLoaded) {
+		fprintf(stderr, "Unable to load %s\n", path.c_str());
+	}
+
+	return pixelsLoaded;
 }
 
 bool LTexture::loadTextureFromFile(std::string path) {
@@ -90,6 +173,11 @@ void LTexture::freeTexture(void) {
 		mTextureID = 0;
 	}
 
+	if (mPixels != NULL) {
+		delete[] mPixels;
+		mPixels = NULL;
+	}
+
 	mImageWidth = 0;
 	mImageHeight = 0;
 	mTextureWidth = 0;
@@ -143,6 +231,18 @@ GLuint LTexture::powerOfTwo(GLuint num) {
 	}
 
 	return num;
+}
+
+void LTexture::setPixel32(GLuint x, GLuint y, GLuint pixel) {
+	mPixels[y * mTextureWidth + x] = pixel;
+}
+
+GLuint LTexture::getPixel32(GLuint x, GLuint y) {
+	return mPixels[y * mTextureWidth + x];
+}
+
+GLuint *LTexture::getPixelData32(void) {
+	return mPixels;
 }
 
 GLuint LTexture::getTextureID(void) {

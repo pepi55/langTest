@@ -2,7 +2,7 @@
 #define LUTIL_H
 
 #include "LOpenGL.hpp"
-#include <stdio.h>
+//#include <stdio.h>
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
