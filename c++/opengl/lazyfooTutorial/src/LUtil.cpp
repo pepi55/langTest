@@ -10,8 +10,8 @@ GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
 LTexture gCircleWithAlphaTexture;
-
-LFRect gArrowClips[4];
+LFRect gStretchRect = {0.0f, 0.0f, 100.0f, 100.0f};
+GLenum gFiltering = GL_LINEAR;
 
 bool initGL(void) {
 	glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -84,8 +84,7 @@ void render(void) {
 			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
 
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	gCircleWithAlphaTexture.render((SCREEN_WIDTH - gCircleWithAlphaTexture.imageWidth()) / 2.0f,
-			(SCREEN_HEIGHT - gCircleWithAlphaTexture.imageHeight()) / 2.0f);
+	gCircleWithAlphaTexture.render(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, NULL, &gStretchRect);
 
 	glutSwapBuffers();
 }

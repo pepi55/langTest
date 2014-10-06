@@ -15,7 +15,7 @@ class LTexture {
 		bool lock(void);
 		bool unlock(void);
 
-		void render(GLfloat x, GLfloat y, LFRect *clip = NULL);
+		void render(GLfloat x, GLfloat y, LFRect *clip = NULL, LFRect *stretch = NULL);
 		void freeTexture(void);
 
 		bool loadPixelsFromFile(std::string path);

@@ -240,7 +240,7 @@ void LTexture::freeTexture(void) {
 	mTextureHeight = 0;
 }
 
-void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
+void LTexture::render(GLfloat x, GLfloat y, LFRect *clip, LFRect *stretch) {
 	if (mTextureID != 0) {
 		glLoadIdentity();
 
@@ -260,6 +260,11 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 
 			quadWidth = clip->w;
 			quadHeight = clip->h;
+		}
+
+		if (stretch != NULL) {
+			quadWidth = stretch->w;
+			quadHeight = stretch->h;
 		}
 
 		glTranslatef(x, y, 0.0f);
