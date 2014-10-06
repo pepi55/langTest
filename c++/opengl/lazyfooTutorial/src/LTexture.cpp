@@ -141,6 +141,62 @@ bool LTexture::loadTextureFromFile(std::string path) {
 	return textureLoaded;
 }
 
+bool LTexture::loadTextureFromFileWithColorKey(std::string path, GLubyte r, GLubyte g, GLubyte b, GLubyte a) {
+	if (!loadPixelsFromFile(path)) {
+		return false;
+	}
+
+	GLuint size = mTextureWidth * mTextureHeight;
+	for (GLuint i = 0; i < size; ++i) {
+		GLubyte *colors = (GLubyte*)&mPixels[i];
+
+		if (colors[0] == r && colors[1] == g && colors[2] == b && (0 == a || colors[3] == a)) {
+			colors[0] = 255;
+			colors[1] = 255;
+			colors[2] = 255;
+			colors[3] = 000;
+		}
+	}
+
+	return loadTextureFromPixels32();
+}
+
+bool LTexture::loadTextureFromPixels32(void) {
+	bool success = true;
+
+	if (mTextureID == 0 && mPixels != NULL) {
+		glGenTextures(1, &mTextureID);
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mTextureWidth, mTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+
+		GLenum error = glGetError();
+		if (error != GL_NO_ERROR) {
+			fprintf(stderr, "Error loading texture from %p pixels!\n%s\n", (void*)mPixels, gluErrorString(error));
+			success = false;
+		} else {
+			delete[] mPixels;
+			mPixels = NULL;
+		}
+	} else {
+		fprintf(stderr, "Cannot load texture from pixels!\n");
+
+		if (mTextureID != 0) {
+			fprintf(stderr, "A texture has already been loaded!\n");
+		} else if (mPixels == NULL) {
+			fprintf(stderr, "No pixels to create texture from!\n");
+		}
+
+		success = false;
+	}
+
+	return success;
+}
+
 bool LTexture::loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH, GLuint texW, GLuint texH) {
 	freeTexture();
 

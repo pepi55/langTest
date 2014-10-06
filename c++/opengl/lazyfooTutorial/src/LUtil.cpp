@@ -9,9 +9,7 @@ int gColorMode = COLOR_MODE_MONO;
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
-LTexture gLoadedTexture;
-LTexture gArrowTexture;
-LTexture gCircleTexture;
+LTexture gCircleWithAlphaTexture;
 
 LFRect gArrowClips[4];
 
@@ -29,6 +27,11 @@ bool initGL(void) {
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+
+	glDisable(GL_DEPTH_TEST);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -50,66 +53,8 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
-	gArrowClips[0].x = 0.0f;
-	gArrowClips[0].y = 0.0f;
-	gArrowClips[0].w = 128.0f;
-	gArrowClips[0].h = 128.0f;
-
-	gArrowClips[1].x = 128.0f;
-	gArrowClips[1].y = 0.0f;
-	gArrowClips[1].w = 128.0f;
-	gArrowClips[1].h = 128.0f;
-
-	gArrowClips[2].x = 0.0f;
-	gArrowClips[2].y = 128.0f;
-	gArrowClips[2].w = 128.0f;
-	gArrowClips[2].h = 128.0f;
-
-	gArrowClips[3].x = 128.0f;
-	gArrowClips[3].y = 128.0f;
-	gArrowClips[3].w = 128.0f;
-	gArrowClips[3].h = 128.0f;
-
-	if (!gArrowTexture.loadTextureFromFile("img/arrows.png")) {
-		fprintf(stderr, "Unable to load arrow texture!\n");
-		return false;
-	}
-
-	if (!gCircleTexture.loadTextureFromFile("img/circle.png")) {
-		fprintf(stderr, "Unable to load non power of 2 opengl texture!\n");
-		return false;
-	}
-
-	gCircleTexture.lock();
-
-	GLuint targetColor;
-	GLuint pixelCount = gCircleTexture.textureWidth() * gCircleTexture.textureHeight();
-	GLuint *pixels = gCircleTexture.getPixelData32();
-	GLubyte *colors = (GLubyte*)&targetColor;
-
-	colors[0] = 000;
-	colors[1] = 255;
-	colors[2] = 255;
-	colors[3] = 255;
-
-	for (GLuint i = 0; i < pixelCount; ++i) {
-		if (pixels[i] == targetColor) {
-			pixels[i] = 0;
-		}
-	}
-
-	for (GLuint y = 0; y < gCircleTexture.imageHeight(); ++y) {
-		for (GLuint x = 0; x < gCircleTexture.imageWidth(); ++x) {
-			if (y % 10 != x % 10) {
-				gCircleTexture.setPixel32(x, y, 0);
-			}
-		}
-	}
-
-	gCircleTexture.unlock();
-
-	if (!gLoadedTexture.loadTextureFromFile("img/texture.png")) {
-		fprintf(stderr, "Unable to load opengl texture!\n");
+	if (!gCircleWithAlphaTexture.loadTextureFromFileWithColorKey("img/circleWithAlpha.png", 000, 255, 255)) {
+		fprintf(stderr, "Unable to load circle with alpha texture!\n");
 		return false;
 	}
 
@@ -138,14 +83,9 @@ void render(void) {
 	gDrawQuad(-SCREEN_WIDTH, 0.0f,
 			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
 
-	gArrowTexture.render(0.0f, 0.0f, &gArrowClips[3]);
-	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[2].w, 0.0f, &gArrowClips[2]);
-	gArrowTexture.render(0.0f, SCREEN_HEIGHT - gArrowClips[1].h, &gArrowClips[1]);
-	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[0].w, SCREEN_HEIGHT - gArrowClips[0].h, &gArrowClips[0]);
-
-	gCircleTexture.render((SCREEN_WIDTH - gCircleTexture.imageWidth()) / 2.0f,
-			(SCREEN_HEIGHT - gCircleTexture.imageHeight()) / 2.0f
-			);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+	gCircleWithAlphaTexture.render((SCREEN_WIDTH - gCircleWithAlphaTexture.imageWidth()) / 2.0f,
+			(SCREEN_HEIGHT - gCircleWithAlphaTexture.imageHeight()) / 2.0f);
 
 	glutSwapBuffers();
 }

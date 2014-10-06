@@ -44,3 +44,56 @@
 		drawQuad(SCREEN_WIDTH / 8.0f, SCREEN_HEIGHT / 8.0f, 1.0f, 0.0f, 1.0f);
 		drawQuad(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 0.0f, 1.0f, 1.0f);
 	}
+
+	gArrowClips[0].x = 0.0f;
+	gArrowClips[0].y = 0.0f;
+	gArrowClips[0].w = 128.0f;
+	gArrowClips[0].h = 128.0f;
+
+	gArrowClips[1].x = 128.0f;
+	gArrowClips[1].y = 0.0f;
+	gArrowClips[1].w = 128.0f;
+	gArrowClips[1].h = 128.0f;
+
+	gArrowClips[2].x = 0.0f;
+	gArrowClips[2].y = 128.0f;
+	gArrowClips[2].w = 128.0f;
+	gArrowClips[2].h = 128.0f;
+
+	gArrowClips[3].x = 128.0f;
+	gArrowClips[3].y = 128.0f;
+	gArrowClips[3].w = 128.0f;
+	gArrowClips[3].h = 128.0f;
+
+	if (!gArrowTexture.loadTextureFromFile("img/arrows.png")) {
+		fprintf(stderr, "Unable to load arrow texture!\n");
+		return false;
+	}
+
+	gCircleWithAlphaTexture.lock();
+
+	GLuint targetColor;
+	GLuint pixelCount = gCircleWithAlphaTexture.textureWidth() * gCircleWithAlphaTexture.textureHeight();
+	GLuint *pixels = gCircleWithAlphaTexture.getPixelData32();
+	GLubyte *colors = (GLubyte*)&targetColor;
+
+	colors[0] = 000;
+	colors[1] = 255;
+	colors[2] = 255;
+	colors[3] = 255;
+
+	for (GLuint i = 0; i < pixelCount; ++i) {
+		if (pixels[i] == targetColor) {
+			pixels[i] = 0;
+		}
+	}
+
+	for (GLuint y = 0; y < gCircleWithAlphaTexture.imageHeight(); ++y) {
+		for (GLuint x = 0; x < gCircleWithAlphaTexture.imageWidth(); ++x) {
+			if (y % 10 != x % 10) {
+				gCircleWithAlphaTexture.setPixel32(x, y, 0);
+			}
+		}
+	}
+
+	gCircleWithAlphaTexture.unlock();
