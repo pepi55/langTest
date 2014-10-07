@@ -240,7 +240,7 @@ void LTexture::freeTexture(void) {
 	mTextureHeight = 0;
 }
 
-void LTexture::render(GLfloat x, GLfloat y, LFRect *clip, LFRect *stretch) {
+void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 	if (mTextureID != 0) {
 		glLoadIdentity();
 
@@ -267,15 +267,17 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip, LFRect *stretch) {
 			quadHeight = stretch->h;
 		}
 
-		glTranslatef(x, y, 0.0f);
+		glTranslatef(x + quadWidth / 2.0f, y + quadHeight / 2.0f, 0.0f);
+		glRotatef(degrees, 0.0f, 0.0f, 1.0f);
+
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 
 		glBegin(GL_QUADS);
-			glTexCoord2f(texLeft, texTop);			glVertex2f(0.0f, 0.0f);
-			glTexCoord2f(texRight, texTop);			glVertex2f(quadWidth, 0.0f);
-			glTexCoord2f(texRight, texBottom);	glVertex2f(quadWidth, quadHeight);
-			glTexCoord2f(texLeft, texBottom);		glVertex2f(0.0f, quadHeight);
+			glTexCoord2f(texLeft, texTop);			glVertex2f(-quadWidth / 2.0f, -quadHeight / 2.0f);
+			glTexCoord2f(texRight, texTop);			glVertex2f(quadWidth / 2.0f, -quadHeight / 2.0f);
+			glTexCoord2f(texRight, texBottom);	glVertex2f(quadWidth / 2.0f, quadHeight / 2.0f);
+			glTexCoord2f(texLeft, texBottom);		glVertex2f(-quadWidth / 2.0f, quadHeight / 2.0f);
 		glEnd();
 	}
 }

@@ -6,6 +6,7 @@
 
 int gColorMode = COLOR_MODE_MONO;
 
+GLfloat gAngle = 0.0f;
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
@@ -62,6 +63,11 @@ bool loadMedia(void) {
 }
 
 void update(void) {
+	gAngle += 360.0f / SCREEN_FPS;
+
+	if (gAngle > 360.0f) {
+		gAngle -= 360.0f;
+	}
 }
 
 void render(void) {
@@ -84,7 +90,7 @@ void render(void) {
 			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
 
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	gTexture.render(0.0f, 0.0f, NULL, &gStretchRect);
+	gTexture.render(0.0f, 0.0f, NULL, &gStretchRect, gAngle);
 
 	glutSwapBuffers();
 }
