@@ -9,8 +9,8 @@ int gColorMode = COLOR_MODE_MONO;
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
-LTexture gCircleWithAlphaTexture;
-LFRect gStretchRect = {0.0f, 0.0f, 100.0f, 100.0f};
+LTexture gTexture;
+LFRect gStretchRect = {0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT};
 GLenum gFiltering = GL_LINEAR;
 
 bool initGL(void) {
@@ -53,7 +53,7 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
-	if (!gCircleWithAlphaTexture.loadTextureFromFileWithColorKey("img/circleWithAlpha.png", 000, 255, 255)) {
+	if (!gTexture.loadTextureFromFileWithColorKey("img/texture.png", 000, 255, 255)) {
 		fprintf(stderr, "Unable to load circle with alpha texture!\n");
 		return false;
 	}
@@ -84,7 +84,7 @@ void render(void) {
 			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
 
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	gCircleWithAlphaTexture.render(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, NULL, &gStretchRect);
+	gTexture.render(0.0f, 0.0f, NULL, &gStretchRect);
 
 	glutSwapBuffers();
 }
@@ -113,6 +113,24 @@ void handleKeys(unsigned char key, int x, int y) {
 
 	if (key == 'd') {
 		gCameraX += 16.0f;
+	}
+
+	if (key == 'e') {
+		glBindTexture(GL_TEXTURE_2D, gTexture.getTextureID());
+
+		if (gFiltering != GL_LINEAR) {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+			gFiltering = GL_LINEAR;
+		} else if (gFiltering != GL_NEAREST) {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+			gFiltering = GL_NEAREST;
+		}
+
+		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
 	}
 
 	glMatrixMode(GL_MODELVIEW);
