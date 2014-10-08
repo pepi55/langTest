@@ -3,6 +3,8 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 
+GLenum DEFAULT_TEXTURE_WRAP = GL_REPEAT;
+
 LTexture::LTexture() {
 	mTextureID = 0;
 	mPixels = NULL;
