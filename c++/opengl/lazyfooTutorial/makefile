@@ -29,14 +29,15 @@ CC = g++ -std=c++11
 FLAGS = -march=native -pipe -W -Wall -pedantic
 LFLAGS = -lGL -lGLU -lglut -lIL -lILU
 
+OBJECTS = main.o LUtil.o LTexture.o
 EXECUTABLE = runWithPrimus
 DEBUGGER = gdb
 
-release: main.o LUtil.o LTexture.o
-	$(CC) -O2 $(FLAGS) $(LFLAGS) main.o LUtil.o LTexture.o -o $(EXECUTABLE)
+release: $(OBJECTS)
+	$(CC) -O2 $(FLAGS) $(LFLAGS) $(OBJECTS) -o $(EXECUTABLE)
 
-debug: main.o LUtil.o LTexture.o
-	$(CC) -g$(DEBUGGER) $(FLAGS) $(LFLAGS) main.o LUtil.o LTexture.o -o $(EXECUTABLE)
+debug: $(OBJECTS)
+	$(CC) -g$(DEBUGGER) $(FLAGS) $(LFLAGS) $(OBJECTS) -o $(EXECUTABLE)
 
 main.o: main.cpp src/LUtil.hpp src/LOpenGL.hpp
 	$(CC) -c $(FLAGS) main.cpp
