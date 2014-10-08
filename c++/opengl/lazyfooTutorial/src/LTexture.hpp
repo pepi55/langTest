@@ -1,7 +1,6 @@
 #ifndef LTEXTURE_H
 #define LTEXTURE_H
 
-//#include <stdio.h>
 #include <string>
 
 #include "LOpenGL.hpp"
