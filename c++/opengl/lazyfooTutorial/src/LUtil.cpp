@@ -5,13 +5,13 @@
 #include "LTexture.hpp"
 
 int gColorMode = COLOR_MODE_MONO;
+int gTransformationCombo = 0;
 
 GLfloat gAngle = 0.0f;
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
 LTexture gTexture;
-LFRect gStretchRect = {0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT};
 GLenum gFiltering = GL_LINEAR;
 
 bool initGL(void) {
@@ -54,16 +54,21 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
-	if (!gTexture.loadTextureFromFileWithColorKey("img/texture.png", 000, 255, 255)) {
+	if (!gTexture.loadTextureFromFileWithColorKey("img/circleWithAlpha.png", 000, 255, 255)) {
 		fprintf(stderr, "Unable to load circle with alpha texture!\n");
 		return false;
 	}
+
+	/*if (!gTexture.loadTextureFromFile("img/texture.png")) {
+		fprintf(stderr, "Unable to load texture!\n");
+		return false;
+	}*/
 
 	return true;
 }
 
 void update(void) {
-	gAngle += 360.0f / SCREEN_FPS;
+	gAngle += 180.0f / SCREEN_FPS;
 
 	if (gAngle > 360.0f) {
 		gAngle -= 360.0f;
@@ -73,9 +78,54 @@ void update(void) {
 void render(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	glLoadIdentity();
+
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glPushMatrix();
+
+	switch(gTransformationCombo) {
+		case 0:
+			glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+			glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
+			glScalef(0.5f, 0.5f, 0.0f);
+			glTranslatef(gTexture.imageWidth() / -2.0f, gTexture.imageHeight() / -2.0f, 0.0f);
+
+			break;
+
+		case 1:
+			glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+			glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
+			glTranslatef(gTexture.imageWidth() / -2.0f, gTexture.imageHeight() / -2.0f, 0.0f);
+			glScalef(0.5f, 0.5f, 0.0f);
+
+			break;
+
+		case 2:
+			glScalef(0.5f, 0.5f, 0.0f);
+			glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+			glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
+			glTranslatef(gTexture.imageWidth() / -2.0f, gTexture.imageHeight() / -2.0f, 0.0f);
+
+			break;
+
+		case 3:
+			glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+			glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
+			glScalef(0.5f, 0.5f, 0.0f);
+
+			break;
+
+		case 4:
+			glScalef(0.5f, 0.5f, 0.0f);
+			glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+			glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
+			glTranslatef(gTexture.imageWidth() / -2.0f, gTexture.imageHeight() / -2.0f, 0.0f);
+
+			break;
+	}
+
+	gTexture.render(0.0f, 0.0f);
 
 	gDrawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f,
 			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 0.0f);
@@ -88,9 +138,6 @@ void render(void) {
 
 	gDrawQuad(-SCREEN_WIDTH, 0.0f,
 			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
-
-	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	gTexture.render(0.0f, 0.0f, NULL, &gStretchRect, gAngle);
 
 	glutSwapBuffers();
 }
@@ -139,6 +186,16 @@ void handleKeys(unsigned char key, int x, int y) {
 		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
 	}
 
+	if (key == 'f') {
+		gAngle = 0.0f;
+
+		gTransformationCombo++;
+
+		if (gTransformationCombo > 4) {
+			gTransformationCombo = 0;
+		}
+	}
+
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glLoadIdentity();
@@ -148,14 +205,14 @@ void handleKeys(unsigned char key, int x, int y) {
 	glPushMatrix();
 }
 
-void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GLfloat G, GLfloat B) {
+void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GLfloat G, GLfloat B, GLfloat A) {
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	if (gColorMode == COLOR_MODE_MONO) {
 		glTranslatef(x, y, 0.0f);
 
 		glBegin(GL_QUADS);
-			glColor3f(R, G, B);
+			glColor4f(R, G, B, A);
 			glVertex2f(-sizeX, -sizeY);
 			glVertex2f(sizeX, -sizeY);
 			glVertex2f(sizeX, sizeY);
@@ -165,10 +222,10 @@ void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GL
 		glTranslatef(x, y, 0.0f);
 
 		glBegin(GL_QUADS);
-			glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-sizeX, -sizeY);
-			glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(sizeX, -sizeY);
-			glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(sizeX, sizeY);
-			glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(-sizeX, sizeY);
+			glColor4f(0.0f, 0.0f, 1.0f, A); glVertex2f(-sizeX, -sizeY);
+			glColor4f(0.0f, 1.0f, 0.0f, A); glVertex2f(sizeX, -sizeY);
+			glColor4f(1.0f, 0.0f, 0.0f, A); glVertex2f(sizeX, sizeY);
+			glColor4f(1.0f, 1.0f, 0.0f, A); glVertex2f(-sizeX, sizeY);
 		glEnd();
 	}
 }
