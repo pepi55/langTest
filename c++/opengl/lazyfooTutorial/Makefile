@@ -1,5 +1,5 @@
 CC = g++
-FLAGS = $(CFLAGS) -std=c++0x -W -Wall -pedantic
+CFLAGS = -march=native -O2 -pipe -std=c++0x -W -Wall -pedantic
 LDFLAGS = -lGL -lGLU -lglut -lIL -lILU
 
 SOURCES = main.cpp src/LUtil.cpp src/LTexture.cpp
@@ -9,7 +9,7 @@ EXECUTABLE = runWithPrimus
 all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(FLAGS) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $@
 
 .cpp.o:
-	$(CC) $(FLAGS) $< -o $@
+	$(CC) $(CFLAGS) $< -o $@
