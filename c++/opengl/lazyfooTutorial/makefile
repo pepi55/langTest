@@ -48,5 +48,7 @@ LTexture.o: src/LTexture.cpp src/LOpenGL.hpp src/LRect.hpp
 LUtil.o: src/LUtil.cpp src/LUtil.hpp src/LTexture.hpp src/LOpenGL.hpp
 	$(CC) -c $(FLAGS) src/LUtil.cpp
 
+.PHONY: clean
+
 clean:
 	rm -rf *.o $(EXECUTABLE)
