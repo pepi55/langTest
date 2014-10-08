@@ -33,11 +33,15 @@ OBJECTS = main.o LUtil.o LTexture.o
 EXECUTABLE = runWithPrimus
 DEBUGGER = gdb
 
+.DEFAULT_GOAL:= debug
+
+.PHONY: clean
+
 release: $(OBJECTS)
 	$(CC) -O2 $(FLAGS) $(LFLAGS) $(OBJECTS) -o $(EXECUTABLE)
 
 debug: $(OBJECTS)
-	$(CC) -g$(DEBUGGER) $(FLAGS) $(LFLAGS) $(OBJECTS) -o $(EXECUTABLE)
+	$(CC) -g$(DEBUGGER) $(FLAGS) $(LFLAGS) $(OBJECTS) -o $(EXECUTABLE)-debug
 
 main.o: main.cpp src/LUtil.hpp src/LOpenGL.hpp
 	$(CC) -c $(FLAGS) main.cpp
@@ -48,7 +52,12 @@ LTexture.o: src/LTexture.cpp src/LOpenGL.hpp src/LRect.hpp
 LUtil.o: src/LUtil.cpp src/LUtil.hpp src/LTexture.hpp src/LOpenGL.hpp
 	$(CC) -c $(FLAGS) src/LUtil.cpp
 
-.PHONY: clean
-
 clean:
-	rm -rf *.o $(EXECUTABLE)
+	@if [ -f '$(EXECUTABLE)' ]; then \
+		rm -f *.o $(EXECUTABLE); \
+		echo "removed $(EXECUTABLE)"; \
+	fi
+	@if [ -f '$(EXECUTABLE)-debug' ]; then \
+		rm -f *.o $(EXECUTABLE)-debug; \
+		echo "removed $(EXECUTABLE)-debug"; \
+	fi
