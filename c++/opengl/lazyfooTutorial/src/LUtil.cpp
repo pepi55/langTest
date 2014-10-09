@@ -70,7 +70,7 @@ bool loadMedia(void) {
 }
 
 void update(void) {
-	gAngle += 90.0f / SCREEN_FPS;
+	gAngle += 40.0f / SCREEN_FPS;
 
 	if (gAngle > 360.0f) {
 		gAngle -= 360.0f;
@@ -92,7 +92,7 @@ void render(void) {
 		case 0:
 			glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
 			glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
-			glScalef(0.5f, 0.5f, 0.0f);
+			glScalef(2.0f, 2.0f, 0.0f);
 			glTranslatef(gTexture.imageWidth() / -2.0f, gTexture.imageHeight() / -2.0f, 0.0f);
 
 			break;
@@ -101,12 +101,12 @@ void render(void) {
 			glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
 			glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
 			glTranslatef(gTexture.imageWidth() / -2.0f, gTexture.imageHeight() / -2.0f, 0.0f);
-			glScalef(0.5f, 0.5f, 0.0f);
+			glScalef(2.0f, 2.0f, 0.0f);
 
 			break;
 
 		case 2:
-			glScalef(0.5f, 0.5f, 0.0f);
+			glScalef(2.0f, 2.0f, 0.0f);
 			glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
 			glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
 			glTranslatef(gTexture.imageWidth() / -2.0f, gTexture.imageHeight() / -2.0f, 0.0f);
@@ -116,12 +116,12 @@ void render(void) {
 		case 3:
 			glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
 			glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
-			glScalef(0.5f, 0.5f, 0.0f);
+			glScalef(2.0f, 2.0f, 0.0f);
 
 			break;
 
 		case 4:
-			glScalef(0.5f, 0.5f, 0.0f);
+			glScalef(2.0f, 2.0f, 0.0f);
 			glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
 			glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
 			glTranslatef(gTexture.imageWidth() / -2.0f, gTexture.imageHeight() / -2.0f, 0.0f);
