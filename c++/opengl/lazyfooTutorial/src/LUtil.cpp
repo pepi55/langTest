@@ -54,14 +54,7 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
-	/*
 	if (!gTexture.loadTextureFromFileWithColorKey("img/circleWithAlpha.png", 000, 255, 255)) {
-		fprintf(stderr, "Unable to load circle with alpha texture!\n");
-		return false;
-	}
-	*/
-
-	if (!gTexture.loadTextureFromFile("img/circleWithAlpha.png")) {
 		fprintf(stderr, "Unable to load texture!\n");
 		return false;
 	}
