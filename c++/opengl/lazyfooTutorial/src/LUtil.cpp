@@ -86,19 +86,20 @@ bool loadMedia(void) {
 	gQuadVertices[0].x = SCREEN_WIDTH * 1.0f / 4.0f;
 	gQuadVertices[0].y = SCREEN_HEIGHT * 1.0f / 4.0f;
 
-	gQuadVertices[1].x = SCREEN_WIDTH * 1.0f / 4.0f;
+	gQuadVertices[1].x = SCREEN_WIDTH * 3.0f / 4.0f;
 	gQuadVertices[1].x = SCREEN_HEIGHT * 1.0f / 4.0f;
 
-	gQuadVertices[2].x = SCREEN_WIDTH * 1.0f / 4.0f;
-	gQuadVertices[2].x = SCREEN_HEIGHT * 1.0f / 4.0f;
+	gQuadVertices[2].x = SCREEN_WIDTH * 3.0f / 4.0f;
+	gQuadVertices[2].x = SCREEN_HEIGHT * 3.0f / 4.0f;
 
 	gQuadVertices[3].x = SCREEN_WIDTH * 1.0f / 4.0f;
-	gQuadVertices[3].x = SCREEN_HEIGHT * 1.0f / 4.0f;
+	gQuadVertices[3].x = SCREEN_HEIGHT * 3.0f / 4.0f;
 
 	return true;
 }
 
 void update(void) {
+	gAngle += 90.0f / SCREEN_FPS;
 	gTexX++; gTexY++;
 
 	if (gAngle > 360.0f) {
@@ -122,19 +123,6 @@ void render(void) {
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glPushMatrix();
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(2, GL_FLOAT, sizeof(LVertexPos2D), gQuadVertices);
-		glDrawArrays(GL_QUADS, 0, 4);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	GLfloat textureRight = (GLfloat)SCREEN_WIDTH / (GLfloat)gTexture.imageWidth();
-	GLfloat textureBottom = (GLfloat)SCREEN_HEIGHT / (GLfloat)gTexture.imageHeight();
-
-	glBindTexture(GL_TEXTURE_2D, gTexture.getTextureID());
-	glMatrixMode(GL_TEXTURE);
-
-	glLoadIdentity();
 
 	switch(gTransformationCombo) {
 		case 0:
@@ -182,16 +170,10 @@ void render(void) {
 			break;
 	}
 
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	glBegin(GL_QUADS);
-		glTexCoord2f(0.0f, 0.0f);										glVertex2f(0.0f, 0.0f);
-		glTexCoord2f(textureRight, 0.0f);						glVertex2f(SCREEN_WIDTH, 0.0f);
-		glTexCoord2f(textureRight, textureBottom);	glVertex2f(SCREEN_WIDTH, SCREEN_HEIGHT);
-		glTexCoord2f(0.0f, textureBottom);					glVertex2f(0.0f, SCREEN_HEIGHT);
-	glEnd();
-
-	glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+	glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2, GL_FLOAT, sizeof(LVertexPos2D), gQuadVertices);
+		glDrawArrays(GL_QUADS, 0, 4);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 	glutSwapBuffers();
 }
@@ -234,58 +216,13 @@ void handleKeys(unsigned char key, int x, int y) {
 		}
 	}
 
-	if (key == 'r') {
-		gTexTureWrapType++;
-
-		if (gTexTureWrapType >= 4) {
-			gTexTureWrapType = 0;
-		}
-
-		glBindTexture(GL_TEXTURE_2D, gTexture.getTextureID());
-		switch(gTexTureWrapType) {
-			case 0:
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-				fprintf(stdout, "%i: GL_REPEAT\n", gTexTureWrapType);
-
-				break;
-
-			case 1:
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-				fprintf(stdout, "%i: GL_CLAMP_TO_BORDER\n", gTexTureWrapType);
-
-				break;
-
-			case 2:
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-				fprintf(stdout, "%i: GL_CLAMP_TO_EDGE\n", gTexTureWrapType);
-
-				break;
-
-			case 3:
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-				fprintf(stdout, "%i: GL_MIRRORED_REPEAT\n", gTexTureWrapType);
-
-				break;
-
-			default:
-				fprintf(stderr, "Out of bounds!\n");
-
-				break;
-		}
-		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
-	}
-
-	if (key == '-') {
+	/*if (key == '-') {
 		gAngle += 10.0f / SCREEN_FPS;
 	}
 
 	if (key == '=') {
 		gAngle -= 10.0f / SCREEN_FPS;
-	}
+	}*/
 
 	if (key == 'w') {
 		gCameraY -= 16.0f;
