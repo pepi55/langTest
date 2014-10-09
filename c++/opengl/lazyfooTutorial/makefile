@@ -1,6 +1,6 @@
 CC = g++ -std=c++11
 FLAGS = -march=native -pipe -W -Wall -pedantic
-LFLAGS = -lGL -lGLU -lglut -lIL -lILU
+LFLAGS = -lGL -lGLU -lglut -lIL -lILU -lGLEW
 
 ODIR = obj/
 SDIR = src/

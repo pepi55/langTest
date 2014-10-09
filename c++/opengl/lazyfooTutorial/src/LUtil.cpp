@@ -20,6 +20,17 @@ LTexture gTexture;
 GLenum gFiltering = GL_LINEAR;
 
 bool initGL(void) {
+	GLenum glewError = glewInit();
+	if (glewError != GLEW_OK) {
+		fprintf(stderr, "Error initializing GLEW!\n%s\n", glewGetErrorString(glewError));
+		return false;
+	}
+
+	if (!GLEW_VERSION_2_1) {
+		fprintf(stderr, "OpenGL 2.1 not supported!\n");
+		return false;
+	}
+
 	glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	glMatrixMode(GL_PROJECTION);
@@ -64,7 +75,7 @@ bool loadMedia(void) {
 		return false;
 	}*/
 
-	if (!gTexture.loadTextureFromFile("img/texture.png")) {
+	if (!gTexture.loadTextureFromFile("img/textureRepeat.png")) {
 		fprintf(stderr, "Unable to load texture!\n");
 		return false;
 	}
@@ -73,7 +84,6 @@ bool loadMedia(void) {
 }
 
 void update(void) {
-	gAngle += 10.0f / SCREEN_FPS;
 	gTexX++; gTexY++;
 
 	if (gAngle > 360.0f) {
@@ -209,7 +219,7 @@ void handleKeys(unsigned char key, int x, int y) {
 	if (key == 'r') {
 		gTexTureWrapType++;
 
-		if (gTexTureWrapType >= 2) {
+		if (gTexTureWrapType >= 4) {
 			gTexTureWrapType = 0;
 		}
 
@@ -223,9 +233,23 @@ void handleKeys(unsigned char key, int x, int y) {
 				break;
 
 			case 1:
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				fprintf(stdout, "%i: GL_CLAMP\n", gTexTureWrapType);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+				fprintf(stdout, "%i: GL_CLAMP_TO_BORDER\n", gTexTureWrapType);
+
+				break;
+
+			case 2:
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				fprintf(stdout, "%i: GL_CLAMP_TO_EDGE\n", gTexTureWrapType);
+
+				break;
+
+			case 3:
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+				fprintf(stdout, "%i: GL_MIRRORED_REPEAT\n", gTexTureWrapType);
 
 				break;
 
@@ -235,6 +259,14 @@ void handleKeys(unsigned char key, int x, int y) {
 				break;
 		}
 		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+	}
+
+	if (key == '-') {
+		gAngle += 10.0f / SCREEN_FPS;
+	}
+
+	if (key == '=') {
+		gAngle -= 10.0f / SCREEN_FPS;
 	}
 
 	if (key == 'w') {
