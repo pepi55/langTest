@@ -54,21 +54,23 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
+	/*
 	if (!gTexture.loadTextureFromFileWithColorKey("img/circleWithAlpha.png", 000, 255, 255)) {
 		fprintf(stderr, "Unable to load circle with alpha texture!\n");
 		return false;
 	}
+	*/
 
-	/*if (!gTexture.loadTextureFromFile("img/texture.png")) {
+	if (!gTexture.loadTextureFromFile("img/circleWithAlpha.png")) {
 		fprintf(stderr, "Unable to load texture!\n");
 		return false;
-	}*/
+	}
 
 	return true;
 }
 
 void update(void) {
-	gAngle += 180.0f / SCREEN_FPS;
+	gAngle += 90.0f / SCREEN_FPS;
 
 	if (gAngle > 360.0f) {
 		gAngle -= 360.0f;
@@ -83,6 +85,8 @@ void render(void) {
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glPushMatrix();
+
+	gDrawQuad(0.0f, 0.0f, 200.0f, 200.0f, 1.0f, 1.0f, 0.0f, 1.0f);
 
 	switch(gTransformationCombo) {
 		case 0:
@@ -126,18 +130,6 @@ void render(void) {
 	}
 
 	gTexture.render(0.0f, 0.0f);
-
-	gDrawQuad(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f,
-			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 0.0f);
-
-	gDrawQuad(SCREEN_WIDTH, 0.0f,
-			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 1.0f, 0.0f);
-
-	gDrawQuad(0.0f, SCREEN_HEIGHT,
-			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 0.0f, 0.0f, 1.0f);
-
-	gDrawQuad(-SCREEN_WIDTH, 0.0f,
-			SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f, 1.0f, 0.0f, 1.0f);
 
 	glutSwapBuffers();
 }
