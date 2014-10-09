@@ -6,8 +6,13 @@
 
 int gColorMode = COLOR_MODE_MONO;
 int gTransformationCombo = 0;
+int gTexTureWrapType = 0;
 
 GLfloat gAngle = 0.0f;
+
+GLfloat gTexX = 0.0f,
+				gTexY = 0.0f;
+
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
@@ -54,7 +59,12 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
-	if (!gTexture.loadTextureFromFileWithColorKey("img/circleWithAlpha.png", 000, 255, 255)) {
+	/*if (!gTexture.loadTextureFromFileWithColorKey("img/circleWithAlpha.png", 000, 255, 255)) {
+		fprintf(stderr, "Unable to load texture!\n");
+		return false;
+	}*/
+
+	if (!gTexture.loadTextureFromFile("img/texture.png")) {
 		fprintf(stderr, "Unable to load texture!\n");
 		return false;
 	}
@@ -63,10 +73,19 @@ bool loadMedia(void) {
 }
 
 void update(void) {
-	gAngle += 40.0f / SCREEN_FPS;
+	gAngle += 10.0f / SCREEN_FPS;
+	gTexX++; gTexY++;
 
 	if (gAngle > 360.0f) {
 		gAngle -= 360.0f;
+	}
+
+	if (gTexX >= gTexture.textureWidth()) {
+		gTexX = 0;
+	}
+
+	if (gTexY >= gTexture.textureHeight()) {
+		gTexY = 0;
 	}
 }
 
@@ -80,6 +99,14 @@ void render(void) {
 	glPushMatrix();
 
 	gDrawQuad(0.0f, 0.0f, 200.0f, 200.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+
+	GLfloat textureRight = (GLfloat)SCREEN_WIDTH / (GLfloat)gTexture.imageWidth();
+	GLfloat textureBottom = (GLfloat)SCREEN_HEIGHT / (GLfloat)gTexture.imageHeight();
+
+	glBindTexture(GL_TEXTURE_2D, gTexture.getTextureID());
+	glMatrixMode(GL_TEXTURE);
+
+	glLoadIdentity();
 
 	switch(gTransformationCombo) {
 		case 0:
@@ -120,9 +147,23 @@ void render(void) {
 			glTranslatef(gTexture.imageWidth() / -2.0f, gTexture.imageHeight() / -2.0f, 0.0f);
 
 			break;
+
+		default:
+			fprintf(stderr, "Out of bounds!\n");
+
+			break;
 	}
 
-	gTexture.render(0.0f, 0.0f);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f);										glVertex2f(0.0f, 0.0f);
+		glTexCoord2f(textureRight, 0.0f);						glVertex2f(SCREEN_WIDTH, 0.0f);
+		glTexCoord2f(textureRight, textureBottom);	glVertex2f(SCREEN_WIDTH, SCREEN_HEIGHT);
+		glTexCoord2f(0.0f, textureBottom);					glVertex2f(0.0f, SCREEN_HEIGHT);
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
 
 	glutSwapBuffers();
 }
@@ -135,22 +176,6 @@ void handleKeys(unsigned char key, int x, int y) {
 		} else if (gColorMode == COLOR_MODE_MULTI) {
 			gColorMode = COLOR_MODE_MONO;
 		}
-	}
-
-	if (key == 'w') {
-		gCameraY -= 16.0f;
-	}
-
-	if (key == 'a') {
-		gCameraX -= 16.0f;
-	}
-
-	if (key == 's') {
-		gCameraY += 16.0f;
-	}
-
-	if (key == 'd') {
-		gCameraX += 16.0f;
 	}
 
 	if (key == 'e') {
@@ -179,6 +204,53 @@ void handleKeys(unsigned char key, int x, int y) {
 		if (gTransformationCombo > 4) {
 			gTransformationCombo = 0;
 		}
+	}
+
+	if (key == 'r') {
+		gTexTureWrapType++;
+
+		if (gTexTureWrapType >= 2) {
+			gTexTureWrapType = 0;
+		}
+
+		glBindTexture(GL_TEXTURE_2D, gTexture.getTextureID());
+		switch(gTexTureWrapType) {
+			case 0:
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				fprintf(stdout, "%i: GL_REPEAT\n", gTexTureWrapType);
+
+				break;
+
+			case 1:
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+				fprintf(stdout, "%i: GL_CLAMP\n", gTexTureWrapType);
+
+				break;
+
+			default:
+				fprintf(stderr, "Out of bounds!\n");
+
+				break;
+		}
+		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+	}
+
+	if (key == 'w') {
+		gCameraY -= 16.0f;
+	}
+
+	if (key == 'a') {
+		gCameraX -= 16.0f;
+	}
+
+	if (key == 's') {
+		gCameraY += 16.0f;
+	}
+
+	if (key == 'd') {
+		gCameraX += 16.0f;
 	}
 
 	glMatrixMode(GL_MODELVIEW);
