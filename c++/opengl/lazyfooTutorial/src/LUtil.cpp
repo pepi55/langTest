@@ -3,10 +3,13 @@
 
 #include "LUtil.hpp"
 #include "LTexture.hpp"
+#include "LVertexPos2D.hpp"
 
 int gColorMode = COLOR_MODE_MONO;
 int gTransformationCombo = 0;
 int gTexTureWrapType = 0;
+
+GLenum gFiltering = GL_LINEAR;
 
 GLfloat gAngle = 0.0f;
 
@@ -17,7 +20,7 @@ GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
 LTexture gTexture;
-GLenum gFiltering = GL_LINEAR;
+LVertexPos2D gQuadVertices[4];
 
 bool initGL(void) {
 	GLenum glewError = glewInit();
@@ -80,6 +83,18 @@ bool loadMedia(void) {
 		return false;
 	}
 
+	gQuadVertices[0].x = SCREEN_WIDTH * 1.0f / 4.0f;
+	gQuadVertices[0].y = SCREEN_HEIGHT * 1.0f / 4.0f;
+
+	gQuadVertices[1].x = SCREEN_WIDTH * 1.0f / 4.0f;
+	gQuadVertices[1].x = SCREEN_HEIGHT * 1.0f / 4.0f;
+
+	gQuadVertices[2].x = SCREEN_WIDTH * 1.0f / 4.0f;
+	gQuadVertices[2].x = SCREEN_HEIGHT * 1.0f / 4.0f;
+
+	gQuadVertices[3].x = SCREEN_WIDTH * 1.0f / 4.0f;
+	gQuadVertices[3].x = SCREEN_HEIGHT * 1.0f / 4.0f;
+
 	return true;
 }
 
@@ -108,7 +123,10 @@ void render(void) {
 	glPopMatrix();
 	glPushMatrix();
 
-	gDrawQuad(0.0f, 0.0f, 200.0f, 200.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+	glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2, GL_FLOAT, sizeof(LVertexPos2D), gQuadVertices);
+		glDrawArrays(GL_QUADS, 0, 4);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 	GLfloat textureRight = (GLfloat)SCREEN_WIDTH / (GLfloat)gTexture.imageWidth();
 	GLfloat textureBottom = (GLfloat)SCREEN_HEIGHT / (GLfloat)gTexture.imageHeight();
