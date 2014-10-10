@@ -9,9 +9,6 @@ const int SCREEN_FPS = 60;
 const int SCREEN_POSITION[] = {200, 50};
 const char *const SCREEN_TITLE = "Generic Title";
 
-const int COLOR_MODE_MONO = 0;
-const int COLOR_MODE_MULTI = 1;
-
 bool initGL(void);
 bool loadMedia(void);
 void update(void);
