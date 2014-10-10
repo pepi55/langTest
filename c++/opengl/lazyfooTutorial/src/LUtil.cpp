@@ -4,6 +4,7 @@
 #include "LUtil.hpp"
 #include "LTexture.hpp"
 #include "LVertexPos2D.hpp"
+#include "LTexCoord.hpp"
 
 GLfloat gAngle = 0.0;
 GLfloat gCameraX = 0.0f,

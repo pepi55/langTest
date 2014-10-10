@@ -1,7 +1,9 @@
-#include "LTexture.hpp"
 #include <string.h>
 #include <IL/il.h>
 #include <IL/ilu.h>
+
+#include "LTexture.hpp"
+#include "LVertexData2D.hpp"
 
 GLenum DEFAULT_TEXTURE_WRAP = GL_REPEAT;
 
@@ -14,10 +16,15 @@ LTexture::LTexture() {
 
 	mImageWidth = 0;
 	mImageHeight = 0;
+
+	mVBOID = 0;
+	mIBOID = 0;
 }
 
 LTexture::~LTexture() {
 	freeTexture();
+
+	freeVBO();
 }
 
 bool LTexture::lock(void) {
@@ -27,7 +34,7 @@ bool LTexture::lock(void) {
 
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels);
-		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
 		return true;
 	}
@@ -45,7 +52,7 @@ bool LTexture::unlock(void) {
 
 		delete[] mPixels;
 		mPixels = NULL;
-		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
 		return true;
 	}
@@ -176,7 +183,7 @@ bool LTexture::loadTextureFromPixels32(void) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, DEFAULT_TEXTURE_WRAP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, DEFAULT_TEXTURE_WRAP);
 
-		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
 		GLenum error = glGetError();
 		if (error != GL_NO_ERROR) {
@@ -185,6 +192,8 @@ bool LTexture::loadTextureFromPixels32(void) {
 		} else {
 			delete[] mPixels;
 			mPixels = NULL;
+
+			initVBO();
 		}
 	} else {
 		fprintf(stderr, "Cannot load texture from pixels!\n");
@@ -218,7 +227,7 @@ bool LTexture::loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, DEFAULT_TEXTURE_WRAP);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, DEFAULT_TEXTURE_WRAP);
 
-	glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -226,7 +235,31 @@ bool LTexture::loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH,
 		return false;
 	}
 
+	initVBO();
+
 	return true;
+}
+
+void LTexture::initVBO(void) {
+	if (mTextureID != 0 && mVBOID == 0) {
+		LVertexData2D vData[4];
+		GLuint iData[4];
+
+		for (int i = 0; i < 4; ++i) {
+			iData[i] = i;
+		}
+
+		glGenBuffers(1, &mVBOID);
+		glBindBuffer(GL_VERTEX_ARRAY, mVBOID);
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LVertexData2D), vData, GL_DYNAMIC_DRAW);
+
+		glGenBuffers(1, &mIBOID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBOID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), iData, GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
 }
 
 void LTexture::freeTexture(void) {
@@ -248,6 +281,8 @@ void LTexture::freeTexture(void) {
 
 void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 	if (mTextureID != 0) {
+		LVertexData2D vData[4];
+
 		GLfloat texTop = 0.0f;
 		GLfloat	texBottom = (GLfloat)mImageHeight / (GLfloat)mTextureHeight;
 		GLfloat texLeft = 0.0f;
@@ -267,16 +302,19 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 		}
 
 		glTranslatef(x, y, 0.0f);
-
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glBindTexture(GL_TEXTURE_2D, mTextureID);
 
-		glBegin(GL_QUADS);
-			glTexCoord2f(texLeft, texTop);			glVertex2f(0.0f, 0.0f);
-			glTexCoord2f(texRight, texTop);			glVertex2f(quadWidth, 0.0f);
-			glTexCoord2f(texRight, texBottom);	glVertex2f(quadWidth, quadHeight);
-			glTexCoord2f(texLeft, texBottom);		glVertex2f(0.0f, quadHeight);
-		glEnd();
+		vData[0].texCoord.s = texLeft;		vData[0].texCoord.t = texTop;
+		vData[1].texCoord.s = texRight;		vData[1].texCoord.t = texTop;
+		vData[2].texCoord.s = texRight;		vData[2].texCoord.t = texBottom;
+		vData[3].texCoord.s = texLeft;		vData[3].texCoord.t = texBottom;
+
+		vData[0].position.x = 0.0f;				vData[0].position.y = 0.0f;
+		vData[1].position.x = quadWidth;	vData[1].position.y = 0.0f;
+		vData[2].position.x = quadWidth;	vData[2].position.y = quadHeight;
+		vData[2].position.x = 0.0f;				vData[2].position.y = quadHeight;
+
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
 	}
 }
 

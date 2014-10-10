@@ -14,6 +14,8 @@ class LTexture {
 		bool lock(void);
 		bool unlock(void);
 
+		void initVBO(void);
+		void freeVBO(void);
 		void render(GLfloat x, GLfloat y, LFRect *clip = NULL);
 		void freeTexture(void);
 
@@ -40,7 +42,9 @@ class LTexture {
 					 mTextureWidth,
 					 mTextureHeight,
 					 mImageWidth,
-					 mImageHeight;
+					 mImageHeight,
+					 mVBOID,
+					 mIBOID;
 };
 
 #endif
