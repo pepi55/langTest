@@ -315,6 +315,10 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 		vData[2].position.x = 0.0f;				vData[2].position.y = quadHeight;
 
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, mVBOID);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(LVertexData2D), vData);
 	}
 }
 
