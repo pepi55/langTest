@@ -122,7 +122,7 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 		vData[0].position.x = 0.0f;				vData[0].position.y = 0.0f;
 		vData[1].position.x = quadWidth;	vData[1].position.y = 0.0f;
 		vData[2].position.x = quadWidth;	vData[2].position.y = quadHeight;
-		vData[2].position.x = 0.0f;				vData[2].position.y = quadHeight;
+		vData[3].position.x = 0.0f;				vData[3].position.y = quadHeight;
 
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -130,7 +130,7 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 			glBindBuffer(GL_ARRAY_BUFFER, mVBOID);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(LVertexData2D), vData);
 			glTexCoordPointer(2, GL_FLOAT, sizeof(LVertexData2D), (GLvoid*)offsetof(LVertexData2D, texCoord));
-			glVertexPointer(2,GL_FLOAT, sizeof(LVertexData2D), (GLvoid*)offsetof(LVertexData2D, position));
+			glVertexPointer(2, GL_FLOAT, sizeof(LVertexData2D), (GLvoid*)offsetof(LVertexData2D, position));
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBOID);
 			glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
