@@ -1,7 +1,7 @@
 #ifndef LTEX_COORD_H
 #define LTEX_COORD_H
 
-#include "LOpenGL.hpp"
+#include "../ogl/LOpenGL.hpp"
 
 struct LTexCoord {
 	GLfloat s;

@@ -2,8 +2,8 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 
-#include "LTexture.hpp"
-#include "LVertexData2D.hpp"
+#include "../tex/LTexture.hpp"
+#include "../vertex/LVertexData2D.hpp"
 
 GLenum DEFAULT_TEXTURE_WRAP = GL_REPEAT;
 
@@ -58,6 +58,102 @@ bool LTexture::unlock(void) {
 	}
 
 	return false;
+}
+
+void LTexture::initVBO(void) {
+	if (mTextureID != 0 && mVBOID == 0) {
+		LVertexData2D vData[4];
+		GLuint iData[4];
+
+		for (int i = 0; i < 4; ++i) {
+			iData[i] = i;
+		}
+
+		glGenBuffers(1, &mVBOID);
+		glBindBuffer(GL_VERTEX_ARRAY, mVBOID);
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LVertexData2D), vData, GL_DYNAMIC_DRAW);
+
+		glGenBuffers(1, &mIBOID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBOID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), iData, GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+}
+
+void LTexture::freeVBO(void) {
+	if (mVBOID != 0) {
+		glDeleteBuffers(1, &mVBOID);
+		glDeleteBuffers(1, &mIBOID);
+	}
+}
+
+void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
+	if (mTextureID != 0) {
+		LVertexData2D vData[4];
+
+		GLfloat texTop = 0.0f;
+		GLfloat	texBottom = (GLfloat)mImageHeight / (GLfloat)mTextureHeight;
+		GLfloat texLeft = 0.0f;
+		GLfloat texRight = (GLfloat)mImageWidth / (GLfloat)mTextureWidth;
+
+		GLfloat quadWidth = mTextureWidth;
+		GLfloat quadHeight = mTextureHeight;
+
+		if (clip != NULL) {
+			texLeft = clip->x / mTextureWidth;
+			texRight = (clip->x + clip->w) / mTextureWidth;
+			texTop = clip->y / mTextureHeight;
+			texBottom = (clip->y + clip->h) / mTextureHeight;
+
+			quadWidth = clip->w;
+			quadHeight = clip->h;
+		}
+
+		glTranslatef(x, y, 0.0f);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+		vData[0].texCoord.s = texLeft;		vData[0].texCoord.t = texTop;
+		vData[1].texCoord.s = texRight;		vData[1].texCoord.t = texTop;
+		vData[2].texCoord.s = texRight;		vData[2].texCoord.t = texBottom;
+		vData[3].texCoord.s = texLeft;		vData[3].texCoord.t = texBottom;
+
+		vData[0].position.x = 0.0f;				vData[0].position.y = 0.0f;
+		vData[1].position.x = quadWidth;	vData[1].position.y = 0.0f;
+		vData[2].position.x = quadWidth;	vData[2].position.y = quadHeight;
+		vData[2].position.x = 0.0f;				vData[2].position.y = quadHeight;
+
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, mVBOID);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(LVertexData2D), vData);
+			glTexCoordPointer(2, GL_FLOAT, sizeof(LVertexData2D), (GLvoid*)offsetof(LVertexData2D, texCoord));
+			glVertexPointer(2,GL_FLOAT, sizeof(LVertexData2D), (GLvoid*)offsetof(LVertexData2D, position));
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBOID);
+			glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
+	}
+}
+
+void LTexture::freeTexture(void) {
+	if (mTextureID != 0) {
+		glDeleteTextures(1, &mTextureID);
+		mTextureID = 0;
+	}
+
+	if (mPixels != NULL) {
+		delete[] mPixels;
+		mPixels = NULL;
+	}
+
+	mImageWidth = 0;
+	mImageHeight = 0;
+	mTextureWidth = 0;
+	mTextureHeight = 0;
 }
 
 bool LTexture::loadPixelsFromFile(std::string path) {
@@ -193,7 +289,7 @@ bool LTexture::loadTextureFromPixels32(void) {
 			delete[] mPixels;
 			mPixels = NULL;
 
-			initVBO();
+			//initVBO();
 		}
 	} else {
 		fprintf(stderr, "Cannot load texture from pixels!\n");
@@ -238,88 +334,6 @@ bool LTexture::loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH,
 	initVBO();
 
 	return true;
-}
-
-void LTexture::initVBO(void) {
-	if (mTextureID != 0 && mVBOID == 0) {
-		LVertexData2D vData[4];
-		GLuint iData[4];
-
-		for (int i = 0; i < 4; ++i) {
-			iData[i] = i;
-		}
-
-		glGenBuffers(1, &mVBOID);
-		glBindBuffer(GL_VERTEX_ARRAY, mVBOID);
-		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LVertexData2D), vData, GL_DYNAMIC_DRAW);
-
-		glGenBuffers(1, &mIBOID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBOID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), iData, GL_DYNAMIC_DRAW);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
-}
-
-void LTexture::freeTexture(void) {
-	if (mTextureID != 0) {
-		glDeleteTextures(1, &mTextureID);
-		mTextureID = 0;
-	}
-
-	if (mPixels != NULL) {
-		delete[] mPixels;
-		mPixels = NULL;
-	}
-
-	mImageWidth = 0;
-	mImageHeight = 0;
-	mTextureWidth = 0;
-	mTextureHeight = 0;
-}
-
-void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
-	if (mTextureID != 0) {
-		LVertexData2D vData[4];
-
-		GLfloat texTop = 0.0f;
-		GLfloat	texBottom = (GLfloat)mImageHeight / (GLfloat)mTextureHeight;
-		GLfloat texLeft = 0.0f;
-		GLfloat texRight = (GLfloat)mImageWidth / (GLfloat)mTextureWidth;
-
-		GLfloat quadWidth = mTextureWidth;
-		GLfloat quadHeight = mTextureHeight;
-
-		if (clip != NULL) {
-			texLeft = clip->x / mTextureWidth;
-			texRight = (clip->x + clip->w) / mTextureWidth;
-			texTop = clip->y / mTextureHeight;
-			texBottom = (clip->y + clip->h) / mTextureHeight;
-
-			quadWidth = clip->w;
-			quadHeight = clip->h;
-		}
-
-		glTranslatef(x, y, 0.0f);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-		vData[0].texCoord.s = texLeft;		vData[0].texCoord.t = texTop;
-		vData[1].texCoord.s = texRight;		vData[1].texCoord.t = texTop;
-		vData[2].texCoord.s = texRight;		vData[2].texCoord.t = texBottom;
-		vData[3].texCoord.s = texLeft;		vData[3].texCoord.t = texBottom;
-
-		vData[0].position.x = 0.0f;				vData[0].position.y = 0.0f;
-		vData[1].position.x = quadWidth;	vData[1].position.y = 0.0f;
-		vData[2].position.x = quadWidth;	vData[2].position.y = quadHeight;
-		vData[2].position.x = 0.0f;				vData[2].position.y = quadHeight;
-
-		glBindTexture(GL_TEXTURE_2D, mTextureID);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, mVBOID);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(LVertexData2D), vData);
-	}
 }
 
 GLuint LTexture::powerOfTwo(GLuint num) {

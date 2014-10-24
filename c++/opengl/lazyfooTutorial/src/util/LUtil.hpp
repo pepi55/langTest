@@ -1,7 +1,7 @@
 #ifndef LUTIL_H
 #define LUTIL_H
 
-#include "LOpenGL.hpp"
+#include "../ogl/LOpenGL.hpp"
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;

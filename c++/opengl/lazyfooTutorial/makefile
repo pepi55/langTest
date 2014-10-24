@@ -1,14 +1,17 @@
 CC = g++ -std=c++11
+DEBUG = -g
 FLAGS = -march=native -pipe -W -Wall -pedantic
 LFLAGS = -lGL -lGLU -lglut -lIL -lILU -lGLEW
+VPATH = ./src:./src/util:./src/prim:./src/tex:./src/ogl:./src/vertex
 
-ODIR = obj/
-SDIR = src/
+SOURCES = ./src/main.cpp \
+					./src/util/LUtil.cpp \
+					./src/tex/LTexture.cpp
 
-OBJECTS = main.o LUtil.o LTexture.o
+OBJECTS = $(SOURCES:.cpp=.o)
+OBJECTS_DEBUG = $(SOURCES:.cpp=$(DEBUG).o)
 
 EXECUTABLE = runWithPrimus
-DEBUGGER = gdb
 
 .DEFAULT_GOAL:= debug
 
@@ -17,16 +20,20 @@ DEBUGGER = gdb
 release: $(OBJECTS)
 	$(CC) -O2 $(FLAGS) $(LFLAGS) $^ -o $(EXECUTABLE)
 
-debug: $(OBJECTS)
-	$(CC) -g$(DEBUGGER) $(FLAGS) $(LFLAGS) $^ -o $(EXECUTABLE)-debug
+%.o: %.cpp
+	$(CC) -O2 $(FLAGS) -c $< -o $@
 
-%.o: $(SDIR)%.cpp $(SDIR)%.hpp
-	$(CC) $(FLAGS) -c $< -o $@
+debug: $(OBJECTS_DEBUG)
+	$(CC) $(DEBUG) $(FLAGS) $(LFLAGS) $^ -o $(EXECUTABLE)-debug
+
+%$(DEBUG).o: %.cpp
+	$(CC) $(DEBUG) $(FLAGS) -c $< -o $@
 
 clean:
-	rm $(OBJECTS)
 ifneq ("$(wildcard $(EXECUTABLE)-debug)", "")
+	rm $(OBJECTS_DEBUG)
 	rm $(EXECUTABLE)-debug
 else ifneq ("$(wildcard $(EXECUTABLE))", "")
+	rm $(OBJECTS)
 	rm $(EXECUTABLE)
 endif

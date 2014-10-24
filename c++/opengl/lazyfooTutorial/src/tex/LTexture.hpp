@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "LOpenGL.hpp"
-#include "LRect.hpp"
+#include "../ogl/LOpenGL.hpp"
+#include "../prim/LRect.hpp"
 
 class LTexture {
 	public:

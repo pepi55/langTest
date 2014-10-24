@@ -2,9 +2,9 @@
 #include <IL/ilu.h>
 
 #include "LUtil.hpp"
-#include "LTexture.hpp"
-#include "LVertexPos2D.hpp"
-#include "LTexCoord.hpp"
+#include "../tex/LTexture.hpp"
+#include "../vertex/LVertexPos2D.hpp"
+#include "../tex/LTexCoord.hpp"
 
 GLfloat gAngle = 0.0;
 GLfloat gCameraX = 0.0f,
@@ -14,7 +14,7 @@ GLuint gIndices[4];
 GLuint gIndexBuffer = 0;
 GLuint gVertexBuffer = 0;
 
-LVertexPos2D gQuadVertices[4];
+LTexture gTexture;
 
 bool initGL(void) {
 	GLenum glewError = glewInit();
@@ -65,30 +65,10 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
-	gQuadVertices[0].x = SCREEN_WIDTH * 1.0f / 4.0f;
-	gQuadVertices[0].y = SCREEN_HEIGHT * 1.0f / 4.0f;
-
-	gQuadVertices[1].x = SCREEN_WIDTH * 3.0f / 4.0f;
-	gQuadVertices[1].y = SCREEN_HEIGHT * 1.0f / 4.0f;
-
-	gQuadVertices[2].x = SCREEN_WIDTH * 3.0f / 4.0f;
-	gQuadVertices[2].y = SCREEN_HEIGHT * 3.0f / 4.0f;
-
-	gQuadVertices[3].x = SCREEN_WIDTH * 1.0f / 4.0f;
-	gQuadVertices[3].y = SCREEN_HEIGHT * 3.0f / 4.0f;
-
-	gIndices[0] = 0;
-	gIndices[1] = 1;
-	gIndices[2] = 2;
-	gIndices[3] = 3;
-
-	glGenBuffers(1, &gVertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LVertexPos2D), gQuadVertices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &gIndexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIndexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), gIndices, GL_STATIC_DRAW);
+	if (!gTexture.loadTextureFromFile("img/texture.png")) {
+		fprintf(stderr, "Unable to load texture!\n");
+		return false;
+	}
 
 	return true;
 }
@@ -102,9 +82,6 @@ void update(void) {
 }
 
 void render(void) {
-	int tempW = -(gQuadVertices[1].x + gQuadVertices[0].x),
-			tempH = -(gQuadVertices[1].y + gQuadVertices[0].y + gQuadVertices[2].y);
-
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glLoadIdentity();
@@ -113,24 +90,28 @@ void render(void) {
 	glPopMatrix();
 	glPushMatrix();
 
+	/*
 	glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
 	glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
 	glScalef(0.5f, 0.5f, 0.0f);
-	glTranslatef(tempW / 2.0f, tempH / 2.0f, 0.0f);
+	*/
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-		glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
-		glVertexPointer(2, GL_FLOAT, 0, NULL);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIndexBuffer);
-		glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
+	gTexture.render(100, 100);
 
 	glutSwapBuffers();
 }
 
 void handleKeys(unsigned char key, int x, int y) {
+//////////////////////////////////////////////////////////////////////////
+//		GCC FILED SOME COMPLAINTS
+//////////////////////////////////////////////////////////////////////////
+	if (key == '?') {
+		fprintf(stdout, "What is x/y? Baby dont %i, %i, me! NO mo'!\n", x, y);
+	}
+//////////////////////////////////////////////////////////////////////////
+//		END OF GCC COMPLAINTS
+//////////////////////////////////////////////////////////////////////////
+
 	/*if (key == '-') {
 		gAngle += 10.0f / SCREEN_FPS;
 	}
@@ -138,10 +119,6 @@ void handleKeys(unsigned char key, int x, int y) {
 	if (key == '=') {
 		gAngle -= 10.0f / SCREEN_FPS;
 	}*/
-
-	if (key == '?') {
-		fprintf(stdout, "What is x/y? Baby dont %i, %i, me! NO mo'!\n", x, y);
-	}
 
 	if (key == 'w') {
 		gCameraY -= 16.0f;

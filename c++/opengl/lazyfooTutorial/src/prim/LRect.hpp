@@ -1,7 +1,7 @@
 #ifndef LFRECT_H
 #define LFRECT_H
 
-#include "LOpenGL.hpp"
+#include "../ogl/LOpenGL.hpp"
 
 struct LFRect {
 	GLfloat x, y, w, h;
