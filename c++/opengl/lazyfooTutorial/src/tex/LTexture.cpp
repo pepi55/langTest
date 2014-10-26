@@ -3,7 +3,6 @@
 #include <IL/ilu.h>
 
 #include "../tex/LTexture.hpp"
-#include "../vertex/LVertexData2D.hpp"
 
 GLenum DEFAULT_TEXTURE_WRAP = GL_REPEAT;
 
@@ -34,7 +33,7 @@ bool LTexture::lock(void) {
 
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels);
-		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+		glBindTexture(GL_TEXTURE_2D, 0x0);
 
 		return true;
 	}
@@ -52,7 +51,7 @@ bool LTexture::unlock(void) {
 
 		delete[] mPixels;
 		mPixels = NULL;
-		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+		glBindTexture(GL_TEXTURE_2D, 0x0);
 
 		return true;
 	}
@@ -77,8 +76,8 @@ void LTexture::initVBO(void) {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBOID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), iData, GL_DYNAMIC_DRAW);
 
-		glBindBuffer(GL_ARRAY_BUFFER, (GLuint)NULL);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (GLuint)NULL);
+		glBindBuffer(GL_ARRAY_BUFFER, 0x0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0x0);
 	}
 }
 
@@ -110,7 +109,7 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 		}
 
 		glTranslatef(x, y, 0.0f);
-		//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 		LVertexData2D vData[4];
 
@@ -279,7 +278,7 @@ bool LTexture::loadTextureFromPixels32(void) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, DEFAULT_TEXTURE_WRAP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, DEFAULT_TEXTURE_WRAP);
 
-		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+		glBindTexture(GL_TEXTURE_2D, 0x0);
 
 		GLenum error = glGetError();
 		if (error != GL_NO_ERROR) {
@@ -323,7 +322,7 @@ bool LTexture::loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, DEFAULT_TEXTURE_WRAP);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, DEFAULT_TEXTURE_WRAP);
 
-	glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
+	glBindTexture(GL_TEXTURE_2D, 0x0);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {

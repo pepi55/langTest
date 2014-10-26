@@ -3,12 +3,13 @@
 
 #include "LUtil.hpp"
 #include "../tex/LTexture.hpp"
+#include "../tex/LSpriteSheet.hpp"
 
-GLfloat gAngle = 0.0;
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
 LTexture gTexture;
+LSpriteSheet gSprites;
 
 bool initGL(void) {
 	GLenum glewError = glewInit();
@@ -64,15 +65,38 @@ bool loadMedia(void) {
 		return false;
 	}
 
+	if (!gSprites.loadTextureFromFile("img/arrows.png")) {
+		fprintf(stderr, "Unable to load sprite sheet!\n");
+		return false;
+	}
+
+	LFRect clip = {0.0f, 0.0f, 128.0f, 128.0f};
+
+	clip.x = 0.0f;
+	clip.y = 0.0f;
+	gSprites.addClipSprite(clip);
+
+	clip.x = 128.0f;
+	clip.y = 0.0f;
+	gSprites.addClipSprite(clip);
+
+	clip.x = 0.0f;
+	clip.y = 128.0f;
+	gSprites.addClipSprite(clip);
+
+	clip.x = 128.0f;
+	clip.y = 128.0f;
+	gSprites.addClipSprite(clip);
+
+	if (!gSprites.generateDataBuffer()) {
+		fprintf(stderr, "Unable to clip sprite sheet!\n");
+		return false;
+	}
+
 	return true;
 }
 
 void update(void) {
-	gAngle += 90.0f / SCREEN_FPS;
-
-	if (gAngle > 360.0f) {
-		gAngle -= 360.0f;
-	}
 }
 
 void render(void) {
@@ -84,35 +108,37 @@ void render(void) {
 	glPopMatrix();
 	glPushMatrix();
 
-	/*
-	glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
-	glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
-	glScalef(0.5f, 0.5f, 0.0f);
-	*/
-
 	gTexture.render(100, 100);
+
+	glLoadIdentity();
+	glTranslatef(64.0f, 64.0f, 0.0f);
+	gSprites.renderSprite(0);
+
+	glLoadIdentity();
+	glTranslatef(SCREEN_WIDTH - 64.0f, 64.0f, 0.0f);
+	gSprites.renderSprite(1);
+
+	glLoadIdentity();
+	glTranslatef(64.0f, SCREEN_HEIGHT - 64.0f, 0.0f);
+	gSprites.renderSprite(2);
+
+	glLoadIdentity();
+	glTranslatef(SCREEN_WIDTH - 64.0f, SCREEN_HEIGHT - 64.0f, 0.0f);
+	gSprites.renderSprite(3);
 
 	glutSwapBuffers();
 }
 
 void handleKeys(unsigned char key, int x, int y) {
 //////////////////////////////////////////////////////////////////////////
-//		GCC FILED SOME COMPLAINTS
+//		GCC FILED SOME COMPLAINTS																					//
 //////////////////////////////////////////////////////////////////////////
 	if (key == '?') {
 		fprintf(stdout, "What is x/y? Baby dont %i, %i, me! NO mo'!\n", x, y);
 	}
 //////////////////////////////////////////////////////////////////////////
-//		END OF GCC COMPLAINTS
+//		END OF GCC COMPLAINTS																							//
 //////////////////////////////////////////////////////////////////////////
-
-	/*if (key == '-') {
-		gAngle += 10.0f / SCREEN_FPS;
-	}
-
-	if (key == '=') {
-		gAngle -= 10.0f / SCREEN_FPS;
-	}*/
 
 	if (key == 'w') {
 		gCameraY -= 16.0f;
