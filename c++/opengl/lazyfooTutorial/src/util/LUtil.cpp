@@ -3,16 +3,10 @@
 
 #include "LUtil.hpp"
 #include "../tex/LTexture.hpp"
-#include "../vertex/LVertexPos2D.hpp"
-#include "../tex/LTexCoord.hpp"
 
 GLfloat gAngle = 0.0;
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
-
-GLuint gIndices[4];
-GLuint gIndexBuffer = 0;
-GLuint gVertexBuffer = 0;
 
 LTexture gTexture;
 

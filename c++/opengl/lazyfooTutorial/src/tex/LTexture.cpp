@@ -34,7 +34,7 @@ bool LTexture::lock(void) {
 
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
 
 		return true;
 	}
@@ -46,13 +46,13 @@ bool LTexture::unlock(void) {
 	if (mPixels != NULL && mTextureID != 0) {
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,mTextureWidth, mTextureHeight,
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mTextureWidth, mTextureHeight,
 				GL_RGBA, GL_UNSIGNED_BYTE, mPixels
 				);
 
 		delete[] mPixels;
 		mPixels = NULL;
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
 
 		return true;
 	}
@@ -70,15 +70,15 @@ void LTexture::initVBO(void) {
 		}
 
 		glGenBuffers(1, &mVBOID);
-		glBindBuffer(GL_VERTEX_ARRAY, mVBOID);
+		glBindBuffer(GL_ARRAY_BUFFER, mVBOID);
 		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LVertexData2D), vData, GL_DYNAMIC_DRAW);
 
 		glGenBuffers(1, &mIBOID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBOID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), iData, GL_DYNAMIC_DRAW);
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, (GLuint)NULL);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (GLuint)NULL);
 	}
 }
 
@@ -91,15 +91,13 @@ void LTexture::freeVBO(void) {
 
 void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 	if (mTextureID != 0) {
-		LVertexData2D vData[4];
-
 		GLfloat texTop = 0.0f;
 		GLfloat	texBottom = (GLfloat)mImageHeight / (GLfloat)mTextureHeight;
 		GLfloat texLeft = 0.0f;
 		GLfloat texRight = (GLfloat)mImageWidth / (GLfloat)mTextureWidth;
 
-		GLfloat quadWidth = mTextureWidth;
-		GLfloat quadHeight = mTextureHeight;
+		GLfloat quadWidth = mImageWidth;
+		GLfloat quadHeight = mImageHeight;
 
 		if (clip != NULL) {
 			texLeft = clip->x / mTextureWidth;
@@ -112,7 +110,9 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 		}
 
 		glTranslatef(x, y, 0.0f);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+		LVertexData2D vData[4];
 
 		vData[0].texCoord.s = texLeft;		vData[0].texCoord.t = texTop;
 		vData[1].texCoord.s = texRight;		vData[1].texCoord.t = texTop;
@@ -279,7 +279,7 @@ bool LTexture::loadTextureFromPixels32(void) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, DEFAULT_TEXTURE_WRAP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, DEFAULT_TEXTURE_WRAP);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
 
 		GLenum error = glGetError();
 		if (error != GL_NO_ERROR) {
@@ -289,7 +289,7 @@ bool LTexture::loadTextureFromPixels32(void) {
 			delete[] mPixels;
 			mPixels = NULL;
 
-			//initVBO();
+			initVBO();
 		}
 	} else {
 		fprintf(stderr, "Cannot load texture from pixels!\n");
@@ -323,7 +323,7 @@ bool LTexture::loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, DEFAULT_TEXTURE_WRAP);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, DEFAULT_TEXTURE_WRAP);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, (GLuint)NULL);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
