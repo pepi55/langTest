@@ -9,7 +9,7 @@
 class LTexture {
 	public:
 		LTexture();
-		~LTexture();
+		virtual ~LTexture();
 
 		bool lock(void);
 		bool unlock(void);
@@ -17,7 +17,7 @@ class LTexture {
 		void initVBO(void);
 		void freeVBO(void);
 		void render(GLfloat x, GLfloat y, LFRect *clip = NULL);
-		void freeTexture(void);
+		virtual void freeTexture(void);
 
 		bool loadPixelsFromFile(std::string path);
 		bool loadTextureFromFile(std::string path);
