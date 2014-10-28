@@ -3,7 +3,6 @@
 
 #include <string>
 
-#include "../vertex/LVertexData2D.hpp"
 #include "../ogl/LOpenGL.hpp"
 #include "../prim/LRect.hpp"
 

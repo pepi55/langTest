@@ -2,6 +2,7 @@
 #include <IL/ilu.h>
 
 #include "LUtil.hpp"
+#include "../font/LFont.hpp"
 #include "../tex/LTexture.hpp"
 #include "../tex/LSpriteSheet.hpp"
 
@@ -9,7 +10,7 @@ GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
 LTexture gTexture;
-LSpriteSheet gSprites;
+LFont gFont;
 
 bool initGL(void) {
 	GLenum glewError = glewInit();
@@ -65,31 +66,8 @@ bool loadMedia(void) {
 		return false;
 	}
 
-	if (!gSprites.loadTextureFromFile("img/arrows.png")) {
-		fprintf(stderr, "Unable to load sprite sheet!\n");
-		return false;
-	}
-
-	LFRect clip = {0.0f, 0.0f, 128.0f, 128.0f};
-
-	clip.x = 0.0f;
-	clip.y = 0.0f;
-	gSprites.addClipSprite(clip);
-
-	clip.x = 128.0f;
-	clip.y = 0.0f;
-	gSprites.addClipSprite(clip);
-
-	clip.x = 0.0f;
-	clip.y = 128.0f;
-	gSprites.addClipSprite(clip);
-
-	clip.x = 128.0f;
-	clip.y = 128.0f;
-	gSprites.addClipSprite(clip);
-
-	if (!gSprites.generateDataBuffer()) {
-		fprintf(stderr, "Unable to clip sprite sheet!\n");
+	if (!gFont.loadBitmap("img/lazy_font.png")) {
+		fprintf(stderr, "Unable to load font!\n");
 		return false;
 	}
 
@@ -108,23 +86,10 @@ void render(void) {
 	glPopMatrix();
 	glPushMatrix();
 
-	gTexture.render(100, 100);
+	gTexture.render(50.0f, 50.0f);
 
-	glLoadIdentity();
-	glTranslatef(64.0f, 64.0f, 0.0f);
-	gSprites.renderSprite(0);
-
-	glLoadIdentity();
-	glTranslatef(SCREEN_WIDTH - 64.0f, 64.0f, 0.0f);
-	gSprites.renderSprite(1);
-
-	glLoadIdentity();
-	glTranslatef(64.0f, SCREEN_HEIGHT - 64.0f, 0.0f);
-	gSprites.renderSprite(2);
-
-	glLoadIdentity();
-	glTranslatef(SCREEN_WIDTH - 64.0f, SCREEN_HEIGHT - 64.0f, 0.0f);
-	gSprites.renderSprite(3);
+	glColor3f(1.0f, 0.0f, 0.0f);
+	gFont.renderText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "The quick brown fox jumps\nover the lazy dawg");
 
 	glutSwapBuffers();
 }

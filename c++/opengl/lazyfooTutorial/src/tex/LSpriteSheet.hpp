@@ -2,7 +2,17 @@
 #define LSPRITE_SHEET_H
 
 #include <vector>
+
+#include "../vertex/LVertexData2D.hpp"
 #include "LTexture.hpp"
+
+enum LSpriteOrigin {
+	LSPRITE_ORIGIN_CENTER,
+	LSPRITE_ORIGIN_TOP_LEFT,
+	LSPRITE_ORIGIN_BOTTOM_LEFT,
+	LSPRITE_ORIGIN_TOP_RIGHT,
+	LSPRITE_ORIGIN_BOTTOM_RIGHT
+};
 
 class LSpriteSheet : public LTexture {
 	public:
@@ -11,12 +21,12 @@ class LSpriteSheet : public LTexture {
 
 		int addClipSprite(LFRect &newClip);
 		LFRect getClip(int index);
-		bool generateDataBuffer(void);
+		bool generateDataBuffer(LSpriteOrigin origin = LSPRITE_ORIGIN_CENTER);
 		void freeSheet(void);
 		void freeTexture(void);
 		void renderSprite(int index);
 
-	private:
+	protected:
 		std::vector<LFRect> mClips;
 		GLuint mVertexDataBuffer;
 		GLuint *mIndexBuffers;

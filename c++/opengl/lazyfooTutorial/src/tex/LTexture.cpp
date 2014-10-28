@@ -2,6 +2,7 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 
+#include "../vertex/LVertexData2D.hpp"
 #include "../tex/LTexture.hpp"
 
 GLenum DEFAULT_TEXTURE_WRAP = GL_REPEAT;
