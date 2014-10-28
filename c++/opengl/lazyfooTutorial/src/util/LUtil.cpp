@@ -10,6 +10,7 @@ GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
 LTexture gTexture;
+LTexture gCircle;
 LFont gFont;
 
 bool initGL(void) {
@@ -61,13 +62,18 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
-	if (!gTexture.loadTextureFromFile("img/texture.png")) {
-		fprintf(stderr, "Unable to load texture!\n");
+	if (!gFont.loadBitmap("img/lazy_font.png")) {
+		fprintf(stderr, "Unable to load font!\n");
 		return false;
 	}
 
-	if (!gFont.loadBitmap("img/lazy_font.png")) {
-		fprintf(stderr, "Unable to load font!\n");
+	if (!gCircle.loadTextureFromFileWithColorKey32("img/circleWithAlpha.png", 000, 255, 255)) {
+		fprintf(stderr, "Unable to load circle!\n");
+		return false;
+	}
+
+	if (!gTexture.loadTextureFromFile32("img/texture.png")) {
+		fprintf(stderr, "Unable to load texture!\n");
 		return false;
 	}
 
@@ -86,10 +92,12 @@ void render(void) {
 	glPopMatrix();
 	glPushMatrix();
 
+	glColor3f(1.0f, 0.0f, 0.0f);
+	gFont.renderText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "the quick brown fox jumps\nover the lazy dawg\nTHE QUICK BROWN FOX JUMPS\nOVER THE LAZY DAWG\n\n`~!@#$%^&*()_+[]\\{}\n|;':\"<>?,./");
+
 	gTexture.render(50.0f, 50.0f);
 
-	glColor3f(1.0f, 0.0f, 0.0f);
-	gFont.renderText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "The quick brown fox jumps\nover the lazy dawg");
+	gCircle.render(100.0f, 100.0f);
 
 	glutSwapBuffers();
 }

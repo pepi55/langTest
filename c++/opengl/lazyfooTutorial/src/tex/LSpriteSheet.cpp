@@ -22,7 +22,8 @@ LFRect LSpriteSheet::getClip(int index) {
 bool LSpriteSheet::generateDataBuffer(LSpriteOrigin origin) {
 	if (getTextureID() != 0 && mClips.size() > 0) {
 		int totalSprites = mClips.size();
-		LVertexData2D *vertexData = new LVertexData2D[totalSprites * 4];
+		LVertexData2D *vertexData = NULL;
+		vertexData = new LVertexData2D[totalSprites * 4];
 		mIndexBuffers = new GLuint[totalSprites];
 
 		glGenBuffers(1, &mVertexDataBuffer);

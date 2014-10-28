@@ -16,7 +16,7 @@ bool LFont::loadBitmap(std::string path) {
 
 	freeFont();
 
-	if (loadPixelsFromFile(path)) {
+	if (loadPixelsFromFile32(path)) {
 		GLfloat cellW = imageWidth() / 16.0f;
 		GLfloat cellH = imageHeight() / 16.0f;
 

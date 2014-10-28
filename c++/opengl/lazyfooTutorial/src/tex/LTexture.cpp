@@ -9,7 +9,7 @@ GLenum DEFAULT_TEXTURE_WRAP = GL_REPEAT;
 
 LTexture::LTexture() {
 	mTextureID = 0;
-	mPixels = NULL;
+	mPixels32 = NULL;
 
 	mTextureWidth = 0;
 	mTextureHeight = 0;
@@ -28,12 +28,12 @@ LTexture::~LTexture() {
 }
 
 bool LTexture::lock(void) {
-	if (mPixels == NULL && mTextureID != 0) {
+	if (mPixels32 == NULL && mTextureID != 0) {
 		GLuint size = mTextureWidth * mTextureHeight;
-		mPixels = new GLuint[size];
+		mPixels32 = new GLuint[size];
 
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels32);
 		glBindTexture(GL_TEXTURE_2D, 0x0);
 
 		return true;
@@ -43,15 +43,15 @@ bool LTexture::lock(void) {
 }
 
 bool LTexture::unlock(void) {
-	if (mPixels != NULL && mTextureID != 0) {
+	if (mPixels32 != NULL && mTextureID != 0) {
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mTextureWidth, mTextureHeight,
-				GL_RGBA, GL_UNSIGNED_BYTE, mPixels
+				GL_RGBA, GL_UNSIGNED_BYTE, mPixels32
 				);
 
-		delete[] mPixels;
-		mPixels = NULL;
+		delete[] mPixels32;
+		mPixels32 = NULL;
 		glBindTexture(GL_TEXTURE_2D, 0x0);
 
 		return true;
@@ -145,9 +145,9 @@ void LTexture::freeTexture(void) {
 		mTextureID = 0;
 	}
 
-	if (mPixels != NULL) {
-		delete[] mPixels;
-		mPixels = NULL;
+	if (mPixels32 != NULL) {
+		delete[] mPixels32;
+		mPixels32 = NULL;
 	}
 
 	mImageWidth = 0;
@@ -156,7 +156,7 @@ void LTexture::freeTexture(void) {
 	mTextureHeight = 0;
 }
 
-bool LTexture::loadPixelsFromFile(std::string path) {
+bool LTexture::loadPixelsFromFile32(std::string path) {
 	freeTexture();
 
 	bool pixelsLoaded = false;
@@ -183,14 +183,14 @@ bool LTexture::loadPixelsFromFile(std::string path) {
 			}
 
 			GLuint size = texWidth * texHeight;
-			mPixels = new GLuint[size];
+			mPixels32 = new GLuint[size];
 
 			mImageWidth = imgWidth;
 			mImageHeight = imgHeight;
 			mTextureWidth = texWidth;
 			mTextureHeight = texHeight;
 
-			memcpy(mPixels, ilGetData(), size * 4);
+			memcpy(mPixels32, ilGetData(), size * 4);
 			pixelsLoaded = true;
 		}
 
@@ -204,7 +204,7 @@ bool LTexture::loadPixelsFromFile(std::string path) {
 	return pixelsLoaded;
 }
 
-bool LTexture::loadTextureFromFile(std::string path) {
+bool LTexture::loadTextureFromFile32(std::string path) {
 	bool textureLoaded = false;
 
 	ILuint imgID = 0;
@@ -246,14 +246,14 @@ bool LTexture::loadTextureFromFile(std::string path) {
 	return textureLoaded;
 }
 
-bool LTexture::loadTextureFromFileWithColorKey(std::string path, GLubyte r, GLubyte g, GLubyte b, GLubyte a) {
-	if (!loadPixelsFromFile(path)) {
+bool LTexture::loadTextureFromFileWithColorKey32(std::string path, GLubyte r, GLubyte g, GLubyte b, GLubyte a) {
+	if (!loadPixelsFromFile32(path)) {
 		return false;
 	}
 
 	GLuint size = mTextureWidth * mTextureHeight;
 	for (GLuint i = 0; i < size; ++i) {
-		GLubyte *colors = (GLubyte*)&mPixels[i];
+		GLubyte *colors = (GLubyte*)&mPixels32[i];
 
 		if (colors[0] == r && colors[1] == g && colors[2] == b && (0 == a || colors[3] == a)) {
 			colors[0] = 255;
@@ -269,10 +269,10 @@ bool LTexture::loadTextureFromFileWithColorKey(std::string path, GLubyte r, GLub
 bool LTexture::loadTextureFromPixels32(void) {
 	bool success = true;
 
-	if (mTextureID == 0 && mPixels != NULL) {
+	if (mTextureID == 0 && mPixels32 != NULL) {
 		glGenTextures(1, &mTextureID);
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mTextureWidth, mTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mTextureWidth, mTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels32);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -283,11 +283,11 @@ bool LTexture::loadTextureFromPixels32(void) {
 
 		GLenum error = glGetError();
 		if (error != GL_NO_ERROR) {
-			fprintf(stderr, "Error loading texture from %p pixels!\n%s\n", (void*)mPixels, gluErrorString(error));
+			fprintf(stderr, "Error loading texture from %p pixels!\n%s\n", (void*)mPixels32, gluErrorString(error));
 			success = false;
 		} else {
-			delete[] mPixels;
-			mPixels = NULL;
+			delete[] mPixels32;
+			mPixels32 = NULL;
 
 			initVBO();
 		}
@@ -296,7 +296,7 @@ bool LTexture::loadTextureFromPixels32(void) {
 
 		if (mTextureID != 0) {
 			fprintf(stderr, "A texture has already been loaded!\n");
-		} else if (mPixels == NULL) {
+		} else if (mPixels32 == NULL) {
 			fprintf(stderr, "No pixels to create texture from!\n");
 		}
 
@@ -351,15 +351,15 @@ GLuint LTexture::powerOfTwo(GLuint num) {
 }
 
 void LTexture::setPixel32(GLuint x, GLuint y, GLuint pixel) {
-	mPixels[y * mTextureWidth + x] = pixel;
+	mPixels32[y * mTextureWidth + x] = pixel;
 }
 
 GLuint LTexture::getPixel32(GLuint x, GLuint y) {
-	return mPixels[y * mTextureWidth + x];
+	return mPixels32[y * mTextureWidth + x];
 }
 
 GLuint *LTexture::getPixelData32(void) {
-	return mPixels;
+	return mPixels32;
 }
 
 GLuint LTexture::getTextureID(void) {

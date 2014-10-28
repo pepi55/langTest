@@ -19,9 +19,9 @@ class LTexture {
 		void render(GLfloat x, GLfloat y, LFRect *clip = NULL);
 		virtual void freeTexture(void);
 
-		bool loadPixelsFromFile(std::string path);
-		bool loadTextureFromFile(std::string path);
-		bool loadTextureFromFileWithColorKey(std::string path, GLubyte r, GLubyte g, GLubyte b, GLubyte a = 000);
+		bool loadPixelsFromFile32(std::string path);
+		bool loadTextureFromFile32(std::string path);
+		bool loadTextureFromFileWithColorKey32(std::string path, GLubyte r, GLubyte g, GLubyte b, GLubyte a = 000);
 		bool loadTextureFromPixels32(void);
 		bool loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH, GLuint texW, GLuint texH);
 
@@ -36,9 +36,11 @@ class LTexture {
 		GLuint imageHeight(void);
 
 	private:
+		GLubyte *mPixels8;
+		GLuint *mPixels32;
 		GLuint powerOfTwo(GLuint num);
-		GLuint *mPixels;
 		GLuint mTextureID,
+					 mPixelFormat,
 					 mTextureWidth,
 					 mTextureHeight,
 					 mImageWidth,
