@@ -67,6 +67,7 @@ bool loadMedia(void) {
 		return false;
 	}
 
+	/*
 	if (!gCircle.loadTextureFromFileWithColorKey32("img/circleWithAlpha.png", 000, 255, 255)) {
 		fprintf(stderr, "Unable to load circle!\n");
 		return false;
@@ -76,6 +77,7 @@ bool loadMedia(void) {
 		fprintf(stderr, "Unable to load texture!\n");
 		return false;
 	}
+	*/
 
 	return true;
 }
@@ -93,11 +95,7 @@ void render(void) {
 	glPushMatrix();
 
 	glColor3f(1.0f, 0.0f, 0.0f);
-	gFont.renderText(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "the quick brown fox jumps\nover the lazy dawg\nTHE QUICK BROWN FOX JUMPS\nOVER THE LAZY DAWG\n\n`~!@#$%^&*()_+[]\\{}\n|;':\"<>?,./");
-
-	gTexture.render(50.0f, 50.0f);
-
-	gCircle.render(100.0f, 100.0f);
+	gFont.renderText(0, 0, "the quick brown fox jumps\nover the lazy dawg\nTHE QUICK BROWN FOX\nJUMPS OVER THE LAZY\nDAWG\n\n`~!@#$%^&*()_+[]\\{}|;':\"<>\n?,./");
 
 	glutSwapBuffers();
 }

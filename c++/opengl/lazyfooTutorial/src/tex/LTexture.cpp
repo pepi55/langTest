@@ -110,7 +110,7 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 		}
 
 		glTranslatef(x, y, 0.0f);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 		LVertexData2D vData[4];
 

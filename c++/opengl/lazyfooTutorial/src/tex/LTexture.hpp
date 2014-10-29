@@ -19,16 +19,18 @@ class LTexture {
 		void render(GLfloat x, GLfloat y, LFRect *clip = NULL);
 		virtual void freeTexture(void);
 
+		bool loadPixelsFromFile8(std::string path);
+
 		bool loadPixelsFromFile32(std::string path);
 		bool loadTextureFromFile32(std::string path);
 		bool loadTextureFromFileWithColorKey32(std::string path, GLubyte r, GLubyte g, GLubyte b, GLubyte a = 000);
 		bool loadTextureFromPixels32(void);
 		bool loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH, GLuint texW, GLuint texH);
-
 		void setPixel32(GLuint x, GLuint y, GLuint pixel);
 
 		GLuint getPixel32(GLuint x, GLuint y);
 		GLuint *getPixelData32(void);
+
 		GLuint getTextureID(void);
 		GLuint textureWidth(void);
 		GLuint textureHeight(void);
