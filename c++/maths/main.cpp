@@ -11,7 +11,13 @@ int main (void) {
 		}
 	}
 
-	fprintf(stdout, "The result is: %i\n", answ);
+	fprintf(stdout, "The result of problem 1 is: %i\n", answ);
+
+	answ = 0;
+
+	for (int i = 0; i < 4000000; ++i) {
+
+	}
 
 	return 0;
 }
