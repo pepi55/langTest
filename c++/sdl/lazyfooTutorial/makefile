@@ -1,7 +1,7 @@
 CC = g++ -std=c++11
 DEBUG = -ggdb
 FLAGS = -march=native -pipe -W -Wall -pedantic
-LFLAGS = -lSDL2
+LFLAGS = -lSDL2 -lSDL2_image
 VPATH = ./src:./src/sdl:./src/util
 
 SOURCES = ./src/main.cpp \

@@ -16,6 +16,6 @@ void mainLoop(void);
 void render(void);
 void closeSDL(void);
 
-SDL_Surface *loadSurface(std::string path);
+SDL_Texture *loadTexture(std::string path);
 
 #endif
