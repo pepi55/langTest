@@ -12,7 +12,7 @@ class LTextureSDL {
 		bool loadFromFile(SDL_Renderer *renderer, std::string path);
 
 		void free(void);
-		void render(SDL_Renderer *renderer, int x, int y);
+		void render(SDL_Renderer *renderer, int x, int y, SDL_Rect *clip = NULL);
 
 		int getWidth(void);
 		int getHeight(void);

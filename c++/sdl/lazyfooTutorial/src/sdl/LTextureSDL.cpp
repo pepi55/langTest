@@ -47,9 +47,15 @@ void LTextureSDL::free(void) {
 	}
 }
 
-void LTextureSDL::render(SDL_Renderer *renderer, int x, int y) {
+void LTextureSDL::render(SDL_Renderer *renderer, int x, int y, SDL_Rect *clip) {
 	SDL_Rect renderQuad = {x, y, mWidth, mHeight};
-	SDL_RenderCopy(renderer, mTexture, NULL, &renderQuad);
+
+	if (clip != NULL) {
+		renderQuad.w = clip->w;
+		renderQuad.h = clip->h;
+	}
+
+	SDL_RenderCopy(renderer, mTexture, clip, &renderQuad);
 }
 
 int LTextureSDL::getWidth(void) {
