@@ -1,18 +1,8 @@
 #include "LUtilSDL.hpp"
 
-enum KeyPressSurfaces {
-	KEY_PRESS_SURFACE_DEFAULT,
-	KEY_PRESS_SURFACE_UP,
-	KEY_PRESS_SURFACE_DOWN,
-	KEY_PRESS_SURFACE_LEFT,
-	KEY_PRESS_SURFACE_RIGHT,
-	KEY_PRESS_SURFACE_TOTAL
-};
-
 SDL_Window *gWindow;
 SDL_Surface *gScreenSurface;
 
-SDL_Surface *gKeyPressSurface[KEY_PRESS_SURFACE_TOTAL];
 SDL_Surface *gCurrentSurface;
 
 bool initSDL(void) {
@@ -38,33 +28,9 @@ bool initSDL(void) {
 bool loadMedia(void) {
 	bool success = true;
 
-	gKeyPressSurface[KEY_PRESS_SURFACE_DEFAULT] = loadSurface("img/keys/press.bmp");
-	if (gKeyPressSurface[KEY_PRESS_SURFACE_DEFAULT] == NULL) {
-		fprintf(stderr, "Failed to load default image!\n");
-		success = false;
-	}
-
-	gKeyPressSurface[KEY_PRESS_SURFACE_UP] = loadSurface("img/keys/up.bmp");
-	if (gKeyPressSurface[KEY_PRESS_SURFACE_UP] == NULL) {
-		fprintf(stderr, "Failed to load up image!\n");
-		success = false;
-	}
-
-	gKeyPressSurface[KEY_PRESS_SURFACE_DOWN] = loadSurface("img/keys/down.bmp");
-	if (gKeyPressSurface[KEY_PRESS_SURFACE_DOWN] == NULL) {
-		fprintf(stderr, "Failed to load down image!\n");
-		success = false;
-	}
-
-	gKeyPressSurface[KEY_PRESS_SURFACE_LEFT] = loadSurface("img/keys/left.bmp");
-	if (gKeyPressSurface[KEY_PRESS_SURFACE_LEFT] == NULL) {
-		fprintf(stderr, "Failed to load left image!\n");
-		success = false;
-	}
-
-	gKeyPressSurface[KEY_PRESS_SURFACE_RIGHT] = loadSurface("img/keys/right.bmp");
-	if (gKeyPressSurface[KEY_PRESS_SURFACE_RIGHT] == NULL) {
-		fprintf(stderr, "Failed to load right image!\n");
+	gCurrentSurface = loadSurface("img/stretch.bmp");
+	if (gCurrentSurface == NULL) {
+		fprintf(stderr, "Failed to load stretch bmp!\n");
 		success = false;
 	}
 
@@ -75,34 +41,10 @@ void mainLoop(void) {
 	bool quit = false;
 	SDL_Event e;
 
-	gCurrentSurface = gKeyPressSurface[KEY_PRESS_SURFACE_DEFAULT];
-
 	while (!quit) {
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT) {
 				quit = true;
-			} else if (e.type == SDL_KEYDOWN) {
-				switch (e.key.keysym.sym) {
-					case SDLK_UP:
-						gCurrentSurface = gKeyPressSurface[KEY_PRESS_SURFACE_UP];
-						break;
-
-					case SDLK_DOWN:
-						gCurrentSurface = gKeyPressSurface[KEY_PRESS_SURFACE_DOWN];
-						break;
-
-					case SDLK_LEFT:
-						gCurrentSurface = gKeyPressSurface[KEY_PRESS_SURFACE_LEFT];
-						break;
-
-					case SDLK_RIGHT:
-						gCurrentSurface = gKeyPressSurface[KEY_PRESS_SURFACE_RIGHT];
-						break;
-
-					default:
-						gCurrentSurface = gKeyPressSurface[KEY_PRESS_SURFACE_DEFAULT];
-						break;
-				}
 			}
 
 			render();
@@ -111,12 +53,18 @@ void mainLoop(void) {
 }
 
 void render(void) {
-	SDL_BlitSurface(gCurrentSurface, NULL, gScreenSurface, NULL);
+	SDL_Rect stretchRect;
+	stretchRect.x = 0; stretchRect.y = 0;
+	stretchRect.w = SCREEN_WIDTH; stretchRect.h = SCREEN_HEIGHT;
+	SDL_BlitScaled(gCurrentSurface, NULL, gScreenSurface, &stretchRect);
 
 	SDL_UpdateWindowSurface(gWindow);
 }
 
 void closeSDL(void) {
+	SDL_FreeSurface(gCurrentSurface);
+	gCurrentSurface = NULL;
+
 	SDL_DestroyWindow(gWindow);
 	gWindow = NULL;
 
@@ -125,10 +73,19 @@ void closeSDL(void) {
 
 SDL_Surface *loadSurface(std::string path) {
 	SDL_Surface *loadedSurface = SDL_LoadBMP(path.c_str());
+	SDL_Surface *optimizedSurface = NULL;
 
 	if (loadedSurface == NULL) {
 		fprintf(stderr, "Unable to load image %s!\nSDL_Error: %s\n", path.c_str(), SDL_GetError());
+	} else {
+		optimizedSurface = SDL_ConvertSurface(loadedSurface, gScreenSurface->format, 0x0);
+
+		if (optimizedSurface == NULL) {
+			fprintf(stderr, "Unable to optimize image %s!\nSDL_Error: %s\n", path.c_str(), SDL_GetError());
+
+			SDL_FreeSurface(loadedSurface);
+		}
 	}
 
-	return loadedSurface;
+	return optimizedSurface;
 }
