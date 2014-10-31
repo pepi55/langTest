@@ -7,9 +7,11 @@
 
 GLenum DEFAULT_TEXTURE_WRAP = GL_REPEAT;
 
-LTexture::LTexture() {
+LTexture::LTexture(void) {
 	mTextureID = 0;
 	mPixels32 = NULL;
+	mPixels8 = NULL;
+	mPixelFormat = 0x0;
 
 	mTextureWidth = 0;
 	mTextureHeight = 0;
@@ -21,19 +23,24 @@ LTexture::LTexture() {
 	mIBOID = 0;
 }
 
-LTexture::~LTexture() {
+LTexture::~LTexture(void) {
 	freeTexture();
 
 	freeVBO();
 }
 
 bool LTexture::lock(void) {
-	if (mPixels32 == NULL && mTextureID != 0) {
+	if (mPixels32 == NULL && mPixels8 == NULL && mTextureID != 0) {
 		GLuint size = mTextureWidth * mTextureHeight;
-		mPixels32 = new GLuint[size];
+
+		if (mPixelFormat == GL_RGBA) {
+			mPixels32 = new GLuint[size];
+		} else if (mPixelFormat == GL_ALPHA) {
+			mPixels8 = new GLubyte[size];
+		}
 
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels32);
+		glGetTexImage(GL_TEXTURE_2D, 0, mPixelFormat, GL_UNSIGNED_BYTE, mPixels32);
 		glBindTexture(GL_TEXTURE_2D, 0x0);
 
 		return true;
@@ -43,15 +50,23 @@ bool LTexture::lock(void) {
 }
 
 bool LTexture::unlock(void) {
-	if (mPixels32 != NULL && mTextureID != 0) {
+	if ((mPixels32 != NULL || mPixels8 != NULL) && mTextureID != 0) {
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 
+		void *pixels = (mPixelFormat == GL_RGBA) ? (void*)mPixels32 : (void*)mPixels8;
+
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mTextureWidth, mTextureHeight,
-				GL_RGBA, GL_UNSIGNED_BYTE, mPixels32
+				mPixelFormat, GL_UNSIGNED_BYTE, pixels
 				);
 
-		delete[] mPixels32;
-		mPixels32 = NULL;
+		if (mPixels32 != NULL) {
+			delete[] mPixels32;
+			mPixels32 = NULL;
+		} else if (mPixels8 != NULL) {
+			delete[] mPixels8;
+			mPixels8 = NULL;
+		}
+
 		glBindTexture(GL_TEXTURE_2D, 0x0);
 
 		return true;
@@ -150,10 +165,67 @@ void LTexture::freeTexture(void) {
 		mPixels32 = NULL;
 	}
 
+	if (mPixels8 != NULL) {
+		delete[] mPixels8;
+		mPixels8 = NULL;
+	}
+
 	mImageWidth = 0;
 	mImageHeight = 0;
 	mTextureWidth = 0;
 	mTextureHeight = 0;
+
+	mPixelFormat = 0x0;
+}
+
+bool LTexture::loadPixelsFromFile8(std::string path) {
+	freeTexture();
+
+	bool pixelsLoaded = false;
+	ILboolean success = false;
+	ILuint imgID = 0;
+
+	ilGenImages(1, &imgID);
+	ilBindImage(imgID);
+
+	success = ilLoadImage(path.c_str());
+
+	if (success == IL_TRUE) {
+		success = ilConvertImage(IL_LUMINANCE, IL_UNSIGNED_BYTE);
+
+		if (success == IL_TRUE) {
+			GLuint imgWidth = (GLuint)ilGetInteger(IL_IMAGE_WIDTH);
+			GLuint imgHeight = (GLuint)ilGetInteger(IL_IMAGE_HEIGHT);
+
+			GLuint texWidth = powerOfTwo(imgWidth);
+			GLuint texHeight = powerOfTwo(imgHeight);
+
+			if (imgWidth != texWidth || imgHeight != texHeight) {
+				iluImageParameter(ILU_PLACEMENT, ILU_UPPER_LEFT);
+				iluEnlargeCanvas((int)texWidth, (int)texHeight, 1);
+			}
+
+			GLuint size = texWidth * texHeight;
+			mPixels8 = new GLubyte[size];
+
+			mImageWidth = imgWidth;
+			mImageHeight = imgHeight;
+			mTextureWidth = texWidth;
+			mTextureHeight = texHeight;
+
+			memcpy(mPixels8, ilGetData(), size);
+			pixelsLoaded = true;
+		}
+
+		ilDeleteImages(1, &imgID);
+		mPixelFormat = GL_ALPHA;
+	}
+
+	if (!pixelsLoaded) {
+		fprintf(stderr, "Unable to load %s\n", path.c_str());
+	}
+
+	return pixelsLoaded;
 }
 
 bool LTexture::loadPixelsFromFile32(std::string path) {
@@ -195,6 +267,7 @@ bool LTexture::loadPixelsFromFile32(std::string path) {
 		}
 
 		ilDeleteImages(1, &imgID);
+		mPixelFormat = GL_RGBA;
 	}
 
 	if (!pixelsLoaded) {
@@ -202,6 +275,48 @@ bool LTexture::loadPixelsFromFile32(std::string path) {
 	}
 
 	return pixelsLoaded;
+}
+
+bool LTexture::loadTextureFromPixels8(void) {
+	bool success = true;
+
+	if (mTextureID == 0 && mPixels8 != NULL) {
+		glGenTextures(1, &mTextureID);
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, mTextureWidth, mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, mPixels8);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, DEFAULT_TEXTURE_WRAP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, DEFAULT_TEXTURE_WRAP);
+
+		glBindTexture(GL_TEXTURE_2D, 0x0);
+
+		GLenum error = glGetError();
+		if (error != GL_NO_ERROR) {
+			fprintf(stderr, "Error loading texture from %p pixels!\n%s\n", (void*)mPixels8, gluErrorString(error));
+			success = false;
+		} else {
+			delete[] mPixels8;
+			mPixels8 = NULL;
+
+			initVBO();
+
+			mPixelFormat = GL_ALPHA;
+		}
+	} else {
+		fprintf(stderr, "Cannot load texture from current pixels!\n");
+
+		if (mTextureID != 0) {
+			fprintf(stderr, "A texture is already loaded!\n");
+		}
+
+		if (mPixels8 == NULL) {
+			fprintf(stderr, "No pixels to load texture from!\n");
+		}
+	}
+
+	return success;
 }
 
 bool LTexture::loadTextureFromFile32(std::string path) {
@@ -242,6 +357,8 @@ bool LTexture::loadTextureFromFile32(std::string path) {
 	if (!textureLoaded) {
 		fprintf(stderr, "Unable to load image %s\n", path.c_str());
 	}
+
+	mPixelFormat = GL_RGBA;
 
 	return textureLoaded;
 }
@@ -290,6 +407,8 @@ bool LTexture::loadTextureFromPixels32(void) {
 			mPixels32 = NULL;
 
 			initVBO();
+
+			mPixelFormat = GL_RGBA;
 		}
 	} else {
 		fprintf(stderr, "Cannot load texture from pixels!\n");
@@ -333,6 +452,8 @@ bool LTexture::loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH,
 
 	initVBO();
 
+	mPixelFormat = GL_RGBA;
+
 	return true;
 }
 
@@ -348,6 +469,18 @@ GLuint LTexture::powerOfTwo(GLuint num) {
 	}
 
 	return num;
+}
+
+void LTexture::setPixel8(GLuint x, GLuint y, GLubyte pixel) {
+	mPixels8[y * mTextureWidth + x] = pixel;
+}
+
+GLubyte LTexture::getPixel8(GLuint x, GLuint y) {
+	return mPixels8[y * mTextureWidth + x];
+}
+
+GLubyte *LTexture::getPixelData8(void) {
+	return mPixels8;
 }
 
 void LTexture::setPixel32(GLuint x, GLuint y, GLuint pixel) {

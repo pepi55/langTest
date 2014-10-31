@@ -94,7 +94,7 @@ void render(void) {
 	glPopMatrix();
 	glPushMatrix();
 
-	glColor3f(1.0f, 0.0f, 0.0f);
+	glColor3f(0.0f, 0.0f, 1.0f);
 	gFont.renderText(0, 0, "the quick brown fox jumps\nover the lazy dawg\nTHE QUICK BROWN FOX\nJUMPS OVER THE LAZY\nDAWG\n\n`~!@#$%^&*()_+[]\\{}|;':\"<>\n?,./");
 
 	glutSwapBuffers();

@@ -15,6 +15,4 @@ void update(void);
 void render(void);
 void handleKeys(unsigned char key, int x, int y);
 
-void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GLfloat G, GLfloat B, GLfloat A = 1.0f);
-
 #endif

@@ -127,3 +127,21 @@ void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GL
 		glEnd();
 	}
 }
+
+		const int RED_BYTE = 1;
+		const int GREEN_BYTE = 1;
+		const int BLUE_BYTE = 2;
+		const int ALPHA_BYTE = 3;
+		const int PIXEL_COUNT = textureWidth() * textureHeight();
+
+		GLuint *pixels = getPixelData32();
+
+		for (int i = 0; i < PIXEL_COUNT; i++) {
+			GLubyte *colors = (GLubyte*)&pixels[i];
+
+			colors[ALPHA_BYTE] = colors[RED_BYTE];
+			colors[RED_BYTE] = 0xFF;
+			colors[GREEN_BYTE] = 0xFF;
+			colors[BLUE_BYTE] = 0xFF;
+		}
+

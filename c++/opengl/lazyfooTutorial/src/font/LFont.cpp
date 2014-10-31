@@ -12,11 +12,11 @@ LFont::~LFont(void) {
 
 bool LFont::loadBitmap(std::string path) {
 	bool success = true;
-	const GLuint BLACK_PIXEL = 0xFF000000;
+	const GLuint BLACK_PIXEL = 0x00;
 
 	freeFont();
 
-	if (loadPixelsFromFile32(path)) {
+	if (loadPixelsFromFile8(path)) {
 		GLfloat cellW = imageWidth() / 16.0f;
 		GLfloat cellH = imageHeight() / 16.0f;
 
@@ -48,7 +48,7 @@ bool LFont::loadBitmap(std::string path) {
 						pX = bX + pCol;
 						pY = bY + pRow;
 
-						if (getPixel32(pX, pY) != BLACK_PIXEL) {
+						if (getPixel8(pX, pY) != BLACK_PIXEL) {
 							nextClip.x = pX;
 
 							pCol = cellW;
@@ -63,7 +63,7 @@ bool LFont::loadBitmap(std::string path) {
 						pX = bX + pCol_w;
 						pY = bY + pRow_w;
 
-						if (getPixel32(pX, pY) != BLACK_PIXEL) {
+						if (getPixel8(pX, pY) != BLACK_PIXEL) {
 							nextClip.w = (pX - nextClip.x) + 1;
 
 							pCol_w = -1;
@@ -78,7 +78,7 @@ bool LFont::loadBitmap(std::string path) {
 						pX = bX + pCol;
 						pY = bY + pRow;
 
-						if (getPixel32(pX, pY) != BLACK_PIXEL) {
+						if (getPixel8(pX, pY) != BLACK_PIXEL) {
 							if (pRow < (int)top) {
 								top = pRow;
 							}
@@ -95,7 +95,7 @@ bool LFont::loadBitmap(std::string path) {
 						pX = bX + pCol_b;
 						pY = bY + pRow_b;
 
-						if (getPixel32(pX, pY) != BLACK_PIXEL) {
+						if (getPixel8(pX, pY) != BLACK_PIXEL) {
 							if (currentChar == 'A') {
 								aBottom = pRow_b;
 							}
@@ -120,24 +120,7 @@ bool LFont::loadBitmap(std::string path) {
 			mClips[t].h -= top;
 		}
 
-		const int RED_BYTE = 1;
-		const int GREEN_BYTE = 1;
-		const int BLUE_BYTE = 2;
-		const int ALPHA_BYTE = 3;
-		const int PIXEL_COUNT = textureWidth() * textureHeight();
-
-		GLuint *pixels = getPixelData32();
-
-		for (int i = 0; i < PIXEL_COUNT; i++) {
-			GLubyte *colors = (GLubyte*)&pixels[i];
-
-			colors[ALPHA_BYTE] = colors[RED_BYTE];
-			colors[RED_BYTE] = 0xFF;
-			colors[GREEN_BYTE] = 0xFF;
-			colors[BLUE_BYTE] = 0xFF;
-		}
-
-		if (loadTextureFromPixels32()) {
+		if (loadTextureFromPixels8()) {
 			if (!generateDataBuffer(LSPRITE_ORIGIN_TOP_LEFT)) {
 				fprintf(stderr, "Unable to create vertex buffer for bitmap font!\n");
 				success = false;
