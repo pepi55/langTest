@@ -7,9 +7,11 @@ SDL_Surface *gScreenSurface;
 
 SDL_Rect gSpriteClips[4];
 
-LTextureSDL gFooTexture;
-LTextureSDL gBackground;
-LTextureSDL gSpriteSheetTexture;
+LTextureSDL gTexture;
+
+Uint8 r = 255,
+			g = 255,
+			b = 255;
 
 bool initSDL(void) {
 	bool success = true;
@@ -47,43 +49,9 @@ bool initSDL(void) {
 bool loadMedia(void) {
 	bool success = true;
 
-	if (!gFooTexture.loadFromFile(gRenderer, "img/huisjeBoompjeBeesj/foo.png")) {
+	if (!gTexture.loadFromFile(gRenderer, "img/full.png")) {
 		fprintf(stderr, "Unable to load texture!\n");
 		success = false;
-	}
-
-	if (!gBackground.loadFromFile(gRenderer, "img/huisjeBoompjeBeesj/background.png")) {
-		fprintf(stderr, "Unable to load texture!\n");
-		success = false;
-	}
-
-	if (!gSpriteSheetTexture.loadFromFile(gRenderer, "img/sprites.png")) {
-		fprintf(stderr, "Unable to load texture!\n");
-		success = false;
-	} else {
-		//topleft
-		gSpriteClips[0].x = 0;
-		gSpriteClips[0].y = 0;
-		gSpriteClips[0].w = 100;
-		gSpriteClips[0].h = 100;
-
-		//topright
-		gSpriteClips[1].x = 100;
-		gSpriteClips[1].y = 0;
-		gSpriteClips[1].w = 100;
-		gSpriteClips[1].h = 100;
-
-		//botleft
-		gSpriteClips[2].x = 0;
-		gSpriteClips[2].y = 100;
-		gSpriteClips[2].w = 100;
-		gSpriteClips[2].h = 100;
-
-		//botright
-		gSpriteClips[3].x = 100;
-		gSpriteClips[3].y = 100;
-		gSpriteClips[3].w = 100;
-		gSpriteClips[3].h = 100;
 	}
 
 	return success;
@@ -97,6 +65,35 @@ void mainLoop(void) {
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT) {
 				quit = true;
+			} else if (e.type == SDL_KEYDOWN) {
+				switch (e.key.keysym.sym) {
+					case SDLK_q:
+						r += 32;
+						break;
+
+					case SDLK_w:
+						g += 32;
+						break;
+
+					case SDLK_e:
+						b += 32;
+						break;
+
+					case SDLK_a:
+						r -= 32;
+						break;
+
+					case SDLK_s:
+						g -= 32;
+						break;
+
+					case SDLK_d:
+						b -= 32;
+						break;
+
+					default:
+						break;
+				}
 			}
 
 			render();
@@ -108,20 +105,14 @@ void render(void) {
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer);
 
-	gBackground.render(gRenderer, 0, 0);
-	gFooTexture.render(gRenderer, 240, 190);
-
-	gSpriteSheetTexture.render(gRenderer, 0, 0, &gSpriteClips[0]);
-	gSpriteSheetTexture.render(gRenderer, SCREEN_WIDTH - gSpriteClips[1].w, 0, &gSpriteClips[1]);
-	gSpriteSheetTexture.render(gRenderer, 0, SCREEN_HEIGHT - gSpriteClips[2].h, &gSpriteClips[2]);
-	gSpriteSheetTexture.render(gRenderer, SCREEN_WIDTH - gSpriteClips[3].w, SCREEN_HEIGHT - gSpriteClips[3].h, &gSpriteClips[3]);
+	gTexture.setColor(r, g, b);
+	gTexture.render(gRenderer, 0, 0);
 
 	SDL_RenderPresent(gRenderer);
 }
 
 void closeSDL(void) {
-	gFooTexture.free();
-	gBackground.free();
+	gTexture.free();
 
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
