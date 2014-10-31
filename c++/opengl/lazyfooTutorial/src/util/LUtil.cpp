@@ -9,9 +9,9 @@
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
-LTexture gTexture;
-LTexture gCircle;
-LFont gFont;
+LTexture gLeft;
+LTexture gRight;
+LTexture gCombined;
 
 bool initGL(void) {
 	GLenum glewError = glewInit();
@@ -62,22 +62,25 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
-	if (!gFont.loadBitmap("img/lazy_font.png")) {
-		fprintf(stderr, "Unable to load font!\n");
+	if (!gLeft.loadPixelsFromFile32("img/padding/left.png")) {
+		fprintf(stderr, "Unable to load left texture!\n");
 		return false;
 	}
 
-	/*
-	if (!gCircle.loadTextureFromFileWithColorKey32("img/circleWithAlpha.png", 000, 255, 255)) {
-		fprintf(stderr, "Unable to load circle!\n");
+	if (!gRight.loadPixelsFromFile32("img/padding/right.png")) {
+		fprintf(stderr, "Unable to load right texture!\n");
 		return false;
 	}
 
-	if (!gTexture.loadTextureFromFile32("img/texture.png")) {
-		fprintf(stderr, "Unable to load texture!\n");
-		return false;
-	}
-	*/
+	gCombined.createPixels32(gLeft.imageWidth() + gRight.imageWidth(), gLeft.imageHeight());
+
+	gLeft.blitPixels32(0, 0, gCombined);
+	gRight.blitPixels32(gLeft.imageWidth(), 0, gCombined);
+
+	gCombined.padPixels32();
+	gCombined.loadTextureFromPixels32();
+
+	gLeft.freeTexture(); gRight.freeTexture();
 
 	return true;
 }
@@ -94,22 +97,21 @@ void render(void) {
 	glPopMatrix();
 	glPushMatrix();
 
-	glColor3f(0.0f, 0.0f, 1.0f);
-	gFont.renderText(0, 0, "the quick brown fox jumps\nover the lazy dawg\nTHE QUICK BROWN FOX\nJUMPS OVER THE LAZY\nDAWG\n\n`~!@#$%^&*()_+[]\\{}|;':\"<>\n?,./");
+	gCombined.render(0.0f, 0.0f);
 
 	glutSwapBuffers();
 }
 
 void handleKeys(unsigned char key, int x, int y) {
-//////////////////////////////////////////////////////////////////////////
-//		GCC FILED SOME COMPLAINTS																					//
-//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////
+//		GCC FILED SOME COMPLAINTS									//
+//////////////////////////////////////////////////
 	if (key == '?') {
 		fprintf(stdout, "What is x/y? Baby dont %i, %i, me! NO mo'!\n", x, y);
 	}
-//////////////////////////////////////////////////////////////////////////
-//		END OF GCC COMPLAINTS																							//
-//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////
+//		END OF GCC COMPLAINTS											//
+//////////////////////////////////////////////////
 
 	if (key == 'w') {
 		gCameraY -= 16.0f;

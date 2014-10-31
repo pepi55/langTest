@@ -228,6 +228,114 @@ bool LTexture::loadPixelsFromFile8(std::string path) {
 	return pixelsLoaded;
 }
 
+bool LTexture::loadTextureFromPixels8(void) {
+	bool success = true;
+
+	if (mTextureID == 0 && mPixels8 != NULL) {
+		glGenTextures(1, &mTextureID);
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, mTextureWidth, mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, mPixels8);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, DEFAULT_TEXTURE_WRAP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, DEFAULT_TEXTURE_WRAP);
+
+		glBindTexture(GL_TEXTURE_2D, 0x0);
+
+		GLenum error = glGetError();
+		if (error != GL_NO_ERROR) {
+			fprintf(stderr, "Error loading texture from %p pixels!\n%s\n", (void*)mPixels8, gluErrorString(error));
+			success = false;
+		} else {
+			delete[] mPixels8;
+			mPixels8 = NULL;
+
+			initVBO();
+
+			mPixelFormat = GL_ALPHA;
+		}
+	} else {
+		fprintf(stderr, "Cannot load texture from current pixels!\n");
+
+		if (mTextureID != 0) {
+			fprintf(stderr, "A texture is already loaded!\n");
+		}
+
+		if (mPixels8 == NULL) {
+			fprintf(stderr, "No pixels to load texture from!\n");
+		}
+	}
+
+	return success;
+}
+
+void LTexture::createPixels8(GLuint imgWidth, GLuint imgHeight) {
+	if (imgWidth > 0 && imgHeight > 0) {
+		freeTexture();
+
+		GLuint size = imgWidth * imgHeight;
+		mPixels8 = new GLubyte[size];
+
+		mImageWidth = imgWidth;
+		mImageHeight = imgHeight;
+		mTextureWidth = imgWidth;
+		mTextureHeight = imgHeight;
+
+		mPixelFormat = GL_ALPHA;
+	}
+}
+
+void LTexture::copyPixels8(GLubyte *pixels, GLuint imgWidth, GLuint imgHeight) {
+	if (imgWidth > 0 && imgHeight > 0) {
+		freeTexture();
+
+		GLuint size = imgWidth * imgHeight;
+		mPixels8 = new GLubyte[size];
+		memcpy(mPixels8, pixels, size);
+
+		mImageWidth = imgWidth;
+		mImageHeight = imgHeight;
+		mTextureWidth = imgWidth;
+		mTextureHeight = imgHeight;
+
+		mPixelFormat = GL_ALPHA;
+	}
+}
+
+void LTexture::padPixels8(void) {
+	if (mPixels8 != NULL) {
+		GLuint oTextureWidth = mTextureWidth;
+		//GLuint oTextureHeight = mTextureHeight;
+
+		mTextureWidth = powerOfTwo(mImageWidth);
+		mTextureHeight = powerOfTwo(mImageHeight);
+
+		if (mTextureWidth != mImageWidth || mTextureHeight != mImageHeight) {
+			GLuint size = mTextureWidth * mTextureHeight;
+			GLubyte *pixels = new GLubyte[size];
+
+			for (int i = 0; i < (int)mImageHeight; ++i) {
+				memcpy(&pixels[i * mTextureWidth], &mPixels8[i * oTextureWidth], mImageWidth);
+			}
+
+			delete[] mPixels8;
+			mPixels8 = pixels;
+		}
+	}
+}
+
+void LTexture::blitPixels8(GLuint x, GLuint y, LTexture &destination) {
+	if (mPixels8 != NULL && destination.mPixels8 != NULL) {
+		GLubyte *dPixels = destination.mPixels8;
+		GLubyte *sPixels = mPixels8;
+
+		for (int i = 0; i < (int)mImageHeight; ++i) {
+			memcpy(&dPixels[(i + y) * destination.mTextureWidth + x], &sPixels[i * mTextureWidth], mImageWidth);
+		}
+	}
+}
+
 bool LTexture::loadPixelsFromFile32(std::string path) {
 	freeTexture();
 
@@ -275,48 +383,6 @@ bool LTexture::loadPixelsFromFile32(std::string path) {
 	}
 
 	return pixelsLoaded;
-}
-
-bool LTexture::loadTextureFromPixels8(void) {
-	bool success = true;
-
-	if (mTextureID == 0 && mPixels8 != NULL) {
-		glGenTextures(1, &mTextureID);
-		glBindTexture(GL_TEXTURE_2D, mTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, mTextureWidth, mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, mPixels8);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, DEFAULT_TEXTURE_WRAP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, DEFAULT_TEXTURE_WRAP);
-
-		glBindTexture(GL_TEXTURE_2D, 0x0);
-
-		GLenum error = glGetError();
-		if (error != GL_NO_ERROR) {
-			fprintf(stderr, "Error loading texture from %p pixels!\n%s\n", (void*)mPixels8, gluErrorString(error));
-			success = false;
-		} else {
-			delete[] mPixels8;
-			mPixels8 = NULL;
-
-			initVBO();
-
-			mPixelFormat = GL_ALPHA;
-		}
-	} else {
-		fprintf(stderr, "Cannot load texture from current pixels!\n");
-
-		if (mTextureID != 0) {
-			fprintf(stderr, "A texture is already loaded!\n");
-		}
-
-		if (mPixels8 == NULL) {
-			fprintf(stderr, "No pixels to load texture from!\n");
-		}
-	}
-
-	return success;
 }
 
 bool LTexture::loadTextureFromFile32(std::string path) {
@@ -455,6 +521,72 @@ bool LTexture::loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH,
 	mPixelFormat = GL_RGBA;
 
 	return true;
+}
+
+void LTexture::createPixels32(GLuint imgWidth, GLuint imgHeight) {
+	if (imgWidth > 0 && imgHeight > 0) {
+		freeTexture();
+
+		GLuint size = imgWidth * imgHeight;
+		mPixels32 = new GLuint[size];
+
+		mImageWidth = imgWidth;
+		mImageHeight = imgHeight;
+		mTextureWidth = mImageWidth;
+		mTextureHeight = mImageHeight;
+
+		mPixelFormat = GL_RGBA;
+	}
+}
+
+void LTexture::copyPixels32(GLuint *pixels, GLuint imgWidth, GLuint imgHeight) {
+	if (imgWidth > 0 && imgHeight > 0) {
+		freeTexture();
+
+		GLuint size = imgWidth * imgHeight;
+		mPixels32 = new GLuint[size];
+		memcpy(mPixels32, pixels, size * 4);
+
+		mImageWidth = imgWidth;
+		mImageHeight = imgHeight;
+		mTextureWidth = mImageWidth;
+		mTextureHeight = mImageHeight;
+
+		mPixelFormat = GL_RGBA;
+	}
+}
+
+void LTexture::padPixels32(void) {
+	if (mPixels32 != NULL) {
+		GLuint oTextureWidth = mTextureWidth;
+		//GLuint oTextureHeight = mTextureHeight;
+
+		mTextureWidth = powerOfTwo(mImageWidth);
+		mTextureHeight = powerOfTwo(mImageHeight);
+
+		if (mTextureWidth != mImageWidth || mTextureHeight != mImageHeight) {
+			GLuint size = mTextureWidth * mTextureHeight;
+			GLuint *pixels = new GLuint[size];
+
+			for (int i = 0; i < (int)mImageHeight; ++i) {
+				memcpy(&pixels[i * mTextureWidth], &mPixels32[i * oTextureWidth], mTextureWidth * 4);
+			}
+
+			delete[] mPixels32;
+			mPixels32 = pixels;
+		}
+	}
+}
+
+void LTexture::blitPixels32(GLuint x, GLuint y, LTexture &destination) {
+	if (mPixels32 != NULL && destination.mPixels32 != NULL) {
+		GLuint *dPixels = destination.mPixels32;
+		GLuint *sPixels = mPixels32;
+
+		for (int i = 0; i < (int)mImageHeight; ++i) {
+			memcpy(&dPixels[(i + y) * destination.mTextureWidth + x], &sPixels[i * mTextureWidth], mImageWidth * 4);
+		}
+	}
 }
 
 GLuint LTexture::powerOfTwo(GLuint num) {

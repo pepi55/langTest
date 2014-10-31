@@ -22,6 +22,11 @@ class LTexture {
 		bool loadPixelsFromFile8(std::string path);
 		bool loadTextureFromPixels8(void);
 
+		void createPixels8(GLuint imgWidth, GLuint imgHeight);
+		void copyPixels8(GLubyte *pixels, GLuint imgWidth, GLuint imgHeight);
+		void padPixels8(void);
+		void blitPixels8(GLuint x, GLuint y, LTexture &destination);
+
 		void setPixel8(GLuint x, GLuint y, GLubyte pixel);
 		GLubyte getPixel8(GLuint x, GLuint y);
 		GLubyte *getPixelData8(void);
@@ -31,6 +36,11 @@ class LTexture {
 		bool loadTextureFromFileWithColorKey32(std::string path, GLubyte r, GLubyte g, GLubyte b, GLubyte a = 000);
 		bool loadTextureFromPixels32(void);
 		bool loadTextureFromPixels32(GLuint *pixels, GLuint imgW, GLuint imgH, GLuint texW, GLuint texH);
+
+		void createPixels32(GLuint imgWidth, GLuint imgHeight);
+		void copyPixels32(GLuint *pixels, GLuint imgWidth, GLuint imgHeight);
+		void padPixels32(void);
+		void blitPixels32(GLuint x, GLuint y, LTexture &destination);
 
 		void setPixel32(GLuint x, GLuint y, GLuint pixel);
 		GLuint getPixel32(GLuint x, GLuint y);
