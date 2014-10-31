@@ -1,10 +1,12 @@
 #include "LUtilSDL.hpp"
+#include "../sdl/LTextureSDL.hpp"
 
 SDL_Window *gWindow;
 SDL_Renderer *gRenderer;
 SDL_Surface *gScreenSurface;
 
-SDL_Texture *gTexture;
+LTextureSDL gFooTexture;
+LTextureSDL gBackground;
 
 bool initSDL(void) {
 	bool success = true;
@@ -42,8 +44,12 @@ bool initSDL(void) {
 bool loadMedia(void) {
 	bool success = true;
 
-	gTexture = loadTexture("img/loaded.png");
-	if (gTexture == NULL) {
+	if (!gFooTexture.loadFromFile(gRenderer, "img/huisjeBoompjeBeesj/foo.png")) {
+		fprintf(stderr, "Unable to load texture!\n");
+		success = false;
+	}
+
+	if (!gBackground.loadFromFile(gRenderer, "img/huisjeBoompjeBeesj/background.png")) {
 		fprintf(stderr, "Unable to load texture!\n");
 		success = false;
 	}
@@ -70,30 +76,15 @@ void render(void) {
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer);
 
-	SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
-
-	SDL_Rect fillRect = {SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2};
-	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-	SDL_RenderFillRect(gRenderer, &fillRect);
-
-	SDL_Rect outlineRect = {SCREEN_WIDTH / 6, SCREEN_HEIGHT / 6, SCREEN_WIDTH * 2 / 3, SCREEN_HEIGHT * 2 / 3};
-	SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF);
-	SDL_RenderDrawRect(gRenderer, &outlineRect);
-
-	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xFF, 0xFF);
-	SDL_RenderDrawLine(gRenderer, 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2);
-
-	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, 0xFF);
-	for (int i = 0; i < SCREEN_HEIGHT; i += 3) {
-		SDL_RenderDrawPoint(gRenderer, SCREEN_WIDTH / 2, i);
-	}
+	gBackground.render(gRenderer, 0, 0);
+	gFooTexture.render(gRenderer, 240, 190);
 
 	SDL_RenderPresent(gRenderer);
 }
 
 void closeSDL(void) {
-	SDL_DestroyTexture(gTexture);
-	gTexture = NULL;
+	gFooTexture.free();
+	gBackground.free();
 
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
@@ -102,22 +93,4 @@ void closeSDL(void) {
 
 	IMG_Quit();
 	SDL_Quit();
-}
-
-SDL_Texture *loadTexture(std::string path) {
-	SDL_Texture *newTexture = NULL;
-	SDL_Surface *loadedSurface = IMG_Load(path.c_str());
-
-	if (loadedSurface == NULL) {
-		fprintf(stderr, "Unable to load image %s!\nIMG_Error: %s\n", path.c_str(), IMG_GetError());
-	} else {
-		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-		if (newTexture == NULL) {
-			fprintf(stderr, "Unable to create texture from %s!\nSDL_Error: %s\n", path.c_str(), SDL_GetError());
-		}
-
-		SDL_FreeSurface(loadedSurface);
-	}
-
-	return newTexture;
 }

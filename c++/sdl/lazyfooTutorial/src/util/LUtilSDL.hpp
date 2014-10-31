@@ -1,8 +1,8 @@
 #ifndef LUTIL_SDL_H
 #define LUTIL_SDL_H
 
-#include <string>
 #include "../sdl/LSDL.hpp"
+#include "../sdl/LTextureSDL.hpp"
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -15,7 +15,5 @@ bool loadMedia(void);
 void mainLoop(void);
 void render(void);
 void closeSDL(void);
-
-SDL_Texture *loadTexture(std::string path);
 
 #endif

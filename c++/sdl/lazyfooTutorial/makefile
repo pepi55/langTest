@@ -5,7 +5,8 @@ LFLAGS = -lSDL2 -lSDL2_image
 VPATH = ./src:./src/sdl:./src/util
 
 SOURCES = ./src/main.cpp \
-					./src/util/LUtilSDL.cpp
+					./src/util/LUtilSDL.cpp \
+					./src/sdl/LTextureSDL.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 OBJECTS_DEBUG = $(SOURCES:.cpp=$(DEBUG).o)
