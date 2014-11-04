@@ -275,12 +275,34 @@ void LFont::freeFont(void) {
 	mLineHeight = 0.0f;
 }
 
-void LFont::renderText(GLfloat x, GLfloat y, std::string text) {
+void LFont::renderText(GLfloat x, GLfloat y, std::string text, LFRect *area, int align) {
 	if (getTextureID() != 0) {
 		GLfloat dX = x;
 		GLfloat dY = y;
 
-		glTranslatef(x, y, 0.0f);
+		if (area != NULL) {
+			if (align == 0) {
+				align = LFONT_TEXT_ALIGN_LEFT | LFONT_TEXT_ALIGN_TOP;
+			}
+
+			if (align & LFONT_TEXT_ALIGN_LEFT) {
+				dX = area->x;
+			} else if (align & LFONT_TEXT_ALIGN_CENTERED_H) {
+				dX = area->x + (area->w - substringWidth(text.c_str())) / 2.0f;
+			} else if (align & LFONT_TEXT_ALIGN_RIGHT) {
+				dX = area->x + (area->w - substringWidth(text.c_str()));
+			}
+			
+			if (align & LFONT_TEXT_ALIGN_TOP) {
+				dY = area->y;
+			} else if (align & LFONT_TEXT_ALIGN_CENTERED_V) {
+				dY = area->y + (area->h - stringHeight(text.c_str())) / 2.0f;
+			} else if (align & LFONT_TEXT_ALIGN_BOTTOM) {
+				dY = area->y + (area->h - stringHeight(text.c_str()));
+			}
+		}
+
+		glTranslatef(dX, dY, 0.0f);
 		glBindTexture(GL_TEXTURE_2D, getTextureID());
 
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -294,10 +316,21 @@ void LFont::renderText(GLfloat x, GLfloat y, std::string text) {
 					glTranslatef(mSpace, 0.0f, 0.0f);
 					dX += mSpace;
 				} else if (text[i] == '\n') {
-					glTranslatef(x - dX, mNewLine, 0.0f);
+					GLfloat targetX = x;
 
+					if (area != NULL) {
+						if (align & LFONT_TEXT_ALIGN_LEFT) {
+							targetX = area->x;
+						} else if (align & LFONT_TEXT_ALIGN_CENTERED_H) {
+							targetX = area->x + (area->w - substringWidth(&text.c_str()[i + 1])) / 2.0f;
+						} else if (align & LFONT_TEXT_ALIGN_RIGHT) {
+							targetX = area->x + (area->w - substringWidth(&text.c_str()[i + 1]));
+						}
+					}
+
+					glTranslatef(targetX - dX, mNewLine, 0.0f);
 					dY += mNewLine;
-					dX += x - dX;
+					dX += targetX - dX;
 				} else {
 					GLuint ascii = (unsigned char)text[i];
 
@@ -311,4 +344,35 @@ void LFont::renderText(GLfloat x, GLfloat y, std::string text) {
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);
 	}
+}
+
+GLfloat LFont::stringHeight(const char *thisString) {
+	GLfloat height = mLineHeight;
+
+	for (int i = 0; thisString[i] != '\0'; ++i) {
+		if (thisString[i] == '\n') {
+			height += mLineHeight;
+		}
+	}
+
+	return height;
+}
+
+GLfloat LFont::substringWidth(const char *substring) {
+	GLfloat subWidth = 0.0f;
+
+	for (int i = 0; (i < substring[i]) != '\0' && substring[i] != '\n'; ++i) {
+		if (substring[i] == ' ') {
+			subWidth += mSpace;
+		} else {
+			GLuint ascii = (unsigned char)substring[i];
+			subWidth += mClips[ascii].w;
+		}
+	}
+
+	return subWidth;
+}
+
+GLfloat LFont::getLineHeight(void) {
+	return mLineHeight;
 }

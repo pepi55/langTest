@@ -10,6 +10,11 @@ GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
 LFont gTTF;
+LFontTextAlignment gAlignH = LFONT_TEXT_ALIGN_LEFT;
+LFontTextAlignment gAlignV = LFONT_TEXT_ALIGN_TOP;
+int gAlign = gAlignH | gAlignV;
+
+LFRect gScreenArea = {0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT};
 
 bool initGL(void) {
 	GLenum glewError = glewInit();
@@ -84,8 +89,8 @@ void render(void) {
 	glPopMatrix();
 	glPushMatrix();
 
-	glColor3f(0.0f, 1.0f, 1.0f);
-	gTTF.renderText(0.0f, 0.0f, "THE QUICK BROWN FOX\nJUMPS OVER TEH LAWZY\nDAWG\nthe quick brown fox\njumps ovah teh lazy dawg");
+	glColor3f(1.0f, 0.0f, 1.0f);
+	gTTF.renderText(0.0f, SCREEN_WIDTH / 2.0f, "Testing alignment\nTesttestestestestei\nstest", &gScreenArea, gAlign);
 
 	glutSwapBuffers();
 }
@@ -116,6 +121,84 @@ void handleKeys(unsigned char key, int x, int y) {
 	if (key == 'd') {
 		gCameraX += 16.0f;
 	}
+
+	if (key == 'h') {
+		switch(gAlignH) {
+			case LFONT_TEXT_ALIGN_LEFT:
+				gAlignH = LFONT_TEXT_ALIGN_RIGHT;
+				break;
+
+			case LFONT_TEXT_ALIGN_CENTERED_H:
+				gAlignH = LFONT_TEXT_ALIGN_LEFT;
+				break;
+
+			case LFONT_TEXT_ALIGN_RIGHT:
+				gAlignH = LFONT_TEXT_ALIGN_CENTERED_H;
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	if (key == 'k') {
+		switch(gAlignH) {
+			case LFONT_TEXT_ALIGN_LEFT:
+				gAlignH = LFONT_TEXT_ALIGN_CENTERED_H;
+				break;
+
+			case LFONT_TEXT_ALIGN_CENTERED_H:
+				gAlignH = LFONT_TEXT_ALIGN_RIGHT;
+				break;
+
+			case LFONT_TEXT_ALIGN_RIGHT:
+				gAlignH = LFONT_TEXT_ALIGN_LEFT;
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	if (key == 'u') {
+		switch(gAlignV) {
+			case LFONT_TEXT_ALIGN_TOP:
+				gAlignV = LFONT_TEXT_ALIGN_BOTTOM;
+				break;
+
+			case LFONT_TEXT_ALIGN_CENTERED_V:
+				gAlignV = LFONT_TEXT_ALIGN_TOP;
+				break;
+
+			case LFONT_TEXT_ALIGN_BOTTOM:
+				gAlignV = LFONT_TEXT_ALIGN_CENTERED_V;
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	if (key == 'j') {
+		switch(gAlignV) {
+			case LFONT_TEXT_ALIGN_TOP:
+				gAlignV = LFONT_TEXT_ALIGN_CENTERED_V;
+				break;
+
+			case LFONT_TEXT_ALIGN_CENTERED_V:
+				gAlignV = LFONT_TEXT_ALIGN_BOTTOM;
+				break;
+
+			case LFONT_TEXT_ALIGN_BOTTOM:
+				gAlignV = LFONT_TEXT_ALIGN_TOP;
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	gAlign = gAlignH | gAlignV;
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
