@@ -1,5 +1,7 @@
 #include "LFont.hpp"
 
+FT_Library LFont::mLibrary;
+
 LFont::LFont(void) {
 	mSpace = 0.0f;
 	mLineHeight = 0.0f;
@@ -8,6 +10,126 @@ LFont::LFont(void) {
 
 LFont::~LFont(void) {
 	freeFont();
+}
+
+bool LFont::initFreetype(void) {
+#ifndef __FREEGLUT_H__
+	FT_Error error = FT_Init_Freetype(&mLibrary);
+	if (error) {
+		fprintf(stderr, "Freetype error:%X\n", error);
+		return false;
+	}
+#endif
+
+	return true;
+}
+
+bool LFont::loadFreetype(std::string path, GLuint pixelSize) {
+	FT_Error error = 0x0;
+
+#ifdef __FREEGLUT_H__
+	error = FT_Init_FreeType(&mLibrary);
+	if (error) {
+		fprintf(stderr, "Freetype error:%X\n", error);
+		return false;
+	}
+#endif
+
+	GLuint cellW = 0;
+	GLuint cellH = 0;
+	int maxBearing = 0;
+	int minHang = 0;
+
+	LTexture bitmaps[256];
+	FT_Glyph_Metrics metrics[256];
+
+	FT_Face face = NULL;
+	error = FT_New_Face(mLibrary, path.c_str(), 0, &face);
+	if (!error) {
+		error = FT_Set_Pixel_Sizes(face, 0, pixelSize);
+		if (!error) {
+			for (int i = 0; i < 256; ++i) {
+				error = FT_Load_Char(face, i, FT_LOAD_RENDER);
+				if (!error) {
+					metrics[i] = face->glyph->metrics;
+					bitmaps[i].copyPixels8(face->glyph->bitmap.buffer, face->glyph->bitmap.width, face->glyph->bitmap.rows);
+
+					if (metrics[i].horiBearingY / 64 > maxBearing) {
+						maxBearing = metrics[i].horiBearingY / 64;
+					}
+
+					if (metrics[i].width / 64 > cellW) {
+						cellW = metrics[i].width / 64;
+					}
+
+					int glyphHang = (metrics[i].horiBearingY - metrics[i].height) / 64;
+					if (glyphHang < minHang) {
+						minHang = glyphHang;
+					}
+				} else {
+					fprintf(stderr, "Unable to load glyph. Freetype error:%X\n", error);
+					error = 0x0;
+				}
+			}
+
+			cellH = maxBearing - minHang;
+			createPixels8(cellW * 16, cellH * 16);
+
+			GLuint currentChar = 0;
+			LFRect nextClip = {0.0f, 0.0f, (GLfloat)cellW, (GLfloat)cellH};
+
+			int bX = 0,
+					bY = 0;
+
+			for (unsigned int rows = 0; rows < 16; rows++) {
+				for (unsigned int cols = 0; cols < 16; cols++) {
+					bX = cellW * cols; bY = cellH * rows;
+
+					nextClip.x = bX;
+					nextClip.y = bY;
+					nextClip.w = metrics[currentChar].width / 64;
+					nextClip.h = cellH;
+
+					bitmaps[currentChar].blitPixels8(bX, bY + maxBearing - metrics[currentChar].horiBearingY / 64, *this);
+					mClips.push_back(nextClip);
+					currentChar++;
+				}
+			}
+
+			padPixels8();
+
+			if (loadTextureFromPixels8()) {
+				if (!generateDataBuffer(LSPRITE_ORIGIN_TOP_LEFT)) {
+					fprintf(stderr, "Unable to create vertex buffer for bitmap font!\n");
+					error = 0xA2;
+				}
+			} else {
+				fprintf(stderr, "Unable to create texture from generated bitmap font!\n");
+				error = 0xA2;
+			}
+
+			glBindTexture(GL_TEXTURE_2D, getTextureID());
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+			mSpace = cellW / 2;
+			mNewLine = maxBearing;
+			mLineHeight = cellH;
+		} else {
+			fprintf(stderr, "Unable to set font size! Freetype error:%X\n", error);
+		}
+
+		FT_Done_Face(face);
+	} else {
+		fprintf(stderr, "Unable to load font face! Freetype error:%X\n", error);
+		return false;
+	}
+
+#ifdef __FREEGLUT_H__
+	FT_Done_FreeType(mLibrary);
+#endif
+
+	return error == 0x0;
 }
 
 bool LFont::loadBitmap(std::string path) {

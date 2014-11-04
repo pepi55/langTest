@@ -9,9 +9,7 @@
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
-LTexture gLeft;
-LTexture gRight;
-LTexture gCombined;
+LFont gTTF;
 
 bool initGL(void) {
 	GLenum glewError = glewInit();
@@ -58,29 +56,18 @@ bool initGL(void) {
 		return false;
 	}
 
+	if (!LFont::initFreetype()) {
+		fprintf(stderr, "Unable to initialize Truetype!\n");
+	}
+
 	return true;
 }
 
 bool loadMedia(void) {
-	if (!gLeft.loadPixelsFromFile32("img/padding/left.png")) {
-		fprintf(stderr, "Unable to load left texture!\n");
+	if (!gTTF.loadFreetype("img/font/lazy.ttf", 60)) {
+		fprintf(stderr, "Unable to load ttf font!\n");
 		return false;
 	}
-
-	if (!gRight.loadPixelsFromFile32("img/padding/right.png")) {
-		fprintf(stderr, "Unable to load right texture!\n");
-		return false;
-	}
-
-	gCombined.createPixels32(gLeft.imageWidth() + gRight.imageWidth(), gLeft.imageHeight());
-
-	gLeft.blitPixels32(0, 0, gCombined);
-	gRight.blitPixels32(gLeft.imageWidth(), 0, gCombined);
-
-	gCombined.padPixels32();
-	gCombined.loadTextureFromPixels32();
-
-	gLeft.freeTexture(); gRight.freeTexture();
 
 	return true;
 }
@@ -97,7 +84,8 @@ void render(void) {
 	glPopMatrix();
 	glPushMatrix();
 
-	gCombined.render(0.0f, 0.0f);
+	glColor3f(0.0f, 1.0f, 1.0f);
+	gTTF.renderText(0.0f, 0.0f, "THE QUICK BROWN FOX\nJUMPS OVER TEH LAWZY\nDAWG\nthe quick brown fox\njumps ovah teh lazy dawg");
 
 	glutSwapBuffers();
 }

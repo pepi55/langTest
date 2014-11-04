@@ -276,6 +276,7 @@ void LTexture::createPixels8(GLuint imgWidth, GLuint imgHeight) {
 
 		GLuint size = imgWidth * imgHeight;
 		mPixels8 = new GLubyte[size];
+		memset(mPixels8, 0, size);
 
 		mImageWidth = imgWidth;
 		mImageHeight = imgHeight;

@@ -1,7 +1,7 @@
 CC = g++ -std=c++11
 DEBUG = -ggdb
-FLAGS = -march=native -pipe -W -Wall -pedantic
-LFLAGS = -lGL -lGLU -lglut -lIL -lILU -lGLEW
+FLAGS = -march=native -pipe -W -Wall -pedantic -I/usr/include/freetype2
+LFLAGS = -lGL -lGLU -lglut -lIL -lILU -lGLEW -lfreetype
 VPATH = ./src:./src/util:./src/prim:./src/tex:./src/ogl:./src/vertex:./src/font
 
 SOURCES = ./src/main.cpp \
