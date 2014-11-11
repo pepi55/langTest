@@ -373,6 +373,33 @@ GLfloat LFont::substringWidth(const char *substring) {
 	return subWidth;
 }
 
+LFRect LFont::getStringArea(std::string text) {
+	GLfloat subWidth = 0.0f;
+	LFRect area = {0.0f, 0.0f, subWidth, mLineHeight};
+
+	for (int i = 0; i < (int)text.length(); ++i) {
+		if (text[i] == ' ') {
+			subWidth += mSpace;
+		} else if (text[i] == '\n') {
+			area.h += mLineHeight;
+
+			if (subWidth > area.w) {
+				area.w = subWidth;
+				subWidth = 0.0f;
+			}
+		} else {
+			GLuint ascii = (unsigned char)text[i];
+			subWidth += mClips[ascii].w;
+		}
+	}
+
+	if (subWidth > area.w) {
+		area.w = subWidth;
+	}
+
+	return area;
+}
+
 GLfloat LFont::getLineHeight(void) {
 	return mLineHeight;
 }

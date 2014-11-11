@@ -10,11 +10,14 @@ GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
 LFont gTTF;
-LFontTextAlignment gAlignH = LFONT_TEXT_ALIGN_LEFT;
-LFontTextAlignment gAlignV = LFONT_TEXT_ALIGN_TOP;
-int gAlign = gAlignH | gAlignV;
 
-LFRect gScreenArea = {0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT};
+LFRect gScaledArea = {0.0f, 0.0f, 0.0f, 0.0f},
+			 gPivotArea = {0.0f, 0.0f, 0.0f, 0.0f},
+			 gCircleArea = {0.0f, 0.0f, 0.0f, 0.0f};
+
+GLfloat gBigTextScale = 3.0f,
+				gPivotAngle = 0.0f,
+				gCircleAngle = 0.0f;
 
 bool initGL(void) {
 	GLenum glewError = glewInit();
@@ -74,10 +77,21 @@ bool loadMedia(void) {
 		return false;
 	}
 
+	gScaledArea = gTTF.getStringArea("Big Stuff!11!one!one11!");
+	gPivotArea = gTTF.getStringArea("Pivot thingy...");
+	gCircleArea = gTTF.getStringArea("Circlous much??");
+
 	return true;
 }
 
 void update(void) {
+	gPivotAngle += -1.0f;
+	gCircleAngle += +2.0f;
+	gBigTextScale += 0.1f;
+
+	if (gBigTextScale >= 3.0f) {
+		gBigTextScale = 0.0f;
+	}
 }
 
 void render(void) {
@@ -90,7 +104,34 @@ void render(void) {
 	glPushMatrix();
 
 	glColor3f(1.0f, 0.0f, 1.0f);
-	gTTF.renderText(0.0f, SCREEN_WIDTH / 2.0f, "Testing alignment\nTesttestestestestei\nstest", &gScreenArea, gAlign);
+	glTranslatef((SCREEN_WIDTH - gScaledArea.w * gBigTextScale) / 2.0f, (SCREEN_HEIGHT - gScaledArea.h * gBigTextScale) / 4.0f, 0.0f);
+
+	glScalef(gBigTextScale, gBigTextScale, gBigTextScale);
+	gTTF.renderText(0.0f, 0.0f, "Big Stuff!11!one!one11!", &gScaledArea, LFONT_TEXT_ALIGN_CENTERED_H);
+
+	glLoadIdentity();
+	glColor3f(0.0f, 1.0f, 1.0f);
+
+	glTranslatef((SCREEN_WIDTH - gPivotArea.w * 1.5f) / 2.0f, (SCREEN_HEIGHT - gPivotArea.h * 1.5f) * 3.0f / 4.0f, 0.0f);
+
+	glScalef(1.5f, 1.5f, 1.5f);
+	glTranslatef(gPivotArea.w / 2.0f, gPivotArea.h / 2.0f, 0.0f);
+
+	glRotatef(gPivotAngle, 0.0f, 0.0f, 1.0f);
+
+	glTranslatef(-gPivotArea.w / 2.0f, -gPivotArea.h / 2.0f, 0.0f);
+	gTTF.renderText(0.0f, 0.0f, "Pivot thingy...", &gPivotArea, LFONT_TEXT_ALIGN_CENTERED_H);
+
+	glLoadIdentity();
+	glColor3f(1.0f, 1.0f, 0.0f);
+
+	glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+	glRotatef(gCircleAngle, 0.0f, 0.0f, 1.0f);
+
+	glTranslatef(0.0f, -SCREEN_HEIGHT / 2.0f, 0.0f);
+	glTranslatef(-gCircleArea.w / 2.0f, 0.0f, 0.0f);
+
+	gTTF.renderText(0.0f, 0.0f, "Circlous much??", &gCircleArea, LFONT_TEXT_ALIGN_CENTERED_H);
 
 	glutSwapBuffers();
 }
@@ -121,84 +162,6 @@ void handleKeys(unsigned char key, int x, int y) {
 	if (key == 'd') {
 		gCameraX += 16.0f;
 	}
-
-	if (key == 'h') {
-		switch(gAlignH) {
-			case LFONT_TEXT_ALIGN_LEFT:
-				gAlignH = LFONT_TEXT_ALIGN_RIGHT;
-				break;
-
-			case LFONT_TEXT_ALIGN_CENTERED_H:
-				gAlignH = LFONT_TEXT_ALIGN_LEFT;
-				break;
-
-			case LFONT_TEXT_ALIGN_RIGHT:
-				gAlignH = LFONT_TEXT_ALIGN_CENTERED_H;
-				break;
-
-			default:
-				break;
-		}
-	}
-
-	if (key == 'k') {
-		switch(gAlignH) {
-			case LFONT_TEXT_ALIGN_LEFT:
-				gAlignH = LFONT_TEXT_ALIGN_CENTERED_H;
-				break;
-
-			case LFONT_TEXT_ALIGN_CENTERED_H:
-				gAlignH = LFONT_TEXT_ALIGN_RIGHT;
-				break;
-
-			case LFONT_TEXT_ALIGN_RIGHT:
-				gAlignH = LFONT_TEXT_ALIGN_LEFT;
-				break;
-
-			default:
-				break;
-		}
-	}
-
-	if (key == 'u') {
-		switch(gAlignV) {
-			case LFONT_TEXT_ALIGN_TOP:
-				gAlignV = LFONT_TEXT_ALIGN_BOTTOM;
-				break;
-
-			case LFONT_TEXT_ALIGN_CENTERED_V:
-				gAlignV = LFONT_TEXT_ALIGN_TOP;
-				break;
-
-			case LFONT_TEXT_ALIGN_BOTTOM:
-				gAlignV = LFONT_TEXT_ALIGN_CENTERED_V;
-				break;
-
-			default:
-				break;
-		}
-	}
-
-	if (key == 'j') {
-		switch(gAlignV) {
-			case LFONT_TEXT_ALIGN_TOP:
-				gAlignV = LFONT_TEXT_ALIGN_CENTERED_V;
-				break;
-
-			case LFONT_TEXT_ALIGN_CENTERED_V:
-				gAlignV = LFONT_TEXT_ALIGN_BOTTOM;
-				break;
-
-			case LFONT_TEXT_ALIGN_BOTTOM:
-				gAlignV = LFONT_TEXT_ALIGN_TOP;
-				break;
-
-			default:
-				break;
-		}
-	}
-
-	gAlign = gAlignH | gAlignV;
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();

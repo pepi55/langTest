@@ -28,6 +28,7 @@ class LFont : private LSpriteSheet {
 		void freeFont(void);
 		void renderText(GLfloat x, GLfloat y, std::string text, LFRect *area = NULL, int align = LFONT_TEXT_ALIGN_LEFT);
 
+		LFRect getStringArea(std::string text);
 		GLfloat getLineHeight(void);
 
 	private:
