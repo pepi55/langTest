@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+#include "maths.h"
 
 int main (void) {
 	int answ = 0;
@@ -27,14 +30,26 @@ int main (void) {
 		if (curNum % 2 == 0) {
 			answ += curNum;
 		}
-
-		//fprintf(stdout, "curnum: %i\n", curNum);
-		//fprintf(stdout, "prevnum: %i\n", prevNum);
-		//fprintf(stdout, "answ: %i\n", answ);
 	}
 
-	fprintf(stdout, "The result of problem 1 is: %i\n", answ);
+	fprintf(stdout, "The result of problem 2 is: %i\n", answ);
 	answ = 0;
+
+	//int num = 13195;
+	//for (int i = 2; i < num; i++) {
+	//	if (num % i == 0 && i != num) {
+	//		answ = i;
+	//	}
+	//}
+	//unsigned long large = 600851475143;
+	unsigned long small = 13195;
+
+	unsigned long *primes = primeFactorization(small);
+	fprintf(stdout, "The result of problem 3 is: %lu\n", primes[primes[0] - 1]);
+	free(primes);
+
+	//fprintf(stdout, "The result of problem 3 is: %i\n", answ);
+	//answ = 0;
 
 	return 0;
 }

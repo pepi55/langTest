@@ -4,7 +4,7 @@ FLAGS = -march=native -pipe -W -Wall -pedantic
 #LFLAGS = -l$(LIBRARY)
 #VPATH = ./src:./src/util:./src/prim:./src/tex:./src/ogl:./src/vertex:./src/font
 
-SOURCES = ./main.cpp
+SOURCES = ./main.cpp ./maths.c
 
 OBJECTS = $(SOURCES:.cpp=.o)
 OBJECTS_DEBUG = $(SOURCES:.cpp=$(DEBUG).o)
