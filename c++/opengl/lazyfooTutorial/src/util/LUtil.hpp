@@ -13,7 +13,10 @@ bool initGL(void);
 bool loadMedia(void);
 void update(void);
 void render(void);
+void renderScene(void);
 void handleKeys(unsigned char key, int x, int y);
 void handleMouseMotion(int x, int y);
+
+void gDrawQuads(GLfloat x, GLfloat y, GLfloat r = 1.0f, GLfloat g = 1.0f, GLfloat b = 1.0f);
 
 #endif

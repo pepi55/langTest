@@ -9,9 +9,13 @@
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
-LTexture gTexture;
+LTexture gTexture,
+				 gFBOTexture;
 
 GLuint gStencilRenderOp = GL_NOTEQUAL;
+GLuint gFBO = 0x0;
+
+GLfloat gAngle = 0.0f;
 GLfloat gPolygonX = SCREEN_WIDTH / 2.0f,
 				gPolygonY = SCREEN_WIDTH / 2.0f;
 
@@ -45,6 +49,7 @@ bool initGL(void) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glClearStencil(0);
+	glGenFramebuffers(1, &gFBO);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -80,6 +85,7 @@ bool loadMedia(void) {
 
 void update(void) {
 	//gPolygonAngle += 6.0f;
+	gAngle += 1.0f;
 }
 
 void render(void) {
@@ -113,12 +119,51 @@ void render(void) {
 
 	glLoadIdentity();
 
-	gTexture.render((SCREEN_WIDTH - gTexture.imageWidth()) / 2.0f,
-			(SCREEN_HEIGHT - gTexture.imageHeight()) / 2.0f);
+	if (gFBOTexture.getTextureID() != 0) {
+		glLoadIdentity();
+		glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+		glRotatef(-gAngle, 0.0f, 0.0f, 1.0f);
+		glTranslatef(gFBOTexture.imageWidth() / -2.0f, gFBOTexture.imageHeight() / -2.0f, 0.0f);
+		glColor3f(1.0f, 1.0f, 1.0f);
+		gFBOTexture.render(0.0f, 0.0f);
+	}
+
+	renderScene();
 
 	glDisable(GL_STENCIL_TEST);
 
 	glutSwapBuffers();
+}
+
+void renderScene(void) {
+	glLoadIdentity();
+	glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+	glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
+	glTranslatef(gTexture.imageWidth() / -2.0f, gTexture.imageHeight() / -2.0f, 0.0f);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	gTexture.render(0.0f, 0.0f);
+
+	glBindTexture(GL_TEXTURE_2D, 0x0);
+
+	glLoadIdentity();
+	glTranslatef(SCREEN_WIDTH * 1.0f / 4.0f, SCREEN_HEIGHT * 1.0f / 4.0f, 0.0f);
+	glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
+	gDrawQuads(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 1.0f, 0.0f, 0.0f);
+
+	glLoadIdentity();
+	glTranslatef(SCREEN_WIDTH * 3.0f / 4.0f, SCREEN_HEIGHT * 1.0f / 4.0f, 0.0f);
+	glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
+	gDrawQuads(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 0.0f, 1.0f, 0.0f);
+
+	glLoadIdentity();
+	glTranslatef(SCREEN_WIDTH * 1.0f / 4.0f, SCREEN_HEIGHT * 3.0f / 4.0f, 0.0f);
+	glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
+	gDrawQuads(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 0.0f, 0.0f, 1.0f);
+
+	glLoadIdentity();
+	glTranslatef(SCREEN_WIDTH * 3.0f / 4.0f, SCREEN_HEIGHT * 3.0f / 4.0f, 0.0f);
+	glRotatef(gAngle, 0.0f, 0.0f, 1.0f);
+	gDrawQuads(SCREEN_WIDTH / 16.0f, SCREEN_HEIGHT / 16.0f, 1.0f, 1.0f, 0.0f);
 }
 
 void handleKeys(unsigned char key, int x, int y) {
@@ -158,6 +203,22 @@ void handleKeys(unsigned char key, int x, int y) {
 		}
 	}
 
+	if (key == 'e') {
+		glBindFramebuffer(GL_FRAMEBUFFER, gFBO);
+
+		if (gFBOTexture.getTextureID() == 0) {
+			gFBOTexture.createPixels32(SCREEN_WIDTH, SCREEN_HEIGHT);
+			gFBOTexture.padPixels32();
+			gFBOTexture.loadTextureFromPixels32();
+		}
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gFBOTexture.getTextureID(), 0);
+
+		glClear(GL_COLOR_BUFFER_BIT);
+		renderScene();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0x0);
+	}
+
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glLoadIdentity();
@@ -169,4 +230,14 @@ void handleKeys(unsigned char key, int x, int y) {
 
 void handleMouseMotion(int x, int y) {
 	gPolygonX = x; gPolygonY = y;
+}
+
+void gDrawQuads(GLfloat x, GLfloat y, GLfloat r, GLfloat g, GLfloat b) {
+	glBegin(GL_QUADS);
+		glColor3f(r, g, b);
+		glVertex2f(-x, -y);
+		glVertex2f(x, -y);
+		glVertex2f(x, y);
+		glVertex2f(-x, y);
+	glEnd();
 }
