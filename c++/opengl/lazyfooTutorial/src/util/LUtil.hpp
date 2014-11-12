@@ -10,6 +10,7 @@ const int SCREEN_POSITION[] = {200, 50};
 const char *const SCREEN_TITLE = "Generic Title";
 
 bool initGL(void);
+bool loadGP(void);
 bool loadMedia(void);
 void update(void);
 void render(void);

@@ -15,9 +15,14 @@ int main(int argc, char *args[]) {
 		return 1;
 	}
 
+	if (!loadGP()) {
+		fprintf(stderr, "Unable to load shader programs!\n");
+		return 2;
+	}
+
 	if (!loadMedia()) {
 		fprintf(stderr, "Unable to load media!\n");
-		return 2;
+		return 3;
 	}
 
 	glutKeyboardFunc(handleKeys);
