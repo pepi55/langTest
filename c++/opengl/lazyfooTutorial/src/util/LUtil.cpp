@@ -12,7 +12,6 @@ GLfloat gCameraX = 0.0f,
 LTexture gTexture;
 
 GLuint gStencilRenderOp = GL_NOTEQUAL;
-GLfloat gPolygonAngle = 0.0f;
 GLfloat gPolygonX = SCREEN_WIDTH / 2.0f,
 				gPolygonY = SCREEN_WIDTH / 2.0f;
 
@@ -80,7 +79,7 @@ bool loadMedia(void) {
 }
 
 void update(void) {
-	gPolygonAngle += 6.0f;
+	//gPolygonAngle += 6.0f;
 }
 
 void render(void) {
@@ -99,12 +98,13 @@ void render(void) {
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 
 	glTranslatef(gPolygonX, gPolygonY, 0.0f);
-	glRotatef(gPolygonAngle, 0.0f, 0.0f, 1.0f);
+	//glRotatef(gPolygonAngle, 0.0f, 0.0f, 1.0f);
 
-	glBegin(GL_TRIANGLES);
-		glVertex2f(-0.0f / 4.0f, -SCREEN_HEIGHT / 4.0f);
-		glVertex2f(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
-		glVertex2f(-SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
+	glBegin(GL_QUADS);
+		glVertex2f(-SCREEN_WIDTH / 5.0f, -SCREEN_HEIGHT / 5.0f);
+		glVertex2f(SCREEN_WIDTH / 5.0f, -SCREEN_HEIGHT / 5.0f);
+		glVertex2f(SCREEN_WIDTH / 5.0f, SCREEN_HEIGHT / 5.0f);
+		glVertex2f(-SCREEN_WIDTH / 5.0f, SCREEN_HEIGHT / 5.0f);
 	glEnd();
 
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
