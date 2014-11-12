@@ -6,6 +6,14 @@
 #include "../tex/LTexture.hpp"
 #include "../tex/LSpriteSheet.hpp"
 
+enum AliasMode {
+	ALIAS_MODE_ALIASED,
+	ALIAS_MODE_ANTI_ALIASED,
+	ALIAS_MODE_MULTISAMPLE
+};
+
+AliasMode gMode = ALIAS_MODE_ALIASED;
+
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
@@ -48,6 +56,13 @@ bool initGL(void) {
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
+	glDisable(GL_LINE_SMOOTH);
+	glDisable(GL_POLYGON_SMOOTH);
+	glDisable(GL_MULTISAMPLE);
+
 	glClearStencil(0);
 	glGenFramebuffers(1, &gFBO);
 
@@ -85,7 +100,7 @@ bool loadMedia(void) {
 
 void update(void) {
 	//gPolygonAngle += 6.0f;
-	gAngle += 1.0f;
+	gAngle += 0.01f;
 }
 
 void render(void) {
@@ -96,6 +111,29 @@ void render(void) {
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glPushMatrix();
+
+	switch(gMode) {
+		case ALIAS_MODE_ALIASED:
+			glDisable(GL_LINE_SMOOTH);
+			glDisable(GL_POLYGON_SMOOTH);
+			glDisable(GL_MULTISAMPLE);
+			break;
+
+		case ALIAS_MODE_ANTI_ALIASED:
+			glEnable(GL_LINE_SMOOTH);
+			glEnable(GL_POLYGON_SMOOTH);
+			glDisable(GL_MULTISAMPLE);
+			break;
+
+		case ALIAS_MODE_MULTISAMPLE:
+			glDisable(GL_LINE_SMOOTH);
+			glDisable(GL_POLYGON_SMOOTH);
+			glEnable(GL_MULTISAMPLE);
+			break;
+
+		default:
+			break;
+	}
 
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glEnable(GL_STENCIL_TEST);
@@ -131,6 +169,20 @@ void render(void) {
 	renderScene();
 
 	glDisable(GL_STENCIL_TEST);
+
+	switch(gMode) {
+		case ALIAS_MODE_ANTI_ALIASED:
+			glDisable(GL_LINE_SMOOTH);
+			glDisable(GL_POLYGON_SMOOTH);
+			break;
+
+		case ALIAS_MODE_MULTISAMPLE:
+			glDisable(GL_MULTISAMPLE);
+			break;
+
+		default:
+			break;
+	}
 
 	glutSwapBuffers();
 }
@@ -217,6 +269,28 @@ void handleKeys(unsigned char key, int x, int y) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		renderScene();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0x0);
+	}
+
+	if (key == 'f') {
+		switch(gMode) {
+			case ALIAS_MODE_ALIASED:
+				fprintf(stdout, "AntiAliased\n");
+				gMode = ALIAS_MODE_ANTI_ALIASED;
+				break;
+
+			case ALIAS_MODE_ANTI_ALIASED:
+				fprintf(stdout, "Multisample\n");
+				gMode = ALIAS_MODE_MULTISAMPLE;
+				break;
+
+			case ALIAS_MODE_MULTISAMPLE:
+				fprintf(stdout, "Aliased\n");
+				gMode = ALIAS_MODE_ALIASED;
+				break;
+
+			default:
+				break;
+		}
 	}
 
 	glMatrixMode(GL_MODELVIEW);
