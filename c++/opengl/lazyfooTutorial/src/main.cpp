@@ -5,7 +5,7 @@ void runMainLoop(int val);
 int main(int argc, char *args[]) {
 	glutInit(&argc, args);
 	glutInitContextVersion(2, 1);
-	glutInitDisplayMode(GLUT_DOUBLE);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_STENCIL);
 	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	glutInitWindowPosition(SCREEN_POSITION[0], SCREEN_POSITION[1]);
 	glutCreateWindow(SCREEN_TITLE);
@@ -21,6 +21,7 @@ int main(int argc, char *args[]) {
 	}
 
 	glutKeyboardFunc(handleKeys);
+	glutMotionFunc(handleMouseMotion);
 	glutDisplayFunc(render);
 	glutTimerFunc(1000 / SCREEN_FPS, runMainLoop, 0);
 	glutMainLoop();

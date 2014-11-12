@@ -9,15 +9,12 @@
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
-LFont gTTF;
+LTexture gTexture;
 
-LFRect gScaledArea = {0.0f, 0.0f, 0.0f, 0.0f},
-			 gPivotArea = {0.0f, 0.0f, 0.0f, 0.0f},
-			 gCircleArea = {0.0f, 0.0f, 0.0f, 0.0f};
-
-GLfloat gBigTextScale = 3.0f,
-				gPivotAngle = 0.0f,
-				gCircleAngle = 0.0f;
+GLuint gStencilRenderOp = GL_NOTEQUAL;
+GLfloat gPolygonAngle = 0.0f;
+GLfloat gPolygonX = SCREEN_WIDTH / 2.0f,
+				gPolygonY = SCREEN_WIDTH / 2.0f;
 
 bool initGL(void) {
 	GLenum glewError = glewInit();
@@ -48,6 +45,8 @@ bool initGL(void) {
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	glClearStencil(0);
+
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
 		fprintf(stderr, "Error initializing OpenGL!\n%s\n", gluErrorString(error));
@@ -72,30 +71,20 @@ bool initGL(void) {
 }
 
 bool loadMedia(void) {
-	if (!gTTF.loadFreetype("img/font/lazy.ttf", 60)) {
-		fprintf(stderr, "Unable to load ttf font!\n");
+	if (!gTexture.loadTextureFromFile32("img/opengl.png")) {
+		fprintf(stderr, "Unable to load texture!\n");
 		return false;
 	}
-
-	gScaledArea = gTTF.getStringArea("Big Stuff!11!one!one11!");
-	gPivotArea = gTTF.getStringArea("Pivot thingy...");
-	gCircleArea = gTTF.getStringArea("Circlous much??");
 
 	return true;
 }
 
 void update(void) {
-	gPivotAngle += -1.0f;
-	gCircleAngle += +2.0f;
-	gBigTextScale += 0.1f;
-
-	if (gBigTextScale >= 3.0f) {
-		gBigTextScale = 0.0f;
-	}
+	gPolygonAngle += 6.0f;
 }
 
 void render(void) {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	glLoadIdentity();
 
@@ -103,35 +92,31 @@ void render(void) {
 	glPopMatrix();
 	glPushMatrix();
 
-	glColor3f(1.0f, 0.0f, 1.0f);
-	glTranslatef((SCREEN_WIDTH - gScaledArea.w * gBigTextScale) / 2.0f, (SCREEN_HEIGHT - gScaledArea.h * gBigTextScale) / 4.0f, 0.0f);
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glEnable(GL_STENCIL_TEST);
 
-	glScalef(gBigTextScale, gBigTextScale, gBigTextScale);
-	gTTF.renderText(0.0f, 0.0f, "Big Stuff!11!one!one11!", &gScaledArea, LFONT_TEXT_ALIGN_CENTERED_H);
+	glStencilFunc(GL_ALWAYS, 1, 1);
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+
+	glTranslatef(gPolygonX, gPolygonY, 0.0f);
+	glRotatef(gPolygonAngle, 0.0f, 0.0f, 1.0f);
+
+	glBegin(GL_TRIANGLES);
+		glVertex2f(-0.0f / 4.0f, -SCREEN_HEIGHT / 4.0f);
+		glVertex2f(SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
+		glVertex2f(-SCREEN_WIDTH / 4.0f, SCREEN_HEIGHT / 4.0f);
+	glEnd();
+
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glStencilFunc(gStencilRenderOp, 1, 1);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
 	glLoadIdentity();
-	glColor3f(0.0f, 1.0f, 1.0f);
 
-	glTranslatef((SCREEN_WIDTH - gPivotArea.w * 1.5f) / 2.0f, (SCREEN_HEIGHT - gPivotArea.h * 1.5f) * 3.0f / 4.0f, 0.0f);
+	gTexture.render((SCREEN_WIDTH - gTexture.imageWidth()) / 2.0f,
+			(SCREEN_HEIGHT - gTexture.imageHeight()) / 2.0f);
 
-	glScalef(1.5f, 1.5f, 1.5f);
-	glTranslatef(gPivotArea.w / 2.0f, gPivotArea.h / 2.0f, 0.0f);
-
-	glRotatef(gPivotAngle, 0.0f, 0.0f, 1.0f);
-
-	glTranslatef(-gPivotArea.w / 2.0f, -gPivotArea.h / 2.0f, 0.0f);
-	gTTF.renderText(0.0f, 0.0f, "Pivot thingy...", &gPivotArea, LFONT_TEXT_ALIGN_CENTERED_H);
-
-	glLoadIdentity();
-	glColor3f(1.0f, 1.0f, 0.0f);
-
-	glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
-	glRotatef(gCircleAngle, 0.0f, 0.0f, 1.0f);
-
-	glTranslatef(0.0f, -SCREEN_HEIGHT / 2.0f, 0.0f);
-	glTranslatef(-gCircleArea.w / 2.0f, 0.0f, 0.0f);
-
-	gTTF.renderText(0.0f, 0.0f, "Circlous much??", &gCircleArea, LFONT_TEXT_ALIGN_CENTERED_H);
+	glDisable(GL_STENCIL_TEST);
 
 	glutSwapBuffers();
 }
@@ -163,6 +148,16 @@ void handleKeys(unsigned char key, int x, int y) {
 		gCameraX += 16.0f;
 	}
 
+	if (key == 'q') {
+		if (gStencilRenderOp == GL_NOTEQUAL) {
+			gStencilRenderOp = GL_EQUAL;
+		} else if (gStencilRenderOp == GL_EQUAL) {
+			gStencilRenderOp = GL_ALWAYS;
+		} else if (gStencilRenderOp == GL_ALWAYS) {
+			gStencilRenderOp = GL_NOTEQUAL;
+		}
+	}
+
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glLoadIdentity();
@@ -170,4 +165,8 @@ void handleKeys(unsigned char key, int x, int y) {
 	glTranslatef(-gCameraX, -gCameraY, 0.0f);
 
 	glPushMatrix();
+}
+
+void handleMouseMotion(int x, int y) {
+	gPolygonX = x; gPolygonY = y;
 }

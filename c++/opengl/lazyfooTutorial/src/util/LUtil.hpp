@@ -14,5 +14,6 @@ bool loadMedia(void);
 void update(void);
 void render(void);
 void handleKeys(unsigned char key, int x, int y);
+void handleMouseMotion(int x, int y);
 
 #endif
