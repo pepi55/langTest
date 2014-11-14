@@ -58,7 +58,7 @@ bool LFont::loadFreetype(std::string path, GLuint pixelSize) {
 						maxBearing = metrics[i].horiBearingY / 64;
 					}
 
-					if (metrics[i].width / 64 > cellW) {
+					if (metrics[i].width / 64 > (int)cellW) {
 						cellW = metrics[i].width / 64;
 					}
 

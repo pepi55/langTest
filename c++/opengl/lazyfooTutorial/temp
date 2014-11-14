@@ -223,3 +223,82 @@ void gDrawQuad(GLfloat x, GLfloat y, GLfloat sizeX, GLfloat sizeY, GLfloat R, GL
 
 	gAlign = gAlignH | gAlignV;
 
+	if (key == 'q') {
+		if (gStencilRenderOp == GL_NOTEQUAL) {
+			gStencilRenderOp = GL_EQUAL;
+		} else if (gStencilRenderOp == GL_EQUAL) {
+			gStencilRenderOp = GL_ALWAYS;
+		} else if (gStencilRenderOp == GL_ALWAYS) {
+			gStencilRenderOp = GL_NOTEQUAL;
+		}
+	}
+
+	if (key == 'e') {
+		glBindFramebuffer(GL_FRAMEBUFFER, gFBO);
+
+		if (gFBOTexture.getTextureID() == 0) {
+			gFBOTexture.createPixels32(SCREEN_WIDTH, SCREEN_HEIGHT);
+			gFBOTexture.padPixels32();
+			gFBOTexture.loadTextureFromPixels32();
+		}
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gFBOTexture.getTextureID(), 0);
+
+		glClear(GL_COLOR_BUFFER_BIT);
+		renderScene();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0x0);
+	}
+
+bool LPlainPolygonProgram2D::loadProgram(void) {
+	GLint programSuccess = GL_TRUE;
+	GLuint vertexShader = 0x0;
+
+	mProgramID = glCreateProgram();
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+	const GLchar *vertexShaderSource[] = {
+		"void main(void) {gl_Position = gl_Vertex;}"
+	};
+
+	glShaderSource(vertexShader, 1, vertexShaderSource, NULL);
+	glCompileShader(vertexShader);
+
+	GLint vShaderCompiled = GL_FALSE;
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vShaderCompiled);
+	if (vShaderCompiled != GL_TRUE) {
+		fprintf(stderr, "Unable to compile the vertex shader %d!\n", vertexShader);
+		printShaderLog(vertexShader);
+		return false;
+	}
+
+	glAttachShader(mProgramID, vertexShader);
+
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	const GLchar *fragmentShaderSource[] = {
+		"void main(void) {gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);}"
+	};
+
+	glShaderSource(fragmentShader, 1, fragmentShaderSource, NULL);
+	glCompileShader(fragmentShader);
+
+	GLint fShaderCompiled = GL_FALSE;
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &fShaderCompiled);
+	if (fShaderCompiled != GL_TRUE) {
+		fprintf(stderr, "Unable to compile the fragment shader %d!\n", fragmentShader);
+		printShaderLog(fragmentShader);
+		return false;
+	}
+
+	glAttachShader(mProgramID, fragmentShader);
+	glLinkProgram(mProgramID);
+
+	glGetProgramiv(mProgramID, GL_LINK_STATUS, &programSuccess);
+	if (programSuccess != GL_TRUE) {
+		fprintf(stderr, "Error linking the program %d!\n", mProgramID);
+		printProgramLog(mProgramID);
+		return false;
+	}
+
+	return true;
+}
+

@@ -2,6 +2,11 @@
 #define LUTIL_H
 
 #include "../ogl/LOpenGL.hpp"
+#include "../font/LFont.hpp"
+#include "../tex/LTexture.hpp"
+#include "../tex/LSpriteSheet.hpp"
+#include "../shader/LShaderProgram.hpp"
+#include "../prim/LPlainPolygonProgram2D.hpp"
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;

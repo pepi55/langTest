@@ -1,7 +1,9 @@
 #ifndef LSHADER_PROGRAM_H
 #define LSHADER_PROGRAM_H
 
-//#include <stdio.h>
+#include <string>
+#include <fstream>
+
 #include "../ogl/LOpenGL.hpp"
 
 class LShaderProgram {
@@ -19,6 +21,7 @@ class LShaderProgram {
 	protected:
 		void printProgramLog(GLuint program);
 		void printShaderLog(GLuint shader);
+		GLuint loadShaderFromFile(std::string path, GLenum shaderType);
 
 		GLuint mProgramID;
 };

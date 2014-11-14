@@ -2,13 +2,15 @@ CC = g++ -std=c++11
 DEBUG = -ggdb
 FLAGS = -march=native -pipe -W -Wall -pedantic -I/usr/include/freetype2
 LFLAGS = -lGL -lGLU -lglut -lIL -lILU -lGLEW -lfreetype
-VPATH = ./src:./src/util:./src/prim:./src/tex:./src/ogl:./src/vertex:./src/font
+VPATH = ./src:./src/util:./src/prim:./src/tex:./src/ogl:./src/vertex:./src/font:./src/shader
 
-SOURCES = ./src/main.cpp \
-					./src/util/LUtil.cpp \
-					./src/tex/LTexture.cpp \
+SOURCES = ./src/tex/LTexture.cpp \
 					./src/tex/LSpriteSheet.cpp \
-					./src/font/LFont.cpp
+					./src/font/LFont.cpp \
+					./src/shader/LShaderProgram.cpp \
+					./src/prim/LPlainPolygonProgram2D.cpp \
+					./src/util/LUtil.cpp \
+					./src/main.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 OBJECTS_DEBUG = $(SOURCES:.cpp=$(DEBUG).o)
