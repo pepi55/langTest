@@ -8,6 +8,9 @@ GLfloat gCameraX = 0.0f,
 
 LPlainPolygonProgram2D gPlainPolyProg2D;
 
+GLuint gVBO = 0x0,
+			 gIBO = 0x0;
+
 bool initGL(void) {
 	GLenum glewError = glewInit();
 	if (glewError != GLEW_OK) {
@@ -74,6 +77,33 @@ bool loadGP(void) {
 }
 
 bool loadMedia(void) {
+	LVertexPos2D quadVertices[4];
+	GLuint indices[4];
+
+	quadVertices[0].x = -50.0f;
+	quadVertices[0].y = -50.0f;
+
+	quadVertices[1].x = 50.0f;
+	quadVertices[1].y = -50.0f;
+
+	quadVertices[2].x = 50.0f;
+	quadVertices[2].y = 50.0f;
+
+	quadVertices[3].x = -50.0f;
+	quadVertices[3].y = 50.0f;
+
+	for (int i = 0; i < 4; ++i) {
+		indices[i] = i;
+	}
+
+	glGenBuffers(1, &gVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, gVBO);
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LVertexPos2D), quadVertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &gIBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+
 	return true;
 }
 
@@ -95,7 +125,16 @@ void render(void) {
 }
 
 void renderScene(void) {
-	gDrawQuads(100.0f, 100.0f, 1.0f, 0.0f, 0.0f);
+	glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+	gPlainPolyProg2D.setColor(1.0f, 0.0f, 1.0f);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, gVBO);
+		glVertexPointer(2, GL_FLOAT, 0, NULL);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIBO);
+
+		glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void handleKeys(unsigned char key, int x, int y) {

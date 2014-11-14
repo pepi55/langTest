@@ -81,21 +81,21 @@ GLuint LShaderProgram::loadShaderFromFile(std::string path, GLenum shaderType) {
 
 	if (sourceFile) {
 		shaderString.assign((std::istreambuf_iterator<char>(sourceFile)), std::istreambuf_iterator<char>());
-	}
 
-	shaderID = glCreateShader(shaderType);
+		shaderID = glCreateShader(shaderType);
 
-	const GLchar *shaderSource = shaderString.c_str();
-	glShaderSource(shaderID, 1, (const GLchar **)&shaderSource, NULL);
-	glCompileShader(shaderID);
+		const GLchar *shaderSource = shaderString.c_str();
+		glShaderSource(shaderID, 1, (const GLchar **)&shaderSource, NULL);
+		glCompileShader(shaderID);
 
-	GLint shaderCompiled = GL_FALSE;
-	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &shaderCompiled);
-	if (shaderCompiled != GL_TRUE) {
-		fprintf(stderr, "Unable to compile shader %d!\nSource: %s\n", shaderID, shaderSource);
-		printShaderLog(shaderID);
-		glDeleteShader(shaderID);
-		shaderID = 0;
+		GLint shaderCompiled = GL_FALSE;
+		glGetShaderiv(shaderID, GL_COMPILE_STATUS, &shaderCompiled);
+		if (shaderCompiled != GL_TRUE) {
+			fprintf(stderr, "Unable to compile shader %d!\nSource: %s\n", shaderID, shaderSource);
+			printShaderLog(shaderID);
+			glDeleteShader(shaderID);
+			shaderID = 0;
+		}
 	} else {
 		fprintf(stderr, "Unable to open file %s\n", path.c_str());
 	}

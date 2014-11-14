@@ -1,5 +1,9 @@
 #include "LPlainPolygonProgram2D.hpp"
 
+LPlainPolygonProgram2D::LPlainPolygonProgram2D(void) {
+	mPolygonColorLocation = 0;
+}
+
 bool LPlainPolygonProgram2D::loadProgram(void) {
 	mProgramID = glCreateProgram();
 
@@ -43,5 +47,14 @@ bool LPlainPolygonProgram2D::loadProgram(void) {
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
+	mPolygonColorLocation = glGetUniformLocation(mProgramID, "LPolygonColor");
+	if (mPolygonColorLocation == -1) {
+		fprintf(stderr, "%s is not a valid glsl program variable!\n", "LPolygonColor");
+	}
+
 	return true;
+}
+
+void LPlainPolygonProgram2D::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
+	glUniform4f(mPolygonColorLocation, r, g, b, a);
 }
