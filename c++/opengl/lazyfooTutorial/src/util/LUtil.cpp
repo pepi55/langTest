@@ -1,5 +1,8 @@
+#define GLM_FORCE_RADIANS
+
 #include <IL/il.h>
 #include <IL/ilu.h>
+#include <glm/gtx/transform.hpp>
 
 #include "LUtil.hpp"
 
@@ -24,14 +27,6 @@ bool initGL(void) {
 	}
 
 	glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 1.0f, -1.0f);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glPushMatrix();
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glEnable(GL_TEXTURE_2D);
@@ -73,6 +68,12 @@ bool loadGP(void) {
 
 	gPlainPolyProg2D.bind();
 
+	gPlainPolyProg2D.setProjection(glm::ortho<GLfloat>(0.0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0, 1.0, -1.0));
+	gPlainPolyProg2D.updateProjection();
+
+	gPlainPolyProg2D.setModelView(glm::mat4());
+	gPlainPolyProg2D.updateModelView();
+
 	return true;
 }
 
@@ -113,19 +114,14 @@ void update(void) {
 void render(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	glLoadIdentity();
-
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-	glPushMatrix();
-
 	renderScene();
 
 	glutSwapBuffers();
 }
 
 void renderScene(void) {
-	glTranslatef(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+	gPlainPolyProg2D.setModelView(glm::translate<GLfloat>(glm::vec3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f)));
+	gPlainPolyProg2D.updateModelView();
 	gPlainPolyProg2D.setColor(1.0f, 0.0f, 1.0f);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -133,7 +129,7 @@ void renderScene(void) {
 		glVertexPointer(2, GL_FLOAT, 0, NULL);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIBO);
 
-		glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
@@ -163,14 +159,6 @@ void handleKeys(unsigned char key, int x, int y) {
 	if (key == 'd') {
 		gCameraX += 16.0f;
 	}
-
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-	glLoadIdentity();
-
-	glTranslatef(-gCameraX, -gCameraY, 0.0f);
-
-	glPushMatrix();
 }
 
 void handleMouseMotion(int x, int y) {

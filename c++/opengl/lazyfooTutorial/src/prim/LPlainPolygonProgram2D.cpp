@@ -1,7 +1,10 @@
+#include <glm/gtc/type_ptr.hpp>
 #include "LPlainPolygonProgram2D.hpp"
 
 LPlainPolygonProgram2D::LPlainPolygonProgram2D(void) {
 	mPolygonColorLocation = 0;
+	mProjectionMatrixLocation = 0;
+	mModelViewMatrixLocation = 0;
 }
 
 bool LPlainPolygonProgram2D::loadProgram(void) {
@@ -47,9 +50,22 @@ bool LPlainPolygonProgram2D::loadProgram(void) {
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	mPolygonColorLocation = glGetUniformLocation(mProgramID, "LPolygonColor");
+	const GLchar *var = "LPolygonColor";
+	mPolygonColorLocation = glGetUniformLocation(mProgramID, var);
 	if (mPolygonColorLocation == -1) {
-		fprintf(stderr, "%s is not a valid glsl program variable!\n", "LPolygonColor");
+		fprintf(stderr, "%s is not a valid glsl program variable!\n", var);
+	}
+
+	var = "LProjectionMatrix";
+	mProjectionMatrixLocation = glGetUniformLocation(mProgramID, var);
+	if (mProjectionMatrixLocation == -1) {
+		fprintf(stderr, "%s is not a valid glsl program variable!\n", var);
+	}
+
+	var = "LModelViewMatrix";
+	mModelViewMatrixLocation = glGetUniformLocation(mProgramID, var);
+	if (mModelViewMatrixLocation == -1) {
+		fprintf(stderr, "%s is not a valid glsl program variable!\n", var);
 	}
 
 	return true;
@@ -57,4 +73,28 @@ bool LPlainPolygonProgram2D::loadProgram(void) {
 
 void LPlainPolygonProgram2D::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
 	glUniform4f(mPolygonColorLocation, r, g, b, a);
+}
+
+void LPlainPolygonProgram2D::setProjection(glm::mat4 matrix) {
+	mProjectionMatrix = matrix;
+}
+
+void LPlainPolygonProgram2D::setModelView(glm::mat4 matrix) {
+	mModelViewMatrix = matrix;
+}
+
+void LPlainPolygonProgram2D::leftMultProjection(glm::mat4 matrix) {
+	mProjectionMatrix = matrix * mProjectionMatrix;
+}
+
+void LPlainPolygonProgram2D::leftMultModelView(glm::mat4 matrix) {
+	mModelViewMatrix = matrix * mModelViewMatrix;
+}
+
+void LPlainPolygonProgram2D::updateProjection(void) {
+	glUniformMatrix4fv(mProjectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
+}
+
+void LPlainPolygonProgram2D::updateModelView(void) {
+	glUniformMatrix4fv(mModelViewMatrixLocation, 1, GL_FALSE, glm::value_ptr(mModelViewMatrix));
 }

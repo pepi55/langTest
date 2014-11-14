@@ -11,7 +11,7 @@
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 const int SCREEN_FPS = 60;
-const int SCREEN_POSITION[] = {200, 50};
+const int SCREEN_POSITION[] = {200, 60};
 const char *const SCREEN_TITLE = "Generic Title";
 
 bool initGL(void);
