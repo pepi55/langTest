@@ -38,79 +38,22 @@ int gcd (int a, int b) {
 	return a;
 }
 
-unsigned long *division (unsigned long a) {
-	unsigned long i, l = 1;
-	unsigned long *result;
+long long *division(long long a) {
+	unsigned int len = 1;
+	long long *result = NULL;
 
 	if (a < 1) return NULL;
 
-	result = (unsigned long *)malloc(a * sizeof(unsigned long));
+	result = (long long *)malloc(a * sizeof(long long));
 	if (result) {
-		if (naturalNumber(a)) {
-			for (i = 1; i <= a; ++i) {
-				if (divisor(i, a)) {
-					result[l++] = i;
-				}
-			}
-
-			result[0] = l;
-			result = (unsigned long *)realloc(result, l * sizeof(unsigned long));
-		}
-	}
-
-	return result;
-}
-
-unsigned long *primes (unsigned long a) {
-	unsigned long i, ln, l = 1;
-	unsigned long *result, *div;
-
-	if (a < 1) return NULL;
-
-	result = (unsigned long *)malloc(a * sizeof(unsigned long));
-	if (result) {
-		if (naturalNumber(a)) {
-			for (i = 1; i <= a; ++i) {
-				div = division(i);
-				ln = div[0];
-
-				if (ln == 3) {
-					result[l++] = i;
-				}
-
-				free(div);
-			}
-
-			result[0] = l;
-			result = (unsigned long *)realloc(result, l * sizeof(unsigned long));
-		}
-	}
-
-	return result;
-}
-
-unsigned long *primeFactorization (float a) {
-	unsigned long l = 1, i = 1;
-	unsigned long *result = NULL, *prime = NULL;
-
-	if (a < 1) return NULL;
-
-	prime = primes(a);
-	result = (unsigned long *)malloc((size_t)prime * sizeof(unsigned long *));
-	if (result) {
-		while (a != 1) {
-			if (naturalNumber((float)(a / prime[i]))) {
-				a /= prime[i];
-				result[l++] = prime[i];
-			} else {
-				i += 1;
+		for (long long i = 2; i <= a; ++i) {
+			if (divisor(i, a)) {
+				result[len++] = i;
 			}
 		}
 
-		free(prime);
-
-		result[0] = l;
-		result = (unsigned long *)realloc(result, l * sizeof(unsigned long));
+		result[0] = len;
+		result = (long long *)realloc(result, len * sizeof(long long));
 	}
 
 	return result;

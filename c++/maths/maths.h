@@ -6,9 +6,8 @@ int naturalNumber(float a);
 int divisor(float a, float b);
 int gcd(int a, int b);
 
-unsigned long *division(unsigned long a);
-unsigned long *primes(unsigned long a);
-unsigned long *primeFactorization(float a);
+long long *division(long long a);
+
 
 void divisionToFile(float a);
 

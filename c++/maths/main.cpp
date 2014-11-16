@@ -41,12 +41,18 @@ int main (void) {
 	//		answ = i;
 	//	}
 	//}
-	//unsigned long large = 600851475143;
-	unsigned long small = 13195;
+	//4294967295
+	long long large = 600851475143;
+	//unsigned long small = 13195;
 
-	unsigned long *primes = primeFactorization(small);
-	fprintf(stdout, "The result of problem 3 is: %lu\n", primes[primes[0] - 1]);
+	long long *someResult = division(large);
+	fprintf(stdout, "Division: %llu\n", someResult[someResult[0] - 1]);
+
+	/*
+	long long *primes = primeFactorization(large);
+	fprintf(stdout, "The result of problem 3 is: %llu\n", primes[primes[0] - 1]);
 	free(primes);
+	*/
 
 	//fprintf(stdout, "The result of problem 3 is: %i\n", answ);
 	//answ = 0;
