@@ -1,11 +1,17 @@
+#define GLM_FORCE_RADIANS
+
 #include <string.h>
 #include <IL/il.h>
 #include <IL/ilu.h>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 
-#include "../vertex/LVertexData2D.hpp"
-#include "../tex/LTexture.hpp"
+#include "LTexture.hpp"
+#include "../vertex/LTexturedVertex2D.hpp"
+//#include "../vertex/LVertexData2D.hpp"
 
 GLenum DEFAULT_TEXTURE_WRAP = GL_REPEAT;
+LTexturedPolygon2D *LTexture::mTexturedPolygon2D = NULL;
 
 LTexture::LTexture(void) {
 	mTextureID = 0;
@@ -27,6 +33,10 @@ LTexture::~LTexture(void) {
 	freeTexture();
 
 	freeVBO();
+}
+
+void LTexture::setTexturedPolygon2D(LTexturedPolygon2D *program) {
+	mTexturedPolygon2D = program;
 }
 
 bool LTexture::lock(void) {
@@ -77,7 +87,7 @@ bool LTexture::unlock(void) {
 
 void LTexture::initVBO(void) {
 	if (mTextureID != 0 && mVBOID == 0) {
-		LVertexData2D vData[4];
+		LTexturedVertex2D vData[4];
 		GLuint iData[4];
 
 		for (int i = 0; i < 4; ++i) {
@@ -86,7 +96,7 @@ void LTexture::initVBO(void) {
 
 		glGenBuffers(1, &mVBOID);
 		glBindBuffer(GL_ARRAY_BUFFER, mVBOID);
-		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LVertexData2D), vData, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LTexturedVertex2D), vData, GL_DYNAMIC_DRAW);
 
 		glGenBuffers(1, &mIBOID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBOID);
@@ -124,10 +134,10 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 			quadHeight = clip->h;
 		}
 
-		glTranslatef(x, y, 0.0f);
-		//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		mTexturedPolygon2D->leftMultModelView(glm::translate(glm::vec3(x, y, 0.0f)));
+		mTexturedPolygon2D->updateModelView();
 
-		LVertexData2D vData[4];
+		LTexturedVertex2D vData[4];
 
 		vData[0].texCoord.s = texLeft;		vData[0].texCoord.t = texTop;
 		vData[1].texCoord.s = texRight;		vData[1].texCoord.t = texTop;
@@ -140,17 +150,18 @@ void LTexture::render(GLfloat x, GLfloat y, LFRect *clip) {
 		vData[3].position.x = 0.0f;				vData[3].position.y = quadHeight;
 
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		mTexturedPolygon2D->enableVertexPointer();
+		mTexturedPolygon2D->enableTexCoordPointer();
 			glBindBuffer(GL_ARRAY_BUFFER, mVBOID);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(LVertexData2D), vData);
-			glTexCoordPointer(2, GL_FLOAT, sizeof(LVertexData2D), (GLvoid*)offsetof(LVertexData2D, texCoord));
-			glVertexPointer(2, GL_FLOAT, sizeof(LVertexData2D), (GLvoid*)offsetof(LVertexData2D, position));
+			glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(LTexturedVertex2D), vData);
+
+			mTexturedPolygon2D->setTexCoordPointer(sizeof(LTexturedVertex2D), (GLvoid *)offsetof(LTexturedVertex2D, texCoord));
+			mTexturedPolygon2D->setVertexPointer(sizeof(LTexturedVertex2D), (GLvoid *)offsetof(LTexturedVertex2D, position));
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBOID);
-			glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
+			glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
+		mTexturedPolygon2D->disableVertexPointer();
+		mTexturedPolygon2D->disableTexCoordPointer();
 	}
 }
 
@@ -419,13 +430,12 @@ bool LTexture::loadTextureFromFile32(std::string path) {
 		}
 
 		ilDeleteImages(1, &imgID);
+		mPixelFormat = GL_RGBA;
 	}
 
 	if (!textureLoaded) {
 		fprintf(stderr, "Unable to load image %s\n", path.c_str());
 	}
-
-	mPixelFormat = GL_RGBA;
 
 	return textureLoaded;
 }

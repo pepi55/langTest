@@ -12,5 +12,5 @@ varying vec4 multiColor;
 uniform vec4 LPolygonColor = vec4(1.0, 1.0, 1.0, 1.0);
 
 void main(void) {
-	LFragment = multiColor;
+	gl_FragColor = multiColor;
 }

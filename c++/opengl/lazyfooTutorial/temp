@@ -310,3 +310,46 @@ bool LPlainPolygonProgram2D::loadProgram(void) {
 	glLoadIdentity();
 	glPushMatrix();
 
+	LMultiColorVertex2D quadVertices[4];
+	GLuint indices[4];
+
+	quadVertices[0].pos.x = -50.0f;
+	quadVertices[0].pos.y = -50.0f;
+	quadVertices[0].rgba.r = 1.0f;
+	quadVertices[0].rgba.g = 0.0f;
+	quadVertices[0].rgba.b = 0.0f;
+	quadVertices[0].rgba.a = 1.0f;
+
+	quadVertices[1].pos.x = 50.0f;
+	quadVertices[1].pos.y = -50.0f;
+	quadVertices[1].rgba.r = 1.0f;
+	quadVertices[1].rgba.g = 1.0f;
+	quadVertices[1].rgba.b = 0.0f;
+	quadVertices[1].rgba.a = 1.0f;
+
+	quadVertices[2].pos.x = 50.0f;
+	quadVertices[2].pos.y = 50.0f;
+	quadVertices[2].rgba.r = 1.0f;
+	quadVertices[2].rgba.g = 0.0f;
+	quadVertices[2].rgba.b = 1.0f;
+	quadVertices[2].rgba.a = 0.0f;
+
+	quadVertices[3].pos.x = -50.0f;
+	quadVertices[3].pos.y = 50.0f;
+	quadVertices[3].rgba.r = 0.0f;
+	quadVertices[3].rgba.g = 1.0f;
+	quadVertices[3].rgba.b = 1.0f;
+	quadVertices[3].rgba.a = 1.0f;
+
+	for (int i = 0; i < 4; ++i) {
+		indices[i] = i;
+	}
+
+	glGenBuffers(1, &gVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, gVBO);
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LMultiColorVertex2D), quadVertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &gIBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+

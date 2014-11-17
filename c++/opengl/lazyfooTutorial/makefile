@@ -6,9 +6,11 @@ VPATH = ./src:./src/util:./src/prim:./src/tex:./src/ogl:./src/vertex:./src/font:
 
 SOURCES = ./src/tex/LTexture.cpp \
 					./src/tex/LSpriteSheet.cpp \
+					./src/tex/LTexturedPolygon2D.cpp \
 					./src/font/LFont.cpp \
 					./src/shader/LShaderProgram.cpp \
 					./src/prim/LPlainPolygonProgram2D.cpp \
+					./src/prim/LMultiColorPolygonProgram2D.cpp \
 					./src/util/LUtil.cpp \
 					./src/main.cpp
 

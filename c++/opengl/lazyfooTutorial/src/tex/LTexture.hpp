@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "LTexturedPolygon2D.hpp"
 #include "../ogl/LOpenGL.hpp"
 #include "../prim/LRect.hpp"
 
@@ -11,11 +12,11 @@ class LTexture {
 		LTexture(void);
 		virtual ~LTexture(void);
 
+		static void setTexturedPolygon2D(LTexturedPolygon2D *program);
+
 		bool lock(void);
 		bool unlock(void);
 
-		void initVBO(void);
-		void freeVBO(void);
 		void render(GLfloat x, GLfloat y, LFRect *clip = NULL);
 		virtual void freeTexture(void);
 
@@ -52,10 +53,16 @@ class LTexture {
 		GLuint imageWidth(void);
 		GLuint imageHeight(void);
 
-	private:
+	protected:
+		static LTexturedPolygon2D *mTexturedPolygon2D;
+
+		void initVBO(void);
+		void freeVBO(void);
+
+		GLuint powerOfTwo(GLuint num);
+
 		GLubyte *mPixels8;
 		GLuint *mPixels32;
-		GLuint powerOfTwo(GLuint num);
 		GLuint mTextureID,
 					 mPixelFormat,
 					 mTextureWidth,

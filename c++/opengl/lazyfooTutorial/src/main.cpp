@@ -4,7 +4,7 @@ void runMainLoop(int val);
 
 int main(int argc, char *args[]) {
 	glutInit(&argc, args);
-	glutInitContextVersion(2, 1);
+	glutInitContextVersion(3, 1);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_MULTISAMPLE);
 	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	glutInitWindowPosition(SCREEN_POSITION[0], SCREEN_POSITION[1]);

@@ -1,21 +1,23 @@
 #define GLM_FORCE_RADIANS
 
 #include <glm/gtc/type_ptr.hpp>
-#include "LMultiColorPolygonProgram2D.hpp"
+#include "LTexturedPolygon2D.hpp"
 
-LMultiColorPolygonProgram2D::LMultiColorPolygonProgram2D(void) {
+LTexturedPolygon2D::LTexturedPolygon2D(void) {
 	mVertexPos2DLocation = 0;
-	mMultiColorLocation = 0;
+	mTexCoordLocation = 0;
 
 	mProjectionMatrixLocation = 0;
 	mModelViewMatrixLocation = 0;
+	mTextureColorLocation = 0;
+	mTextureUnitLocation = 0;
 }
 
-bool LMultiColorPolygonProgram2D::loadProgram(void) {
+bool LTexturedPolygon2D::loadProgram(void) {
 	mProgramID = glCreateProgram();
 
-	GLuint vertexShader = loadShaderFromFile("src/shader/shaderFiles/vertexShader.glslv", GL_VERTEX_SHADER);
-	GLuint fragmentShader = loadShaderFromFile("src/shader/shaderFiles/fragmentShader.glslf", GL_FRAGMENT_SHADER);
+	GLuint vertexShader = loadShaderFromFile("src/shader/shaderFiles/textureShader.glslv", GL_VERTEX_SHADER);
+	GLuint fragmentShader = loadShaderFromFile("src/shader/shaderFiles/textureShader.glslf", GL_FRAGMENT_SHADER);
 
 	if (vertexShader == 0) {
 		glDeleteProgram(mProgramID);
@@ -52,7 +54,7 @@ bool LMultiColorPolygonProgram2D::loadProgram(void) {
 	}
 
 	glDeleteShader(vertexShader);
-	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
 
 	const GLchar *var = "LVertexPos2D";
 
@@ -61,10 +63,24 @@ bool LMultiColorPolygonProgram2D::loadProgram(void) {
 		fprintf(stderr, "%s is not a valid glsl program variable!\n", var);
 	}
 
-	var = "LMultiColor";
+	var = "LTexCoord";
 
-	mMultiColorLocation = glGetAttribLocation(mProgramID, var);
-	if (mMultiColorLocation == -1) {
+	mTexCoordLocation = glGetAttribLocation(mProgramID, var);
+	if (mTexCoordLocation == -1) {
+		fprintf(stderr, "%s is not a valid glsl program variable!\n", var);
+	}
+
+	var = "LTextureColor";
+
+	mTextureColorLocation = glGetAttribLocation(mProgramID, var);
+	if (mTextureColorLocation == -1) {
+		fprintf(stderr, "%s is not a valid glsl program variable!\n", var);
+	}
+
+	var = "LTextureUnit";
+
+	mTextureUnitLocation = glGetUniformLocation(mProgramID, var);
+	if (mTextureUnitLocation == -1) {
 		fprintf(stderr, "%s is not a valid glsl program variable!\n", var);
 	}
 
@@ -78,57 +94,65 @@ bool LMultiColorPolygonProgram2D::loadProgram(void) {
 	var = "LModelViewMatrix";
 
 	mModelViewMatrixLocation = glGetUniformLocation(mProgramID, var);
-	if (mModelViewMatrixLocation == -1) {
+	if (mProjectionMatrixLocation == -1) {
 		fprintf(stderr, "%s is not a valid glsl program variable!\n", var);
 	}
 
 	return true;
 }
 
-void LMultiColorPolygonProgram2D::setVertexPointer(GLsizei stride, const GLvoid *data) {
+void LTexturedPolygon2D::setVertexPointer(GLsizei stride, const GLvoid *data) {
 	glVertexAttribPointer(mVertexPos2DLocation, 2, GL_FLOAT, GL_FALSE, stride, data);
 }
 
-void LMultiColorPolygonProgram2D::setColorPointer(GLsizei stride, const GLvoid *data) {
-	glVertexAttribPointer(mMultiColorLocation, 4, GL_FLOAT, GL_FALSE, stride, data);
+void LTexturedPolygon2D::setTexCoordPointer(GLsizei stride, const GLvoid *data) {
+	glVertexAttribPointer(mTexCoordLocation, 2, GL_FLOAT, GL_FALSE, stride, data);
 }
 
-void LMultiColorPolygonProgram2D::enableVertexPointer(void) {
+void LTexturedPolygon2D::enableVertexPointer(void) {
 	glEnableVertexAttribArray(mVertexPos2DLocation);
 }
 
-void LMultiColorPolygonProgram2D::disableVertexPointer(void) {
+void LTexturedPolygon2D::disableVertexPointer(void) {
 	glDisableVertexAttribArray(mVertexPos2DLocation);
 }
 
-void LMultiColorPolygonProgram2D::enableColorPointer(void) {
-	glEnableVertexAttribArray(mMultiColorLocation);
+void LTexturedPolygon2D::enableTexCoordPointer(void) {
+	glEnableVertexAttribArray(mTexCoordLocation);
 }
 
-void LMultiColorPolygonProgram2D::disableColorPointer(void) {
-	glDisableVertexAttribArray(mMultiColorLocation);
+void LTexturedPolygon2D::disableTexCoordPointer(void) {
+	glDisableVertexAttribArray(mTexCoordLocation);
 }
 
-void LMultiColorPolygonProgram2D::setProjection(glm::mat4 matrix) {
+void LTexturedPolygon2D::setProjection(glm::mat4 matrix) {
 	mProjectionMatrix = matrix;
 }
 
-void LMultiColorPolygonProgram2D::setModelView(glm::mat4 matrix) {
+void LTexturedPolygon2D::setModelView(glm::mat4 matrix) {
 	mModelViewMatrix = matrix;
 }
 
-void LMultiColorPolygonProgram2D::leftMultProjection(glm::mat4 matrix) {
+void LTexturedPolygon2D::leftMultProjection(glm::mat4 matrix) {
 	mProjectionMatrix = matrix * mProjectionMatrix;
 }
 
-void LMultiColorPolygonProgram2D::leftMultModelView(glm::mat4 matrix) {
+void LTexturedPolygon2D::leftMultModelView(glm::mat4 matrix) {
 	mModelViewMatrix = matrix * mModelViewMatrix;
 }
 
-void LMultiColorPolygonProgram2D::updateProjection(void) {
+void LTexturedPolygon2D::updateProjection(void) {
 	glUniformMatrix4fv(mProjectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(mProjectionMatrix));
 }
 
-void LMultiColorPolygonProgram2D::updateModelView(void) {
+void LTexturedPolygon2D::updateModelView(void) {
 	glUniformMatrix4fv(mModelViewMatrixLocation, 1, GL_FALSE, glm::value_ptr(mModelViewMatrix));
+}
+
+void LTexturedPolygon2D::setTextureColor(LColorRGBA color) {
+	glUniform4f(mTextureColorLocation, color.r, color.g, color.b, color.a);
+}
+
+void LTexturedPolygon2D::setTextureUnit(GLuint unit) {
+	glUniform1i(mTextureUnitLocation, unit);
 }

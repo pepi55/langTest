@@ -7,6 +7,9 @@
 #include "../tex/LSpriteSheet.hpp"
 #include "../shader/LShaderProgram.hpp"
 #include "../prim/LPlainPolygonProgram2D.hpp"
+#include "../prim/LMultiColorPolygonProgram2D.hpp"
+#include "../vertex/LMultiColorVertex2D.hpp"
+#include "../tex/LTexturedPolygon2D.hpp"
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
