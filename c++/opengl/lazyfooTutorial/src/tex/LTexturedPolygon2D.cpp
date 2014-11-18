@@ -72,7 +72,7 @@ bool LTexturedPolygon2D::loadProgram(void) {
 
 	var = "LTextureColor";
 
-	mTextureColorLocation = glGetAttribLocation(mProgramID, var);
+	mTextureColorLocation = glGetUniformLocation(mProgramID, var);
 	if (mTextureColorLocation == -1) {
 		fprintf(stderr, "%s is not a valid glsl program variable!\n", var);
 	}

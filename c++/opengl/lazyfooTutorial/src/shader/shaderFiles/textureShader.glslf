@@ -8,7 +8,7 @@ out vec4 gl_FragColor;
 
 #else
 
-varying vec2 texCoord
+varying vec2 texCoord;
 
 #endif
 

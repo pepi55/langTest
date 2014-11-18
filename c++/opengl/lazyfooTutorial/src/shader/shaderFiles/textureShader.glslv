@@ -10,7 +10,7 @@ out vec2 texCoord;
 
 #else
 
-attribute vec2 LVertexPos2D
+attribute vec2 LVertexPos2D;
 
 attribute vec2 LTexCoord;
 varying vec2 texCoord;
