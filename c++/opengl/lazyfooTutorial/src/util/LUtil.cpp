@@ -12,10 +12,18 @@ GLfloat gCameraX = 0.0f,
 LTexturedPolygon2D gTexturedPolygon2D;
 LTexture gOpenGLTexture;
 
+LMultiPolygonProgram2D gMultiPolygon;
+
 LColorRGBA gTextureColor = {1.0f, 1.0f, 1.0f, 0.5f};
 
-GLuint gVBO = 0x0,
+GLuint gVertexVBO = 0x0,
+			 gRGBYVBO = 0x0,
+			 gCYMWVBO = 0x0,
+			 gGrayVBO = 0x0,
 			 gIBO = 0x0;
+
+GLuint gLeftVAO = 0x0,
+			 gRightVAO = 0x0;
 
 bool initGL(void) {
 	GLenum glewError = glewInit();
@@ -64,6 +72,19 @@ bool initGL(void) {
 }
 
 bool loadGP(void) {
+	if (!gMultiPolygon.loadProgram()) {
+		fprintf(stderr, "Unable to load shader!\n");
+		return false;
+	}
+
+	gMultiPolygon.bind();
+
+	gMultiPolygon.setProjection(glm::ortho<GLfloat>(0.0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0, 1.0, -1.0));
+	gMultiPolygon.updateProjection();
+
+	gMultiPolygon.setModelView(glm::mat4());
+	gMultiPolygon.updateModelView();
+
 	if (!gTexturedPolygon2D.loadProgram()) {
 		fprintf(stderr, "Unable to load basic shader!\n");
 		return false;
@@ -86,6 +107,142 @@ bool loadMedia(void) {
 		return false;
 	}
 
+	LVertexPos2D quadPos[4];
+	LColorRGBA quadColorRGBY[4];
+	LColorRGBA quadColorCYMW[4];
+	LColorRGBA quadColorGray[4];
+	GLuint indices[4];
+
+	quadPos[0].x = -50.0f;
+	quadPos[0].y = -50.0f;
+
+	quadPos[1].x = 50.0f;
+	quadPos[1].y = -50.0f;
+
+	quadPos[2].x = 50.0f;
+	quadPos[2].y = 50.0f;
+
+	quadPos[3].x = -50.0f;
+	quadPos[3].y = 50.0f;
+
+	quadColorRGBY[0].r = 1.0f;
+	quadColorRGBY[0].g = 0.0f;
+	quadColorRGBY[0].b = 0.0f;
+	quadColorRGBY[0].a = 1.0f;
+
+	quadColorRGBY[1].r = 1.0f;
+	quadColorRGBY[1].g = 1.0f;
+	quadColorRGBY[1].b = 0.0f;
+	quadColorRGBY[1].a = 1.0f;
+
+	quadColorRGBY[2].r = 0.0f;
+	quadColorRGBY[2].g = 1.0f;
+	quadColorRGBY[2].b = 0.0f;
+	quadColorRGBY[2].a = 1.0f;
+
+	quadColorRGBY[3].r = 0.0f;
+	quadColorRGBY[3].g = 0.0f;
+	quadColorRGBY[3].b = 1.0f;
+	quadColorRGBY[3].a = 1.0f;
+
+	quadColorCYMW[0].r = 0.0f;
+	quadColorCYMW[0].g = 1.0f;
+	quadColorCYMW[0].b = 1.0f;
+	quadColorCYMW[0].a = 1.0f;
+
+	quadColorCYMW[1].r = 1.0f;
+	quadColorCYMW[1].g = 1.0f;
+	quadColorCYMW[1].b = 0.0f;
+	quadColorCYMW[1].a = 1.0f;
+
+	quadColorCYMW[2].r = 1.0f;
+	quadColorCYMW[2].g = 0.0f;
+	quadColorCYMW[2].b = 1.0f;
+	quadColorCYMW[2].a = 1.0f;
+
+	quadColorCYMW[3].r = 1.0f;
+	quadColorCYMW[3].g = 1.0f;
+	quadColorCYMW[3].b = 1.0f;
+	quadColorCYMW[3].a = 1.0f;
+
+	quadColorGray[0].r = 0.75f;
+	quadColorGray[0].g = 0.75f;
+	quadColorGray[0].b = 0.75f;
+	quadColorGray[0].a = 1.0f;
+
+	quadColorGray[1].r = 0.50f;
+	quadColorGray[1].g = 0.50f;
+	quadColorGray[1].b = 0.50f;
+	quadColorGray[1].a = 0.50f;
+
+	quadColorGray[2].r = 0.75f;
+	quadColorGray[2].g = 0.75f;
+	quadColorGray[2].b = 0.75f;
+	quadColorGray[2].a = 1.0f;
+
+	quadColorGray[3].r = 0.50f;
+	quadColorGray[3].g = 0.50f;
+	quadColorGray[3].b = 0.50f;
+	quadColorGray[3].a = 1.0f;
+
+	for (int i = 0; i < 4; ++i) {
+		indices[i] = i;
+	}
+
+	glGenBuffers(1, &gVertexVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, gVertexVBO);
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LVertexPos2D), quadPos, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &gRGBYVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, gRGBYVBO);
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LColorRGBA), quadColorRGBY, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &gCYMWVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, gCYMWVBO);
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LColorRGBA), quadColorCYMW, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &gGrayVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, gGrayVBO);
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LColorRGBA), quadColorGray, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &gIBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &gLeftVAO);
+	glBindVertexArray(gLeftVAO);
+
+	gMultiPolygon.enableDataPointers();
+
+	glBindBuffer(GL_ARRAY_BUFFER, gVertexVBO);
+	gMultiPolygon.setVertexPointer(0, NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER, gRGBYVBO);
+	gMultiPolygon.setColorPointer(0, NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER, gCYMWVBO);
+	gMultiPolygon.setColor2Pointer(0, NULL);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIBO);
+	glBindVertexArray(0x0);
+
+	glGenVertexArrays(1, &gRightVAO);
+	glBindVertexArray(gRightVAO);
+
+	gMultiPolygon.enableDataPointers();
+
+	glBindBuffer(GL_ARRAY_BUFFER, gRightVAO);
+	gMultiPolygon.setVertexPointer(0, NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER, gCYMWVBO);
+	gMultiPolygon.setColorPointer(0, NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER, gGrayVBO);
+	gMultiPolygon.setColor2Pointer(0, NULL);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIBO);
+	glBindVertexArray(0x0);
+
 	return true;
 }
 
@@ -104,6 +261,15 @@ void renderScene(void) {
 	gTexturedPolygon2D.setModelView(glm::mat4());
 	gTexturedPolygon2D.setTextureColor(gTextureColor);
 	gOpenGLTexture.render((SCREEN_WIDTH - gOpenGLTexture.imageWidth()) / 2.0f, (SCREEN_HEIGHT - gOpenGLTexture.imageHeight()) / 2.0f);
+
+	gMultiPolygon.setModelView(glm::translate<GLfloat>(glm::vec3(SCREEN_WIDTH * 1.0f / 4.0f, SCREEN_HEIGHT * 2.0f / 4.0f, 0.0f)));
+	gMultiPolygon.updateModelView();
+
+	glBindVertexArray(gLeftVAO);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
+
+	glBindVertexArray(gRightVAO);
+	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
 }
 
 void handleKeys(unsigned char key, int x, int y) {
@@ -140,14 +306,4 @@ void handleMouseMotion(int x, int y) {
 			fprintf(stdout, "x and y are 0");
 		}
 	}
-}
-
-void gDrawQuads(GLfloat x, GLfloat y, GLfloat r, GLfloat g, GLfloat b) {
-	glBegin(GL_QUADS);
-		glColor3f(r, g, b);
-		glVertex2f(-x, -y);
-		glVertex2f(x, -y);
-		glVertex2f(x, y);
-		glVertex2f(-x, y);
-	glEnd();
 }

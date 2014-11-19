@@ -11,6 +11,7 @@ SOURCES = ./src/tex/LTexture.cpp \
 					./src/shader/LShaderProgram.cpp \
 					./src/prim/LPlainPolygonProgram2D.cpp \
 					./src/prim/LMultiColorPolygonProgram2D.cpp \
+					./src/prim/LMultiPolygonProgram2D.cpp \
 					./src/util/LUtil.cpp \
 					./src/main.cpp
 
