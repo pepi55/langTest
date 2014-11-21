@@ -46,7 +46,7 @@ bool initGL(void) {
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glClearStencil(0);
+	//glClearStencil(0);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -72,6 +72,19 @@ bool initGL(void) {
 }
 
 bool loadGP(void) {
+	//if (!gTexturedPolygon2D.loadProgram()) {
+	//	fprintf(stderr, "Unable to load basic shader!\n");
+	//	return false;
+	//}
+
+	//gTexturedPolygon2D.bind();
+
+	//gTexturedPolygon2D.setProjection(glm::ortho<GLfloat>(0.0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0, 1.0, -1.0));
+	//gTexturedPolygon2D.updateProjection();
+
+	//gTexturedPolygon2D.setTextureUnit(0);
+	//LTexture::setTexturedPolygon2D(&gTexturedPolygon2D);
+
 	if (!gMultiPolygon.loadProgram()) {
 		fprintf(stderr, "Unable to load shader!\n");
 		return false;
@@ -85,27 +98,14 @@ bool loadGP(void) {
 	gMultiPolygon.setModelView(glm::mat4());
 	gMultiPolygon.updateModelView();
 
-	if (!gTexturedPolygon2D.loadProgram()) {
-		fprintf(stderr, "Unable to load basic shader!\n");
-		return false;
-	}
-
-	gTexturedPolygon2D.bind();
-
-	gTexturedPolygon2D.setProjection(glm::ortho<GLfloat>(0.0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0, 1.0, -1.0));
-	gTexturedPolygon2D.updateProjection();
-
-	gTexturedPolygon2D.setTextureUnit(0);
-	LTexture::setTexturedPolygon2D(&gTexturedPolygon2D);
-
 	return true;
 }
 
 bool loadMedia(void) {
-	if (!gOpenGLTexture.loadTextureFromFile32("img/opengl.png")) {
-		fprintf(stderr, "Unable to load texture!\n");
-		return false;
-	}
+	//if (!gOpenGLTexture.loadTextureFromFile32("img/opengl.png")) {
+	//	fprintf(stderr, "Unable to load texture!\n");
+	//	return false;
+	//}
 
 	LVertexPos2D quadPos[4];
 	LColorRGBA quadColorRGBY[4];
@@ -185,9 +185,10 @@ bool loadMedia(void) {
 	quadColorGray[3].b = 0.50f;
 	quadColorGray[3].a = 1.0f;
 
-	for (int i = 0; i < 4; ++i) {
-		indices[i] = i;
-	}
+	indices[0] = 0;
+	indices[1] = 1;
+	indices[2] = 2;
+	indices[3] = 3;
 
 	glGenBuffers(1, &gVertexVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, gVertexVBO);
@@ -258,18 +259,19 @@ void render(void) {
 }
 
 void renderScene(void) {
-	gTexturedPolygon2D.setModelView(glm::mat4());
-	gTexturedPolygon2D.setTextureColor(gTextureColor);
-	gOpenGLTexture.render((SCREEN_WIDTH - gOpenGLTexture.imageWidth()) / 2.0f, (SCREEN_HEIGHT - gOpenGLTexture.imageHeight()) / 2.0f);
-
-	gMultiPolygon.setModelView(glm::translate<GLfloat>(glm::vec3(SCREEN_WIDTH * 1.0f / 4.0f, SCREEN_HEIGHT * 2.0f / 4.0f, 0.0f)));
+	gMultiPolygon.setModelView(glm::translate<GLfloat>(glm::vec3(SCREEN_WIDTH * 1.0f / 4.0f, SCREEN_HEIGHT * 2.0f, 0.0f)));
 	gMultiPolygon.updateModelView();
 
 	glBindVertexArray(gLeftVAO);
 	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
 
+	gMultiPolygon.setModelView(glm::translate<GLfloat>(glm::vec3(SCREEN_WIDTH * 3.0f / 4.0f, SCREEN_HEIGHT / 2.0f, 0.0f)));
+
 	glBindVertexArray(gRightVAO);
 	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
+
+	//gTexturedPolygon2D.setModelView(glm::mat4());
+	//gTexturedPolygon2D.setTextureColor(gTextureColor);
 }
 
 void handleKeys(unsigned char key, int x, int y) {

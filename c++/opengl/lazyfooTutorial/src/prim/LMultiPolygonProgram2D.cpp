@@ -113,10 +113,10 @@ void LMultiPolygonProgram2D::enableDataPointers(void) {
 }
 
 void LMultiPolygonProgram2D::disableDataPointers(void) {
-	glDisableVertexAttribArray(mVertexPos2DLocation);
-
 	glDisableVertexAttribArray(mMultiColorLocation1);
 	glDisableVertexAttribArray(mMultiColorLocation2);
+
+	glDisableVertexAttribArray(mVertexPos2DLocation);
 }
 
 void LMultiPolygonProgram2D::setProjection(glm::mat4 matrix) {
