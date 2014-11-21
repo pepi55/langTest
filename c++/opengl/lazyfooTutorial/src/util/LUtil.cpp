@@ -2,6 +2,7 @@
 
 #include <IL/il.h>
 #include <IL/ilu.h>
+#include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
 #include "LUtil.hpp"
@@ -9,12 +10,7 @@
 GLfloat gCameraX = 0.0f,
 				gCameraY = 0.0f;
 
-LTexturedPolygon2D gTexturedPolygon2D;
-LTexture gOpenGLTexture;
-
 LMultiPolygonProgram2D gMultiPolygon;
-
-LColorRGBA gTextureColor = {1.0f, 1.0f, 1.0f, 0.5f};
 
 GLuint gVertexVBO = 0x0,
 			 gRGBYVBO = 0x0,
@@ -32,8 +28,8 @@ bool initGL(void) {
 		return false;
 	}
 
-	if (!GLEW_VERSION_2_1) {
-		fprintf(stderr, "OpenGL 2.1 not supported!\n");
+	if (!GLEW_VERSION_3_1) {
+		fprintf(stderr, "OpenGL 3.1 not supported!\n");
 		return false;
 	}
 
@@ -45,8 +41,6 @@ bool initGL(void) {
 	glEnable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//glClearStencil(0);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -72,19 +66,6 @@ bool initGL(void) {
 }
 
 bool loadGP(void) {
-	//if (!gTexturedPolygon2D.loadProgram()) {
-	//	fprintf(stderr, "Unable to load basic shader!\n");
-	//	return false;
-	//}
-
-	//gTexturedPolygon2D.bind();
-
-	//gTexturedPolygon2D.setProjection(glm::ortho<GLfloat>(0.0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0, 1.0, -1.0));
-	//gTexturedPolygon2D.updateProjection();
-
-	//gTexturedPolygon2D.setTextureUnit(0);
-	//LTexture::setTexturedPolygon2D(&gTexturedPolygon2D);
-
 	if (!gMultiPolygon.loadProgram()) {
 		fprintf(stderr, "Unable to load shader!\n");
 		return false;
@@ -92,21 +73,16 @@ bool loadGP(void) {
 
 	gMultiPolygon.bind();
 
-	gMultiPolygon.setProjection(glm::ortho<GLfloat>(0.0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0, 1.0, -1.0));
+	gMultiPolygon.setProjection(glm::ortho<GLfloat>(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 1.0f, -1.0f));
 	gMultiPolygon.updateProjection();
 
 	gMultiPolygon.setModelView(glm::mat4());
-	gMultiPolygon.updateModelView();
+	gMultiPolygon.updateProjection();
 
 	return true;
 }
 
 bool loadMedia(void) {
-	//if (!gOpenGLTexture.loadTextureFromFile32("img/opengl.png")) {
-	//	fprintf(stderr, "Unable to load texture!\n");
-	//	return false;
-	//}
-
 	LVertexPos2D quadPos[4];
 	LColorRGBA quadColorRGBY[4];
 	LColorRGBA quadColorCYMW[4];
@@ -221,7 +197,7 @@ bool loadMedia(void) {
 	glBindBuffer(GL_ARRAY_BUFFER, gRGBYVBO);
 	gMultiPolygon.setColorPointer(0, NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER, gCYMWVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, gGrayVBO);
 	gMultiPolygon.setColor2Pointer(0, NULL);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIBO);
@@ -232,7 +208,7 @@ bool loadMedia(void) {
 
 	gMultiPolygon.enableDataPointers();
 
-	glBindBuffer(GL_ARRAY_BUFFER, gRightVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, gVertexVBO);
 	gMultiPolygon.setVertexPointer(0, NULL);
 
 	glBindBuffer(GL_ARRAY_BUFFER, gCYMWVBO);
@@ -259,19 +235,17 @@ void render(void) {
 }
 
 void renderScene(void) {
-	gMultiPolygon.setModelView(glm::translate<GLfloat>(glm::vec3(SCREEN_WIDTH * 1.0f / 4.0f, SCREEN_HEIGHT * 2.0f, 0.0f)));
+	gMultiPolygon.setModelView(glm::translate<GLfloat>(glm::vec3(SCREEN_WIDTH * 1.0f / 4.0f, SCREEN_HEIGHT / 2.0f, 0.0f)));
 	gMultiPolygon.updateModelView();
 
 	glBindVertexArray(gLeftVAO);
 	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
 
 	gMultiPolygon.setModelView(glm::translate<GLfloat>(glm::vec3(SCREEN_WIDTH * 3.0f / 4.0f, SCREEN_HEIGHT / 2.0f, 0.0f)));
+	gMultiPolygon.updateModelView();
 
 	glBindVertexArray(gRightVAO);
 	glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
-
-	//gTexturedPolygon2D.setModelView(glm::mat4());
-	//gTexturedPolygon2D.setTextureColor(gTextureColor);
 }
 
 void handleKeys(unsigned char key, int x, int y) {

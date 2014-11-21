@@ -13,6 +13,7 @@
 
 #include "../font/LFont.hpp"
 #include "../vertex/LMultiColorVertex2D.hpp"
+#include "../vertex/LVertexPos2D.hpp"
 #include "../shader/LShaderProgram.hpp"
 
 const int SCREEN_WIDTH = 640;
