@@ -1,6 +1,12 @@
+#define GLM_FORCE_RADIANS
+
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "LFont.hpp"
+#include "../vertex/LTexturedVertex2D.hpp"
 
 FT_Library LFont::mLibrary;
+LFontProgram2D *LFont::mFontProgram2D = NULL;
 
 LFont::LFont(void) {
 	mSpace = 0.0f;
@@ -237,6 +243,7 @@ bool LFont::loadBitmap(std::string path) {
 			}
 		}
 
+		//set top side
 		for (int t = 0; t < 256; ++t) {
 			mClips[t].y += top;
 			mClips[t].h -= top;
@@ -302,18 +309,21 @@ void LFont::renderText(GLfloat x, GLfloat y, std::string text, LFRect *area, int
 			}
 		}
 
-		glTranslatef(dX, dY, 0.0f);
+		mFontProgram2D->leftMultModelView(glm::translate<GLfloat>(glm::mat4(), glm::vec3(dX, dY, 0.0f)));
 		glBindTexture(GL_TEXTURE_2D, getTextureID());
 
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		mFontProgram2D->enableVertexPointer();
+		mFontProgram2D->enableTexCoordPointer();
 			glBindBuffer(GL_ARRAY_BUFFER, mVertexDataBuffer);
-			glTexCoordPointer(2, GL_FLOAT, sizeof(LVertexData2D), (GLvoid*)offsetof(LVertexData2D, texCoord));
-			glVertexPointer(2, GL_FLOAT, sizeof(LVertexData2D), (GLvoid*)offsetof(LVertexData2D, position));
+
+			mFontProgram2D->setTexCoorPointer(sizeof(LTexturedVertex2D), (GLvoid *)offsetof(LTexturedVertex2D, texCoord));
+			mFontProgram2D->setVertexPointer(sizeof(LTexturedVertex2D), (GLvoid *)offsetof(LTexturedVertex2D, position));
 
 			for (int i = 0; i < (int)text.length(); ++i) {
 				if (text[i] == ' ') {
-					glTranslatef(mSpace, 0.0f, 0.0f);
+					mFontProgram2D->leftMultModelView(glm::translate<GLfloat>(glm::mat4(), glm::vec3(mSpace, 0.0f, 0.0f)));
+					mFontProgram2D->updateModelView();
+
 					dX += mSpace;
 				} else if (text[i] == '\n') {
 					GLfloat targetX = x;
@@ -328,21 +338,28 @@ void LFont::renderText(GLfloat x, GLfloat y, std::string text, LFRect *area, int
 						}
 					}
 
-					glTranslatef(targetX - dX, mNewLine, 0.0f);
+					mFontProgram2D->leftMultModelView(glm::translate<GLfloat>(glm::mat4(), glm::vec3(targetX - dX, mNewLine, 0.0f)));
+					mFontProgram2D->updateModelView();
+
 					dY += mNewLine;
 					dX += targetX - dX;
 				} else {
 					GLuint ascii = (unsigned char)text[i];
 
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffers[ascii]);
-					glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
+					mFontProgram2D->updateModelView();
 
-					glTranslatef(mClips[ascii].w, 0.0f, 0.0f);
+					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffers[ascii]);
+					glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
+
+					mFontProgram2D->leftMultModelView(glm::translate<GLfloat>(glm::mat4(), glm::vec3(mClips[ascii].w, 0.0f, 0.0f)));
+					mFontProgram2D->updateModelView();
+
 					dX += mClips[ascii].w;
 				}
 			}
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
+
+		mFontProgram2D->disableVertexPointer();
+		mFontProgram2D->disableTexCoordPointer();
 	}
 }
 
@@ -371,6 +388,10 @@ GLfloat LFont::substringWidth(const char *substring) {
 	}
 
 	return subWidth;
+}
+
+void LFont::setFontProgram2D(LFontProgram2D *fontProgram) {
+	mFontProgram2D = fontProgram;
 }
 
 LFRect LFont::getStringArea(std::string text) {

@@ -45,7 +45,7 @@ bool LTexture::lock(void) {
 
 		if (mPixelFormat == GL_RGBA) {
 			mPixels32 = new GLuint[size];
-		} else if (mPixelFormat == GL_ALPHA) {
+		} else if (mPixelFormat == GL_RED) {
 			mPixels8 = new GLubyte[size];
 		}
 
@@ -229,7 +229,7 @@ bool LTexture::loadPixelsFromFile8(std::string path) {
 		}
 
 		ilDeleteImages(1, &imgID);
-		mPixelFormat = GL_ALPHA;
+		mPixelFormat = GL_RED;
 	}
 
 	if (!pixelsLoaded) {
@@ -245,7 +245,7 @@ bool LTexture::loadTextureFromPixels8(void) {
 	if (mTextureID == 0 && mPixels8 != NULL) {
 		glGenTextures(1, &mTextureID);
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, mTextureWidth, mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, mPixels8);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, mTextureWidth, mTextureHeight, 0, GL_RED, GL_UNSIGNED_BYTE, mPixels8);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -264,16 +264,14 @@ bool LTexture::loadTextureFromPixels8(void) {
 
 			initVBO();
 
-			mPixelFormat = GL_ALPHA;
+			mPixelFormat = GL_RED;
 		}
 	} else {
 		fprintf(stderr, "Cannot load texture from current pixels!\n");
 
 		if (mTextureID != 0) {
 			fprintf(stderr, "A texture is already loaded!\n");
-		}
-
-		if (mPixels8 == NULL) {
+		} else if (mPixels8 == NULL) {
 			fprintf(stderr, "No pixels to load texture from!\n");
 		}
 	}
@@ -291,10 +289,10 @@ void LTexture::createPixels8(GLuint imgWidth, GLuint imgHeight) {
 
 		mImageWidth = imgWidth;
 		mImageHeight = imgHeight;
-		mTextureWidth = imgWidth;
-		mTextureHeight = imgHeight;
+		mTextureWidth = mImageWidth;
+		mTextureHeight = mImageHeight;
 
-		mPixelFormat = GL_ALPHA;
+		mPixelFormat = GL_RED;
 	}
 }
 
@@ -311,7 +309,7 @@ void LTexture::copyPixels8(GLubyte *pixels, GLuint imgWidth, GLuint imgHeight) {
 		mTextureWidth = imgWidth;
 		mTextureHeight = imgHeight;
 
-		mPixelFormat = GL_ALPHA;
+		mPixelFormat = GL_RED;
 	}
 }
 

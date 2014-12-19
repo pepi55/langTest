@@ -8,6 +8,7 @@ SOURCES = ./src/tex/LTexture.cpp \
 					./src/tex/LSpriteSheet.cpp \
 					./src/tex/LTexturedPolygon2D.cpp \
 					./src/font/LFont.cpp \
+					./src/font/LFontProgram2D.cpp \
 					./src/shader/LShaderProgram.cpp \
 					./src/prim/LPlainPolygonProgram2D.cpp \
 					./src/prim/LMultiColorPolygonProgram2D.cpp \

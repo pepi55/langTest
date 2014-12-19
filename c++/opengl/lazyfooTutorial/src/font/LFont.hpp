@@ -5,6 +5,7 @@
 #include FT_FREETYPE_H
 #include FT_BITMAP_H
 
+#include "LFontProgram2D.hpp"
 #include "../tex/LSpriteSheet.hpp"
 
 enum LFontTextAlignment {
@@ -28,10 +29,13 @@ class LFont : private LSpriteSheet {
 		void freeFont(void);
 		void renderText(GLfloat x, GLfloat y, std::string text, LFRect *area = NULL, int align = LFONT_TEXT_ALIGN_LEFT);
 
+		static void setFontProgram2D(LFontProgram2D *fontProgram);
+
 		LFRect getStringArea(std::string text);
 		GLfloat getLineHeight(void);
 
 	private:
+		static LFontProgram2D *mFontProgram2D;
 		static FT_Library mLibrary;
 		GLfloat mSpace,
 						mLineHeight,
